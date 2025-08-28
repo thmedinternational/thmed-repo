@@ -15,7 +15,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Product } from "@/pages/admin/ProductsPage";
 import { useEffect, useState } from "react";
-import { Package } from "lucide-react";
 
 const productFormSchema = z.object({
   name: z.string().min(2, {
@@ -23,6 +22,7 @@ const productFormSchema = z.object({
   }),
   description: z.string().optional(),
   price: z.coerce.number().min(0, { message: "Price must be a positive number." }),
+  cost: z.coerce.number().min(0, { message: "Cost must be a positive number." }),
   stock: z.coerce.number().int().min(0, { message: "Stock must be a positive integer." }),
   images: z.custom<FileList>().optional(),
 });
@@ -42,6 +42,7 @@ export function ProductForm({ onSubmit, product, isSubmitting }: ProductFormProp
       name: product?.name ?? "",
       description: product?.description ?? "",
       price: product?.price ?? 0,
+      cost: product?.cost ?? 0,
       stock: product?.stock ?? 0,
     },
   });
@@ -91,7 +92,7 @@ export function ProductForm({ onSubmit, product, isSubmitting }: ProductFormProp
             </FormItem>
           )}
         />
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <FormField
             control={form.control}
             name="price"
@@ -100,6 +101,19 @@ export function ProductForm({ onSubmit, product, isSubmitting }: ProductFormProp
                 <FormLabel>Price</FormLabel>
                 <FormControl>
                     <Input type="number" placeholder="9.99" {...field} />
+                </FormControl>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
+            <FormField
+            control={form.control}
+            name="cost"
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>Cost</FormLabel>
+                <FormControl>
+                    <Input type="number" placeholder="4.99" {...field} />
                 </FormControl>
                 <FormMessage />
                 </FormItem>

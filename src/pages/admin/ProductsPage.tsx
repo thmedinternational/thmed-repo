@@ -41,6 +41,7 @@ export type Product = {
   name: string;
   description: string | null;
   price: number;
+  cost: number;
   stock: number;
   image_urls: string[] | null;
   created_at: string;
@@ -96,6 +97,7 @@ const ProductsPage = () => {
           name: newProduct.name,
           description: newProduct.description,
           price: newProduct.price,
+          cost: newProduct.cost,
           stock: newProduct.stock,
           image_urls: imageUrls,
         },
@@ -152,6 +154,7 @@ const ProductsPage = () => {
           name: updatedValues.name,
           description: updatedValues.description,
           price: updatedValues.price,
+          cost: updatedValues.cost,
           stock: updatedValues.stock,
           image_urls: imageUrlsToSave,
         })
@@ -235,6 +238,7 @@ const ProductsPage = () => {
                 <TableHead>Name</TableHead>
                 <TableHead>Stock</TableHead>
                 <TableHead>Price</TableHead>
+                <TableHead>Cost</TableHead>
                 <TableHead>Created At</TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
@@ -244,13 +248,13 @@ const ProductsPage = () => {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center">
+                  <TableCell colSpan={7} className="h-24 text-center">
                     Loading products...
                   </TableCell>
                 </TableRow>
               ) : error ? (
                  <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center text-red-500">
+                  <TableCell colSpan={7} className="h-24 text-center text-red-500">
                     Error loading products: {error.message}
                   </TableCell>
                 </TableRow>
@@ -273,6 +277,7 @@ const ProductsPage = () => {
                     <TableCell className="font-medium">{product.name}</TableCell>
                     <TableCell>{product.stock}</TableCell>
                     <TableCell>${product.price.toFixed(2)}</TableCell>
+                    <TableCell>${product.cost.toFixed(2)}</TableCell>
                     <TableCell>
                       {new Date(product.created_at).toLocaleDateString()}
                     </TableCell>
@@ -295,7 +300,7 @@ const ProductsPage = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center">
+                  <TableCell colSpan={7} className="h-24 text-center">
                     No products found.
                   </TableCell>
                 </TableRow>
