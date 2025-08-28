@@ -14,35 +14,45 @@ import ProductsPage from "./pages/admin/ProductsPage";
 import CustomersPage from "./pages/admin/CustomersPage";
 import OrdersPage from "./pages/admin/OrdersPage";
 import AnalyticsPage from "./pages/admin/AnalyticsPage";
+import { AuthProvider } from "./contexts/AuthContext";
+import Login from "./pages/Login";
+import ProtectedRoute from "./components/admin/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
       <BrowserRouter>
-        <Routes>
-          {/* Public Routes */}
-          <Route element={<Layout />}>
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-          </Route>
+        <AuthProvider>
+          <Toaster />
+          <Sonner />
+          <Routes>
+            {/* Public Routes */}
+            <Route element={<Layout />}>
+              <Route path="/" element={<Index />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+            </Route>
 
-          {/* Admin Routes */}
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<DashboardPage />} />
-            <Route path="products" element={<ProductsPage />} />
-            <Route path="customers" element={<CustomersPage />} />
-            <Route path="orders" element={<OrdersPage />} />
-            <Route path="analytics" element={<AnalyticsPage />} />
-          </Route>
+            {/* Auth Route */}
+            <Route path="/login" element={<Login />} />
 
-          {/* Catch-all */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            {/* Admin Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<DashboardPage />} />
+                <Route path="products" element={<ProductsPage />} />
+                <Route path="customers" element={<CustomersPage />} />
+                <Route path="orders" element={<OrdersPage />} />
+                <Route path="analytics" element={<AnalyticsPage />} />
+              </Route>
+            </Route>
+
+            {/* Catch-all */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
