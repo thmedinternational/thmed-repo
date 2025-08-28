@@ -91,10 +91,12 @@ const Header = () => {
                 <span className="font-bold">{settings?.store_name || 'MyStore'}</span>
               </Link>
            </div>
-          <Button variant="ghost" size="icon">
-            <ShoppingCart className="h-5 w-5" />
-            <span className="sr-only">Cart</span>
-          </Button>
+          <Link to="/cart"> {/* Added Link here */}
+            <Button variant="ghost" size="icon">
+              <ShoppingCart className="h-5 w-5" />
+              <span className="sr-only">Cart</span>
+            </Button>
+          </Link>
         </div>
       </div>
     </header>
