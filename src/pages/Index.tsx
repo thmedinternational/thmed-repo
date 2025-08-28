@@ -4,14 +4,20 @@ import { MadeWithDyad } from "@/components/made-with-dyad";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">
-          Start building your amazing project here!
+    <div className="container mx-auto py-12 px-4 md:px-6">
+      <div className="text-center space-y-4">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Welcome to MyStore</h1>
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          Discover our collection of high-quality products. We are committed to excellence and customer satisfaction.
         </p>
       </div>
-      <MadeWithDyad />
+
+      <div className="mt-16">
+        <h2 className="text-3xl font-bold text-center">Our Products</h2>
+        <div className="mt-8 text-center p-4 border rounded-lg bg-secondary">
+          <p className="text-muted-foreground">Our product listing is coming soon! We're working on bringing you an amazing selection.</p>
+        </div>
+      </div>
     </div>
   );
 };
