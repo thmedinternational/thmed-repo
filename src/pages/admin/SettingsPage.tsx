@@ -127,11 +127,18 @@ const SettingsPage = () => {
             <FormField control={form.control} name="company_name" render={({ field }) => (
               <FormItem><FormLabel>Company Name (Optional)</FormLabel><FormControl><Input placeholder="Awesome Inc." {...field} /></FormControl><FormMessage /></FormItem>
             )} />
-            <FormField control={form.control} name="logo" render={({ field: { onChange, ...rest } }) => (
+            <FormField control={form.control} name="logo" render={({ field: { onChange, value, ...restField } }) => ( // Destructure 'value'
               <FormItem>
                 <FormLabel>Store Logo</FormLabel>
                 {settings?.logo_url && <img src={settings.logo_url} alt="Current logo" className="my-2 rounded-md" style={{ width: settings.logo_width || 120, height: 'auto' }} />}
-                <FormControl><Input type="file" accept="image/*" onChange={e => onChange(e.target.files)} {...rest} /></FormControl>
+                <FormControl>
+                  <Input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={e => onChange(e.target.files)} 
+                    {...restField} 
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )} />

@@ -25,7 +25,7 @@ type PaidOrder = {
     quantity: number;
     products: {
       cost: number;
-    } | null;
+    }[] | null; // Changed to array
   }[];
 };
 type Expense = { id: string; name: string; amount: number; expense_date: string; };
@@ -87,7 +87,7 @@ const ProfitLossPage = () => {
     
     const cogs = paidOrders?.reduce((sum, order) => {
       const orderCost = order.order_items.reduce((itemSum, item) => {
-        const cost = item.products?.cost ?? 0;
+        const cost = item.products?.[0]?.cost ?? 0; // Access first element
         return itemSum + (cost * item.quantity);
       }, 0);
       return sum + orderCost;

@@ -35,7 +35,7 @@ export type Order = {
   created_at: string;
   status: "pending" | "paid" | "shipped" | "cancelled";
   total: number;
-  customers: { full_name: string | null } | null;
+  customers: { full_name: string | null }[] | null; // Changed to array
 };
 
 const fetchOrders = async () => {
@@ -187,7 +187,7 @@ const OrdersPage = () => {
               ) : orders?.length ? (
                 orders.map((order) => (
                   <TableRow key={order.id}>
-                    <TableCell className="font-medium">{order.customers?.full_name || "N/A"}</TableCell>
+                    <TableCell className="font-medium">{order.customers?.[0]?.full_name || "N/A"}</TableCell>
                     <TableCell>{new Date(order.created_at).toLocaleDateString()}</TableCell>
                     <TableCell>
                       <Badge variant={getStatusVariant(order.status)} className="capitalize">{order.status}</Badge>

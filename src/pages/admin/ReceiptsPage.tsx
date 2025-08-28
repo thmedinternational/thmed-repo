@@ -30,7 +30,7 @@ export type OrderItemWithProduct = {
   id: string;
   quantity: number;
   price: number;
-  products: { name: string } | null;
+  products: { name: string }[] | null; // Changed to array
 };
 
 export type OrderWithDetails = {
@@ -42,7 +42,7 @@ export type OrderWithDetails = {
     id: string;
     full_name: string | null;
     email: string | null;
-  } | null;
+  }[] | null; // Changed to array
   order_items: OrderItemWithProduct[];
 };
 
@@ -122,7 +122,7 @@ const ReceiptsPage = () => {
                 orders.map((order) => (
                   <TableRow key={order.id}>
                     <TableCell className="font-mono text-xs">{order.id.substring(0, 8)}</TableCell>
-                    <TableCell className="font-medium">{order.customers?.full_name || "N/A"}</TableCell>
+                    <TableCell className="font-medium">{order.customers?.[0]?.full_name || "N/A"}</TableCell>
                     <TableCell>{new Date(order.created_at).toLocaleDateString()}</TableCell>
                     <TableCell>
                       <Badge variant={getStatusVariant(order.status)} className="capitalize">{order.status}</Badge>
