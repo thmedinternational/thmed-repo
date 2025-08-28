@@ -6,6 +6,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { toast } from 'sonner';
 import type { OrderWithDetails } from '@/pages/admin/ReceiptsPage';
+import { useSettings } from '@/contexts/SettingsContext';
 
 interface InvoiceProps {
   order: OrderWithDetails;
@@ -16,6 +17,7 @@ const formatDate = (dateString: string) => new Date(dateString).toLocaleDateStri
 
 export const Invoice = ({ order }: InvoiceProps) => {
   const invoiceRef = useRef<HTMLDivElement>(null);
+  const { settings } = useSettings();
 
   const handleDownloadPdf = () => {
     const input = invoiceRef.current;
@@ -56,9 +58,15 @@ export const Invoice = ({ order }: InvoiceProps) => {
             <p className="text-gray-500">Date: {formatDate(order.created_at)}</p>
           </div>
           <div className="text-right">
-            <h2 className="text-xl font-semibold">Your Store Name</h2>
-            <p className="text-gray-600">123 Main Street</p>
-            <p className="text-gray-600">Anytown, USA 12345</p>
+            {settings?.logo_url && (
+              <img 
+                src={settings.logo_url} 
+                alt="Store Logo" 
+                className="mb-2 ml-auto"
+                style={{ width: settings.logo_width || 120, height: 'auto' }}
+              />
+            )}
+            <h2 className="text-xl font-semibold">{settings?.company_name || settings?.store_name || 'Your Company'}</h2>
           </div>
         </header>
 
