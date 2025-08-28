@@ -122,7 +122,7 @@ export function ProductForm({ onSubmit, product, isSubmitting }: ProductFormProp
         <FormField
           control={form.control}
           name="images"
-          render={({ field: { onChange, ...fieldProps } }) => (
+          render={({ field: { onChange, value, ...restField } }) => (
             <FormItem>
               <FormLabel>Product Images</FormLabel>
               <FormControl>
@@ -131,7 +131,7 @@ export function ProductForm({ onSubmit, product, isSubmitting }: ProductFormProp
                   multiple 
                   accept="image/*"
                   onChange={(e) => onChange(e.target.files)}
-                  {...fieldProps} 
+                  {...restField} 
                 />
               </FormControl>
               <FormDescription>
