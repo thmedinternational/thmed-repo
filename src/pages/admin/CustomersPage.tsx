@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Card,
@@ -16,7 +17,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { User, PlusCircle } from "lucide-react";
+import { CustomerForm, CustomerFormValues } from "@/components/admin/CustomerForm";
+import { toast } from "sonner";
 
 export type Customer = {
   id: string;
@@ -33,10 +45,44 @@ const fetchCustomers = async () => {
 };
 
 const CustomersPage = () => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const queryClient = useQueryClient();
+
   const { data: customers, isLoading, error } = useQuery<Customer[]>({
     queryKey: ["customers"],
     queryFn: fetchCustomers,
   });
+
+  const addCustomerMutation = useMutation({
+    mutationFn: async (values: CustomerFormValues) => {
+      const { data, error } = await supabase.auth.signUp({
+        email: values.email,
+        password: values.password,
+        options: {
+          data: {
+            full_name: values.full_name,
+          },
+        },
+      });
+
+      if (error) throw error;
+      if (!data.user) throw new Error("User not created.");
+      
+      return data.user;
+    },
+    onSuccess: () => {
+      toast.success("Customer created successfully!");
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+      setIsDialogOpen(false);
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to create customer: ${error.message}`);
+    },
+  });
+
+  const handleAddCustomer = (values: CustomerFormValues) => {
+    addCustomerMutation.mutate(values);
+  };
 
   const getInitials = (name: string | null | undefined) => {
     if (!name) return "";
@@ -49,6 +95,26 @@ const CustomersPage = () => {
     <>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Customers</h1>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Add Customer
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Add New Customer</DialogTitle>
+              <DialogDescription>
+                Fill in the details below to create a new customer account.
+              </DialogDescription>
+            </DialogHeader>
+            <CustomerForm
+              onSubmit={handleAddCustomer}
+              isSubmitting={addCustomerMutation.isPending}
+            />
+          </DialogContent>
+        </Dialog>
       </div>
 
       <Card>
