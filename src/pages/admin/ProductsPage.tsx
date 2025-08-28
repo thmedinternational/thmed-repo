@@ -71,7 +71,7 @@ const ProductsPage = () => {
         const uploadPromises = Array.from(newProduct.images).map(async (file) => {
           const fileName = `public/${Date.now()}-${file.name}`;
           const { error: uploadError } = await supabase.storage
-            .from("product-images")
+            .from("store-assets")
             .upload(fileName, file);
 
           if (uploadError) {
@@ -79,7 +79,7 @@ const ProductsPage = () => {
           }
 
           const { data: { publicUrl } } = supabase.storage
-            .from("product-images")
+            .from("store-assets")
             .getPublicUrl(fileName);
           
           if (!publicUrl) {
@@ -128,7 +128,7 @@ const ProductsPage = () => {
         const uploadPromises = Array.from(updatedValues.images).map(async (file) => {
           const fileName = `public/${Date.now()}-${file.name}`;
           const { error: uploadError } = await supabase.storage
-            .from("product-images")
+            .from("store-assets")
             .upload(fileName, file);
 
           if (uploadError) {
@@ -136,7 +136,7 @@ const ProductsPage = () => {
           }
 
           const { data: { publicUrl } } = supabase.storage
-            .from("product-images")
+            .from("store-assets")
             .getPublicUrl(fileName);
 
           if (!publicUrl) {

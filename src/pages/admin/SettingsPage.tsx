@@ -73,8 +73,10 @@ const SettingsPage = () => {
         const fileName = `public/${session.user.id}/${Date.now()}-${file.name}`;
         
         if (settings?.logo_url) {
-            const oldLogoKey = settings.logo_url.split('/').slice(-2).join('/');
-            await supabase.storage.from('store-assets').remove([oldLogoKey]);
+            const oldLogoPath = settings.logo_url.split('/store-assets/')[1];
+            if (oldLogoPath) {
+              await supabase.storage.from('store-assets').remove([oldLogoPath]);
+            }
         }
 
         const { error: uploadError } = await supabase.storage.from("store-assets").upload(fileName, file);
