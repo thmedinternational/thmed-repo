@@ -16,7 +16,6 @@ import { Loader2 } from "lucide-react";
 const formSchema = z.object({
   full_name: z.string().min(2, { message: "Full name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
 });
 
 export type CustomerFormValues = z.infer<typeof formSchema>;
@@ -32,7 +31,6 @@ export const CustomerForm = ({ onSubmit, isSubmitting }: CustomerFormProps) => {
     defaultValues: {
       full_name: "",
       email: "",
-      password: "",
     },
   });
 
@@ -60,19 +58,6 @@ export const CustomerForm = ({ onSubmit, isSubmitting }: CustomerFormProps) => {
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input type="email" placeholder="john.doe@example.com" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="••••••" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -16,7 +16,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,7 +25,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { User, PlusCircle } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { CustomerForm, CustomerFormValues } from "@/components/admin/CustomerForm";
 import { toast } from "sonner";
 
@@ -34,12 +33,11 @@ export type Customer = {
   id: string;
   full_name: string | null;
   email: string | null;
-  avatar_url: string | null;
   created_at: string;
 };
 
 const fetchCustomers = async () => {
-  const { data, error } = await supabase.from("profiles").select("*").order("created_at", { ascending: false });
+  const { data, error } = await supabase.from("customers").select("*").order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
   return data as Customer[];
 };
@@ -55,20 +53,18 @@ const CustomersPage = () => {
 
   const addCustomerMutation = useMutation({
     mutationFn: async (values: CustomerFormValues) => {
-      const { data, error } = await supabase.auth.signUp({
-        email: values.email,
-        password: values.password,
-        options: {
-          data: {
-            full_name: values.full_name,
-          },
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("You must be logged in to add a customer.");
+
+      const { error } = await supabase.from("customers").insert([
+        {
+          full_name: values.full_name,
+          email: values.email,
+          user_id: user.id,
         },
-      });
+      ]);
 
       if (error) throw error;
-      if (!data.user) throw new Error("User not created.");
-      
-      return data.user;
     },
     onSuccess: () => {
       toast.success("Customer created successfully!");
@@ -83,13 +79,6 @@ const CustomersPage = () => {
   const handleAddCustomer = (values: CustomerFormValues) => {
     addCustomerMutation.mutate(values);
   };
-
-  const getInitials = (name: string | null | undefined) => {
-    if (!name) return "";
-    const names = name.split(' ');
-    if (names.length === 1) return names[0].charAt(0).toUpperCase();
-    return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
-  }
 
   return (
     <>
@@ -106,7 +95,7 @@ const CustomersPage = () => {
             <DialogHeader>
               <DialogTitle>Add New Customer</DialogTitle>
               <DialogDescription>
-                Fill in the details below to create a new customer account.
+                Fill in the details below to create a new customer record.
               </DialogDescription>
             </DialogHeader>
             <CustomerForm
@@ -121,17 +110,16 @@ const CustomersPage = () => {
         <CardHeader>
           <CardTitle>Customer List</CardTitle>
           <CardDescription>
-            A list of all registered users in your store.
+            A list of your customers.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[64px]">Avatar</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Joined</TableHead>
+                <TableHead>Added On</TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
                 </TableHead>
@@ -140,27 +128,19 @@ const CustomersPage = () => {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center">
+                  <TableCell colSpan={4} className="h-24 text-center">
                     Loading customers...
                   </TableCell>
                 </TableRow>
               ) : error ? (
                  <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center text-red-500">
+                  <TableCell colSpan={4} className="h-24 text-center text-red-500">
                     Error loading customers: {error.message}
                   </TableCell>
                 </TableRow>
               ) : customers?.length ? (
                 customers.map((customer) => (
                   <TableRow key={customer.id}>
-                    <TableCell>
-                      <Avatar>
-                        <AvatarImage src={customer.avatar_url ?? undefined} alt={customer.full_name ?? 'Customer'} />
-                        <AvatarFallback>
-                          {customer.full_name ? getInitials(customer.full_name) : <User className="h-5 w-5" />}
-                        </AvatarFallback>
-                      </Avatar>
-                    </TableCell>
                     <TableCell className="font-medium">{customer.full_name || 'N/A'}</TableCell>
                     <TableCell>{customer.email}</TableCell>
                     <TableCell>
@@ -173,7 +153,7 @@ const CustomersPage = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center">
+                  <TableCell colSpan={4} className="h-24 text-center">
                     No customers found.
                   </TableCell>
                 </TableRow>
