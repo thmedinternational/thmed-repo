@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
-import { MadeWithDyad } from "./made-with-dyad";
+import Footer from "./Footer";
 
 const Layout = () => {
   return (
@@ -9,7 +9,7 @@ const Layout = () => {
       <main className="flex-grow">
         <Outlet />
       </main>
-      <MadeWithDyad />
+      <Footer />
     </div>
   );
 };
