@@ -16,6 +16,7 @@ import OrdersPage from "./pages/admin/OrdersPage";
 import ReceiptsPage from "./pages/admin/ReceiptsPage";
 import AnalyticsPage from "./pages/admin/AnalyticsPage";
 import ProfitLossPage from "./pages/admin/ProfitLossPage";
+import PurchasesPage from "./pages/admin/PurchasesPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
@@ -45,6 +46,7 @@ const App = () => (
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<DashboardPage />} />
                 <Route path="products" element={<ProductsPage />} />
+                <Route path="purchases" element={<PurchasesPage />} />
                 <Route path="customers" element={<CustomersPage />} />
                 <Route path="orders" element={<OrdersPage />} />
                 <Route path="receipts" element={<ReceiptsPage />} />
