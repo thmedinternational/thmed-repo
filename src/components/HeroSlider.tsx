@@ -8,34 +8,56 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Skeleton } from "./ui/skeleton";
 
-const sliderItems = [
-  {
-    title: "Occupational Safety & Health Compliance",
-    description: "We help businesses meet legal and regulatory health and safety obligations through detailed audits, policy guidance, and on-site inspections. From documentation to day-to-day practices, we make sure your workplace is compliant, safe, and audit-ready.",
-    imageUrl: "/images/slide1.jpg",
-  },
-  {
-    title: "Risk Management Solutions",
-    description: "Identify, assess, and mitigate workplace risks with our expert support. We tailor risk management strategies for your specific industry—minimizing hazards, reducing downtime, and ensuring peace of mind across all operations.",
-    imageUrl: "/images/slide2.jpg",
-  },
-  {
-    title: "Workplace Safety Training",
-    description: "Equip your team with essential safety knowledge through our online and in-person training programs. We offer toolbox talks, fire safety sessions, and SHEQ-focused workshops that are practical, engaging, and fully certified.",
-    imageUrl: "/images/slide3.jpg",
-  },
-  {
-    title: "PPE & Safety Equipment Supply",
-    description: "We supply certified, high-quality personal protective equipment (PPE) and safety gear from trusted brands. Whether you need boots, helmets, signage, or full PPE kits—we’ve got your team covered and protected.",
-    imageUrl: "/images/slide4.jpg",
-  },
-];
+type HeroSlide = {
+  id: string;
+  title: string;
+  description: string | null;
+  image_url: string;
+};
+
+const fetchSlides = async (): Promise<HeroSlide[]> => {
+  const { data, error } = await supabase
+    .from("hero_slides")
+    .select("id, title, description, image_url")
+    .order("slide_order", { ascending: true });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+};
 
 export function HeroSlider() {
   const plugin = React.useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
   );
+
+  const { data: slides, isLoading, isError } = useQuery({
+    queryKey: ["hero_slides_public"],
+    queryFn: fetchSlides,
+  });
+
+  if (isLoading) {
+    return (
+      <section className="w-full">
+        <Skeleton className="w-full aspect-[16/7]" />
+      </section>
+    );
+  }
+
+  if (isError || !slides || slides.length === 0) {
+    return (
+        <section className="w-full">
+            <div className="flex aspect-[16/7] items-center justify-center bg-muted">
+                <p className="text-muted-foreground">Could not load slides. Please add slides in the admin dashboard.</p>
+            </div>
+        </section>
+    );
+  }
 
   return (
     <section className="w-full">
@@ -46,12 +68,12 @@ export function HeroSlider() {
         onMouseLeave={plugin.current.reset}
       >
         <CarouselContent>
-          {sliderItems.map((item, index) => (
-            <CarouselItem key={index}>
+          {slides.map((item) => (
+            <CarouselItem key={item.id}>
               <Card className="border-none rounded-none shadow-none">
                 <CardContent 
                   className="flex aspect-[16/7] items-center justify-center p-6 bg-cover bg-center relative"
-                  style={{ backgroundImage: `url(${item.imageUrl})` }}
+                  style={{ backgroundImage: `url(${item.image_url})` }}
                 >
                   <div className="absolute inset-0 bg-black/50" />
                   <div className="relative z-10 text-center text-white space-y-4 px-4">
