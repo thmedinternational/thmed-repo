@@ -25,7 +25,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { MoreHorizontal, PlusCircle } from "lucide-react";
+import { MoreHorizontal, PlusCircle, Package } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -63,13 +63,40 @@ const ProductsPage = () => {
 
   const addProductMutation = useMutation({
     mutationFn: async (newProduct: ProductFormValues) => {
+      let imageUrls: string[] = [];
+
+      if (newProduct.images && newProduct.images.length > 0) {
+        const uploadPromises = Array.from(newProduct.images).map(async (file) => {
+          const fileName = `public/${Date.now()}-${file.name}`;
+          const { error: uploadError } = await supabase.storage
+            .from("product-images")
+            .upload(fileName, file);
+
+          if (uploadError) {
+            throw new Error(`Image upload failed: ${uploadError.message}`);
+          }
+
+          const { data: { publicUrl } } = supabase.storage
+            .from("product-images")
+            .getPublicUrl(fileName);
+          
+          if (!publicUrl) {
+            throw new Error("Could not get public URL for uploaded image.");
+          }
+
+          return publicUrl;
+        });
+
+        imageUrls = await Promise.all(uploadPromises);
+      }
+
       const { error } = await supabase.from("products").insert([
         {
           name: newProduct.name,
           description: newProduct.description,
           price: newProduct.price,
           stock: newProduct.stock,
-          image_urls: newProduct.image_urls?.split(',').map(url => url.trim()).filter(url => url),
+          image_urls: imageUrls,
         },
       ]);
 
@@ -125,6 +152,7 @@ const ProductsPage = () => {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-[64px]">Image</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Stock</TableHead>
                 <TableHead>Price</TableHead>
@@ -137,19 +165,32 @@ const ProductsPage = () => {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center">
+                  <TableCell colSpan={6} className="h-24 text-center">
                     Loading products...
                   </TableCell>
                 </TableRow>
               ) : error ? (
                  <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center text-red-500">
+                  <TableCell colSpan={6} className="h-24 text-center text-red-500">
                     Error loading products: {error.message}
                   </TableCell>
                 </TableRow>
               ) : products?.length ? (
                 products.map((product) => (
                   <TableRow key={product.id}>
+                    <TableCell>
+                      {product.image_urls && product.image_urls.length > 0 ? (
+                        <img 
+                          src={product.image_urls[0]} 
+                          alt={product.name} 
+                          className="h-10 w-10 rounded-md object-cover"
+                        />
+                      ) : (
+                        <div className="h-10 w-10 rounded-md bg-secondary flex items-center justify-center">
+                          <Package className="h-5 w-5 text-muted-foreground" />
+                        </div>
+                      )}
+                    </TableCell>
                     <TableCell className="font-medium">{product.name}</TableCell>
                     <TableCell>{product.stock}</TableCell>
                     <TableCell>${product.price.toFixed(2)}</TableCell>
@@ -175,7 +216,7 @@ const ProductsPage = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center">
+                  <TableCell colSpan={6} className="h-24 text-center">
                     No products found.
                   </TableCell>
                 </TableRow>

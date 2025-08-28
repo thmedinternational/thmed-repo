@@ -14,6 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Product } from "@/pages/admin/ProductsPage";
+import { useEffect, useState } from "react";
+import { Package } from "lucide-react";
 
 const productFormSchema = z.object({
   name: z.string().min(2, {
@@ -22,7 +24,7 @@ const productFormSchema = z.object({
   description: z.string().optional(),
   price: z.coerce.number().min(0, { message: "Price must be a positive number." }),
   stock: z.coerce.number().int().min(0, { message: "Stock must be a positive integer." }),
-  image_urls: z.string().optional(),
+  images: z.custom<FileList>().optional(),
 });
 
 export type ProductFormValues = z.infer<typeof productFormSchema>;
@@ -41,9 +43,24 @@ export function ProductForm({ onSubmit, product, isSubmitting }: ProductFormProp
       description: product?.description ?? "",
       price: product?.price ?? 0,
       stock: product?.stock ?? 0,
-      image_urls: product?.image_urls?.join(", ") ?? "",
     },
   });
+
+  const [imagePreviews, setImagePreviews] = useState<string[]>(product?.image_urls ?? []);
+  const watchedImages = form.watch("images");
+
+  useEffect(() => {
+    if (watchedImages && watchedImages.length > 0) {
+      const newPreviews = Array.from(watchedImages).map(file => URL.createObjectURL(file));
+      setImagePreviews(newPreviews);
+
+      return () => {
+        newPreviews.forEach(url => URL.revokeObjectURL(url));
+      };
+    } else {
+      setImagePreviews(product?.image_urls ?? []);
+    }
+  }, [watchedImages, product]);
 
   return (
     <Form {...form}>
@@ -104,20 +121,38 @@ export function ProductForm({ onSubmit, product, isSubmitting }: ProductFormProp
         </div>
         <FormField
           control={form.control}
-          name="image_urls"
-          render={({ field }) => (
+          name="images"
+          render={({ field: { onChange, ...fieldProps } }) => (
             <FormItem>
-              <FormLabel>Image URLs</FormLabel>
+              <FormLabel>Product Images</FormLabel>
               <FormControl>
-                <Textarea placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg" {...field} />
+                <Input 
+                  type="file" 
+                  multiple 
+                  accept="image/*"
+                  onChange={(e) => onChange(e.target.files)}
+                  {...fieldProps} 
+                />
               </FormControl>
               <FormDescription>
-                Add comma-separated URLs for product images.
+                Upload one or more images for the product.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        {imagePreviews.length > 0 && (
+          <div className="space-y-2">
+            <FormLabel>Image Previews</FormLabel>
+            <div className="flex flex-wrap gap-2">
+              {imagePreviews.map((src, index) => (
+                <img key={index} src={src} alt={`Preview ${index + 1}`} className="h-20 w-20 rounded-md object-cover" />
+              ))}
+            </div>
+          </div>
+        )}
+
         <Button type="submit" disabled={isSubmitting} className="w-full">
           {isSubmitting ? "Saving..." : "Save Product"}
         </Button>
