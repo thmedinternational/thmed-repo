@@ -7,6 +7,7 @@ export type StoreSettings = {
   company_name: string | null;
   logo_url: string | null;
   logo_width: number | null;
+  banking_details: string | null;
 };
 
 interface SettingsContextType {
@@ -31,7 +32,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
       setLoading(true);
       const { data, error } = await supabase
         .from('settings')
-        .select('store_name, company_name, logo_url, logo_width')
+        .select('store_name, company_name, logo_url, logo_width, banking_details')
         .eq('user_id', session.user.id)
         .single();
 

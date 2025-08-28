@@ -8,8 +8,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,6 +20,7 @@ const settingsFormSchema = z.object({
   company_name: z.string().optional(),
   logo: z.custom<FileList>().optional(),
   logo_width: z.number().min(20).max(300),
+  banking_details: z.string().optional(),
 });
 
 type SettingsFormValues = z.infer<typeof settingsFormSchema>;
@@ -45,6 +47,7 @@ const SettingsPage = () => {
       store_name: "",
       company_name: "",
       logo_width: 120,
+      banking_details: "",
     },
   });
 
@@ -54,6 +57,7 @@ const SettingsPage = () => {
         store_name: settings.store_name || "",
         company_name: settings.company_name || "",
         logo_width: settings.logo_width || 120,
+        banking_details: settings.banking_details || "",
       });
     }
   }, [settings, form]);
@@ -68,7 +72,6 @@ const SettingsPage = () => {
         const file = values.logo[0];
         const fileName = `public/${session.user.id}/${Date.now()}-${file.name}`;
         
-        // Delete old logo if it exists
         if (settings?.logo_url) {
             const oldLogoKey = settings.logo_url.split('/').slice(-2).join('/');
             await supabase.storage.from('store-assets').remove([oldLogoKey]);
@@ -87,6 +90,7 @@ const SettingsPage = () => {
         company_name: values.company_name,
         logo_url: logoUrl,
         logo_width: values.logo_width,
+        banking_details: values.banking_details,
         updated_at: new Date().toISOString(),
       }, { onConflict: 'user_id' });
 
@@ -95,7 +99,6 @@ const SettingsPage = () => {
     onSuccess: () => {
       toast.success("Settings updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["settings", session?.user.id] });
-      // This will trigger a re-fetch in the context as well
       window.location.reload();
     },
     onError: (error: Error) => {
@@ -134,6 +137,22 @@ const SettingsPage = () => {
               <FormItem>
                 <FormLabel>Logo Width: {field.value}px</FormLabel>
                 <FormControl><Slider defaultValue={[120]} value={[field.value]} onValueChange={v => field.onChange(v[0])} min={20} max={300} step={1} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+            <FormField control={form.control} name="banking_details" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Banking Details</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Bank Name: ...&#10;Account Number: ...&#10;Branch Code: ..."
+                    className="min-h-[100px]"
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>
+                  These details will be shown on quotations. Use line breaks for formatting.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )} />

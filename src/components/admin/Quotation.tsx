@@ -107,8 +107,14 @@ export const Quotation = ({ quotation }: QuotationProps) => {
           </div>
         </div>
 
-        <footer className="mt-12 pt-4 border-t text-center text-gray-500 text-sm">
-          <p>Thank you for your consideration.</p>
+        <footer className="mt-12 pt-4 border-t text-gray-500 text-sm">
+          {settings?.banking_details && (
+            <div className="mb-4 text-left">
+              <h4 className="font-semibold text-gray-800 mb-1">Banking Details</h4>
+              <pre className="whitespace-pre-wrap font-sans text-xs">{settings.banking_details}</pre>
+            </div>
+          )}
+          <p className="text-center">Thank you for your consideration.</p>
         </footer>
       </div>
 
