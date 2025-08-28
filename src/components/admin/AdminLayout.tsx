@@ -12,10 +12,13 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag, FileText } from "lucide-react";
+import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag, FileText, Settings } from "lucide-react";
+import { useSettings } from "@/contexts/SettingsContext";
+import { Skeleton } from "../ui/skeleton";
 
 const AdminLayout = () => {
   const location = useLocation();
+  const { settings, loading } = useSettings();
   const isActive = (path: string) => location.pathname === path || (path !== "/admin" && location.pathname.startsWith(path));
 
   return (
@@ -23,8 +26,10 @@ const AdminLayout = () => {
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-2 p-2">
-            <Store className="size-6" />
-            <span className="text-lg font-semibold">Store Manager</span>
+            {loading ? <Skeleton className="h-6 w-6" /> : <Store className="size-6" />}
+            <span className="text-lg font-semibold">
+              {loading ? <Skeleton className="h-5 w-32" /> : settings?.store_name || 'Store Manager'}
+            </span>
           </div>
         </SidebarHeader>
         <SidebarContent>
@@ -104,6 +109,16 @@ const AdminLayout = () => {
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
+           <SidebarMenu>
+             <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive("/admin/settings")}>
+                  <Link to="/admin/settings">
+                    <Settings />
+                    <span>Settings</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+           </SidebarMenu>
            <Button variant="outline" asChild className="w-full">
               <Link to="/">Back to Store</Link>
             </Button>
@@ -113,7 +128,9 @@ const AdminLayout = () => {
         <header className="flex h-14 items-center border-b bg-background px-4 lg:px-6">
           <div className="flex items-center gap-2">
             <SidebarTrigger className="md:hidden" />
-            <h1 className="text-xl font-semibold">Store Dashboard</h1>
+            <h1 className="text-xl font-semibold">
+              {loading ? <Skeleton className="h-5 w-40" /> : settings?.store_name || 'Store Dashboard'}
+            </h1>
           </div>
         </header>
         <main className="flex-1 p-4 md:p-6">
