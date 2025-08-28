@@ -11,24 +11,24 @@ import Autoplay from "embla-carousel-autoplay";
 
 const sliderItems = [
   {
-    title: "SUEGUARD SECURITY",
-    description: "Providing top-tier security services to protect your assets and ensure peace of mind.",
-    imageUrl: "https://placehold.co/1200x500/000000/FFFFFF?text=Security",
+    title: "Occupational Safety & Health Compliance",
+    description: "We help businesses meet legal and regulatory health and safety obligations through detailed audits, policy guidance, and on-site inspections. From documentation to day-to-day practices, we make sure your workplace is compliant, safe, and audit-ready.",
+    imageUrl: "https://placehold.co/1200x500/000000/FFFFFF?text=Health+Compliance",
   },
   {
-    title: "SUEGUARD CLEANING",
-    description: "Professional cleaning services for commercial and residential properties, ensuring a spotless environment.",
-    imageUrl: "https://placehold.co/1200x500/1E40AF/FFFFFF?text=Cleaning",
+    title: "Risk Management Solutions",
+    description: "Identify, assess, and mitigate workplace risks with our expert support. We tailor risk management strategies for your specific industry—minimizing hazards, reducing downtime, and ensuring peace of mind across all operations.",
+    imageUrl: "https://placehold.co/1200x500/1E40AF/FFFFFF?text=Risk+Management",
   },
   {
-    title: "SUEGUARD TRAINING",
-    description: "Comprehensive training programs to equip individuals with the skills needed for success.",
-    imageUrl: "https://placehold.co/1200x500/991B1B/FFFFFF?text=Training",
+    title: "Workplace Safety Training",
+    description: "Equip your team with essential safety knowledge through our online and in-person training programs. We offer toolbox talks, fire safety sessions, and SHEQ-focused workshops that are practical, engaging, and fully certified.",
+    imageUrl: "https://placehold.co/1200x500/991B1B/FFFFFF?text=Safety+Training",
   },
   {
-    title: "SUEGUARD CONSTRUCTION",
-    description: "High-quality construction services, from planning to completion, for projects of all sizes.",
-    imageUrl: "https://placehold.co/1200x500/78350F/FFFFFF?text=Construction",
+    title: "PPE & Safety Equipment Supply",
+    description: "We supply certified, high-quality personal protective equipment (PPE) and safety gear from trusted brands. Whether you need boots, helmets, signage, or full PPE kits—we’ve got your team covered and protected.",
+    imageUrl: "https://placehold.co/1200x500/78350F/FFFFFF?text=PPE+Supply",
   },
 ];
 
