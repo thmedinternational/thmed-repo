@@ -17,6 +17,7 @@ import ReceiptsPage from "./pages/admin/ReceiptsPage";
 import AnalyticsPage from "./pages/admin/AnalyticsPage";
 import ProfitLossPage from "./pages/admin/ProfitLossPage";
 import PurchasesPage from "./pages/admin/PurchasesPage";
+import QuotationsPage from "./pages/admin/QuotationsPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
@@ -49,6 +50,7 @@ const App = () => (
                 <Route path="purchases" element={<PurchasesPage />} />
                 <Route path="customers" element={<CustomersPage />} />
                 <Route path="orders" element={<OrdersPage />} />
+                <Route path="quotations" element={<QuotationsPage />} />
                 <Route path="receipts" element={<ReceiptsPage />} />
                 <Route path="profit-loss" element={<ProfitLossPage />} />
                 <Route path="analytics" element={<AnalyticsPage />} />

@@ -12,7 +12,7 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag } from "lucide-react";
+import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag, FileText } from "lucide-react";
 
 const AdminLayout = () => {
   const location = useLocation();
@@ -66,6 +66,14 @@ const AdminLayout = () => {
                 <Link to="/admin/orders">
                   <ShoppingCart />
                   <span>Orders</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+             <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={isActive("/admin/quotations")}>
+                <Link to="/admin/quotations">
+                  <FileText />
+                  <span>Quotations</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
