@@ -25,7 +25,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, Edit } from "lucide-react";
 import { CustomerForm, CustomerFormValues } from "@/components/admin/CustomerForm";
 import { toast } from "sonner";
 
@@ -33,7 +33,7 @@ export type Customer = {
   id: string;
   full_name: string | null;
   email: string | null;
-  phone_number: string | null; // Added phone_number
+  phone_number: string | null;
   created_at: string;
 };
 
@@ -44,7 +44,9 @@ const fetchCustomers = async () => {
 };
 
 const CustomersPage = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const queryClient = useQueryClient();
 
   const { data: customers, isLoading, error } = useQuery<Customer[]>({
@@ -61,7 +63,7 @@ const CustomersPage = () => {
         {
           full_name: values.full_name,
           email: values.email,
-          phone_number: values.phone_number, // Include phone_number
+          phone_number: values.phone_number,
           user_id: user.id,
         },
       ]);
@@ -71,10 +73,31 @@ const CustomersPage = () => {
     onSuccess: () => {
       toast.success("Customer created successfully!");
       queryClient.invalidateQueries({ queryKey: ["customers"] });
-      setIsDialogOpen(false);
+      setIsAddDialogOpen(false);
     },
     onError: (error: Error) => {
       toast.error(`Failed to create customer: ${error.message}`);
+    },
+  });
+
+  const updateCustomerMutation = useMutation({
+    mutationFn: async (values: CustomerFormValues & { id: string }) => {
+      const { error } = await supabase.from("customers").update({
+        full_name: values.full_name,
+        email: values.email,
+        phone_number: values.phone_number,
+      }).eq("id", values.id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Customer updated successfully!");
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+      setIsEditDialogOpen(false);
+      setSelectedCustomer(null);
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to update customer: ${error.message}`);
     },
   });
 
@@ -82,11 +105,22 @@ const CustomersPage = () => {
     addCustomerMutation.mutate(values);
   };
 
+  const handleEditCustomer = (values: CustomerFormValues) => {
+    if (selectedCustomer) {
+      updateCustomerMutation.mutate({ ...values, id: selectedCustomer.id });
+    }
+  };
+
+  const openEditDialog = (customer: Customer) => {
+    setSelectedCustomer(customer);
+    setIsEditDialogOpen(true);
+  };
+
   return (
     <>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Customers</h1>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <PlusCircle className="mr-2 h-4 w-4" />
@@ -121,7 +155,7 @@ const CustomersPage = () => {
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Phone</TableHead> {/* New table header */}
+                <TableHead>Phone</TableHead>
                 <TableHead>Added On</TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
@@ -146,12 +180,19 @@ const CustomersPage = () => {
                   <TableRow key={customer.id}>
                     <TableCell className="font-medium">{customer.full_name || 'N/A'}</TableCell>
                     <TableCell>{customer.email}</TableCell>
-                    <TableCell>{customer.phone_number || 'N/A'}</TableCell> {/* Display phone number */}
+                    <TableCell>{customer.phone_number || 'N/A'}</TableCell>
                     <TableCell>
                       {new Date(customer.created_at).toLocaleDateString()}
                     </TableCell>
-                    <TableCell>
-                      {/* Actions can be added here later */}
+                    <TableCell className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => openEditDialog(customer)}
+                      >
+                        <Edit className="h-4 w-4" />
+                        <span className="sr-only">Edit</span>
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))
@@ -166,6 +207,29 @@ const CustomersPage = () => {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Edit Customer Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Customer</DialogTitle>
+            <DialogDescription>
+              Update the details for this customer.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedCustomer && (
+            <CustomerForm
+              onSubmit={handleEditCustomer}
+              isSubmitting={updateCustomerMutation.isPending}
+              defaultValues={{
+                full_name: selectedCustomer.full_name || "",
+                email: selectedCustomer.email || "",
+                phone_number: selectedCustomer.phone_number || "",
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
