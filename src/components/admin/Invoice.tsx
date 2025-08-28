@@ -72,8 +72,8 @@ export const Invoice = ({ order }: InvoiceProps) => {
 
         <div className="mb-8">
           <h3 className="text-lg font-semibold mb-2">Bill To:</h3>
-          <p className="text-gray-700">{order.customers?.full_name || 'N/A'}</p>
-          <p className="text-gray-700">{order.customers?.email || ''}</p>
+          <p className="text-gray-700">{order.customers?.[0]?.full_name || 'N/A'}</p>
+          <p className="text-gray-700">{order.customers?.[0]?.email || ''}</p>
         </div>
 
         <Table>
@@ -88,7 +88,7 @@ export const Invoice = ({ order }: InvoiceProps) => {
           <TableBody>
             {order.order_items.map((item) => (
               <TableRow key={item.id}>
-                <TableCell>{item.products?.name || 'Unknown Product'}</TableCell>
+                <TableCell>{item.products?.[0]?.name || 'Unknown Product'}</TableCell>
                 <TableCell className="text-center">{item.quantity}</TableCell>
                 <TableCell className="text-right">{formatCurrency(item.price)}</TableCell>
                 <TableCell className="text-right">{formatCurrency(item.price * item.quantity)}</TableCell>
