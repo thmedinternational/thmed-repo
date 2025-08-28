@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Card,
@@ -20,13 +20,14 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { PlusCircle } from "lucide-react";
+import { OrderForm, OrderFormValues } from "@/components/admin/OrderForm";
+import { toast } from "sonner";
 
 type Order = {
   id: string;
@@ -48,10 +49,61 @@ const fetchOrders = async () => {
 
 const OrdersPage = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: orders, isLoading, error } = useQuery<Order[]>({
     queryKey: ["orders"],
     queryFn: fetchOrders,
+  });
+
+  const addOrderMutation = useMutation({
+    mutationFn: async (values: OrderFormValues) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("You must be logged in to create an order.");
+
+      const total = values.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+      // 1. Create the order
+      const { data: orderData, error: orderError } = await supabase
+        .from("orders")
+        .insert({
+          customer_id: values.customer_id,
+          status: values.status,
+          total: total,
+          user_id: user.id,
+        })
+        .select()
+        .single();
+
+      if (orderError) throw orderError;
+      if (!orderData) throw new Error("Failed to create order.");
+
+      // 2. Create the order items
+      const orderItems = values.items.map(item => ({
+        order_id: orderData.id,
+        product_id: item.product_id,
+        quantity: item.quantity,
+        price: item.price,
+      }));
+
+      const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
+
+      if (itemsError) {
+        // Attempt to clean up the created order if items fail
+        await supabase.from("orders").delete().eq("id", orderData.id);
+        throw itemsError;
+      }
+
+      return orderData;
+    },
+    onSuccess: () => {
+      toast.success("Order created successfully!");
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      setIsAddDialogOpen(false);
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to create order: ${error.message}`);
+    },
   });
 
   const formatCurrency = (amount: number) => {
@@ -63,16 +115,11 @@ const OrdersPage = () => {
 
   const getStatusVariant = (status: Order["status"]) => {
     switch (status) {
-      case "paid":
-        return "success";
-      case "pending":
-        return "secondary";
-      case "shipped":
-        return "default";
-      case "cancelled":
-        return "destructive";
-      default:
-        return "outline";
+      case "paid": return "success";
+      case "pending": return "secondary";
+      case "shipped": return "default";
+      case "cancelled": return "destructive";
+      default: return "outline";
     }
   };
 
@@ -87,16 +134,15 @@ const OrdersPage = () => {
               Add Order
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px]">
+          <DialogContent className="sm:max-w-4xl">
             <DialogHeader>
               <DialogTitle>Create New Order</DialogTitle>
-              <DialogDescription>
-                The form to create a new order will be implemented here next.
-              </DialogDescription>
             </DialogHeader>
-            <div className="py-8 text-center text-muted-foreground">
-              Order creation form coming soon!
-            </div>
+            <OrderForm
+              onSubmit={(values) => addOrderMutation.mutate(values)}
+              isSubmitting={addOrderMutation.isPending}
+              onCancel={() => setIsAddDialogOpen(false)}
+            />
           </DialogContent>
         </Dialog>
       </div>
@@ -114,52 +160,28 @@ const OrdersPage = () => {
                 <TableHead>Date</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Total</TableHead>
-                <TableHead>
-                  <span className="sr-only">Actions</span>
-                </TableHead>
+                <TableHead><span className="sr-only">Actions</span></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center">
-                    Loading orders...
-                  </TableCell>
-                </TableRow>
+                <TableRow><TableCell colSpan={5} className="h-24 text-center">Loading orders...</TableCell></TableRow>
               ) : error ? (
-                <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center text-red-500">
-                    Error loading orders: {error.message}
-                  </TableCell>
-                </TableRow>
+                <TableRow><TableCell colSpan={5} className="h-24 text-center text-red-500">Error loading orders: {error.message}</TableCell></TableRow>
               ) : orders?.length ? (
                 orders.map((order) => (
                   <TableRow key={order.id}>
-                    <TableCell className="font-medium">
-                      {order.customers?.full_name || "N/A"}
-                    </TableCell>
+                    <TableCell className="font-medium">{order.customers?.full_name || "N/A"}</TableCell>
+                    <TableCell>{new Date(order.created_at).toLocaleDateString()}</TableCell>
                     <TableCell>
-                      {new Date(order.created_at).toLocaleDateString()}
+                      <Badge variant={getStatusVariant(order.status)} className="capitalize">{order.status}</Badge>
                     </TableCell>
-                    <TableCell>
-                      <Badge variant={getStatusVariant(order.status)} className="capitalize">
-                        {order.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {formatCurrency(order.total)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {/* Edit/View button can go here */}
-                    </TableCell>
+                    <TableCell className="text-right">{formatCurrency(order.total)}</TableCell>
+                    <TableCell className="text-right">{/* Actions can go here */}</TableCell>
                   </TableRow>
                 ))
               ) : (
-                <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center">
-                    No orders found.
-                  </TableCell>
-                </TableRow>
+                <TableRow><TableCell colSpan={5} className="h-24 text-center">No orders found.</TableCell></TableRow>
               )}
             </TableBody>
           </Table>
