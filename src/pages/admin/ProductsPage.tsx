@@ -54,6 +54,7 @@ const fetchProducts = async () => {
 
 const ProductsPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null); // New state for editing
   const queryClient = useQueryClient();
 
   const { data: products, isLoading, error } = useQuery<Product[]>({
@@ -114,29 +115,107 @@ const ProductsPage = () => {
     },
   });
 
+  const updateProductMutation = useMutation({
+    mutationFn: async (updatedValues: ProductFormValues) => {
+      if (!editingProduct) throw new Error("No product selected for update.");
+
+      let imageUrlsToSave: string[] | null = editingProduct.image_urls; // Start with existing images
+
+      if (updatedValues.images && updatedValues.images.length > 0) {
+        // New images provided, upload them
+        const uploadPromises = Array.from(updatedValues.images).map(async (file) => {
+          const fileName = `public/${Date.now()}-${file.name}`;
+          const { error: uploadError } = await supabase.storage
+            .from("product-images")
+            .upload(fileName, file);
+
+          if (uploadError) {
+            throw new Error(`Image upload failed: ${uploadError.message}`);
+          }
+
+          const { data: { publicUrl } } = supabase.storage
+            .from("product-images")
+            .getPublicUrl(fileName);
+
+          if (!publicUrl) {
+            throw new Error("Could not get public URL for uploaded image.");
+          }
+          return publicUrl;
+        });
+        imageUrlsToSave = await Promise.all(uploadPromises);
+      }
+      // If updatedValues.images is undefined/empty, imageUrlsToSave remains editingProduct.image_urls
+
+      const { error } = await supabase
+        .from("products")
+        .update({
+          name: updatedValues.name,
+          description: updatedValues.description,
+          price: updatedValues.price,
+          stock: updatedValues.stock,
+          image_urls: imageUrlsToSave,
+        })
+        .eq("id", editingProduct.id);
+
+      if (error) {
+        throw new Error(error.message);
+      }
+    },
+    onSuccess: () => {
+      toast.success("Product updated successfully!");
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      setIsDialogOpen(false);
+      setEditingProduct(null); // Clear editing state
+    },
+    onError: (error) => {
+      toast.error(`Failed to update product: ${error.message}`);
+    },
+  });
+
   const handleAddProduct = (values: ProductFormValues) => {
     addProductMutation.mutate(values);
+  };
+
+  const handleUpdateProduct = (values: ProductFormValues) => {
+    updateProductMutation.mutate(values);
+  };
+
+  const handleEditClick = (product: Product) => {
+    setEditingProduct(product);
+    setIsDialogOpen(true);
+  };
+
+  // Reset editingProduct when dialog closes
+  const handleDialogChange = (open: boolean) => {
+    setIsDialogOpen(open);
+    if (!open) {
+      setEditingProduct(null); // Clear editing state when dialog closes
+    }
   };
 
   return (
     <>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Products</h1>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isDialogOpen} onOpenChange={handleDialogChange}> {/* Use handleDialogChange */}
           <DialogTrigger asChild>
-            <Button>
+            <Button onClick={() => setEditingProduct(null)}> {/* Clear editing state when opening for new product */}
               <PlusCircle className="mr-2 h-4 w-4" />
               Add Product
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Add New Product</DialogTitle>
+              <DialogTitle>{editingProduct ? "Edit Product" : "Add New Product"}</DialogTitle> {/* Dynamic title */}
               <DialogDescription>
-                Fill in the details below to add a new product to your store.
+                {editingProduct ? "Update the details for this product." : "Fill in the details below to add a new product to your store."} {/* Dynamic description */}
               </DialogDescription>
             </DialogHeader>
-            <ProductForm onSubmit={handleAddProduct} isSubmitting={addProductMutation.isPending} />
+            <ProductForm
+              onSubmit={editingProduct ? handleUpdateProduct : handleAddProduct}
+              product={editingProduct || undefined} // Pass product for editing
+              isSubmitting={addProductMutation.isPending || updateProductMutation.isPending}
+            />
           </DialogContent>
         </Dialog>
       </div>
@@ -180,9 +259,9 @@ const ProductsPage = () => {
                   <TableRow key={product.id}>
                     <TableCell>
                       {product.image_urls && product.image_urls.length > 0 ? (
-                        <img 
-                          src={product.image_urls[0]} 
-                          alt={product.name} 
+                        <img
+                          src={product.image_urls[0]}
+                          alt={product.name}
                           className="h-10 w-10 rounded-md object-cover"
                         />
                       ) : (
@@ -207,7 +286,7 @@ const ProductsPage = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleEditClick(product)}>Edit</DropdownMenuItem> {/* Add onClick */}
                           <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
