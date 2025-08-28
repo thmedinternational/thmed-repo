@@ -27,9 +27,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { PlusCircle } from "lucide-react";
 import { OrderForm, OrderFormValues } from "@/components/admin/OrderForm";
+import { OrderActions } from "@/components/admin/OrderActions";
 import { toast } from "sonner";
 
-type Order = {
+export type Order = {
   id: string;
   created_at: string;
   status: "pending" | "paid" | "shipped" | "cancelled";
@@ -63,7 +64,6 @@ const OrdersPage = () => {
 
       const total = values.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-      // 1. Create the order
       const { data: orderData, error: orderError } = await supabase
         .from("orders")
         .insert({
@@ -78,7 +78,6 @@ const OrdersPage = () => {
       if (orderError) throw orderError;
       if (!orderData) throw new Error("Failed to create order.");
 
-      // 2. Create the order items
       const orderItems = values.items.map(item => ({
         order_id: orderData.id,
         product_id: item.product_id,
@@ -89,7 +88,6 @@ const OrdersPage = () => {
       const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
 
       if (itemsError) {
-        // Attempt to clean up the created order if items fail
         await supabase.from("orders").delete().eq("id", orderData.id);
         throw itemsError;
       }
@@ -103,6 +101,24 @@ const OrdersPage = () => {
     },
     onError: (error: Error) => {
       toast.error(`Failed to create order: ${error.message}`);
+    },
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: async ({ orderId, status }: { orderId: string; status: Order['status'] }) => {
+      const { error } = await supabase
+        .from("orders")
+        .update({ status })
+        .eq("id", orderId);
+
+      if (error) throw error;
+    },
+    onSuccess: (_, variables) => {
+      toast.success(`Order status updated to ${variables.status}.`);
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to update status: ${error.message}`);
     },
   });
 
@@ -177,7 +193,13 @@ const OrdersPage = () => {
                       <Badge variant={getStatusVariant(order.status)} className="capitalize">{order.status}</Badge>
                     </TableCell>
                     <TableCell className="text-right">{formatCurrency(order.total)}</TableCell>
-                    <TableCell className="text-right">{/* Actions can go here */}</TableCell>
+                    <TableCell className="text-right">
+                      <OrderActions
+                        order={order}
+                        onStatusChange={(orderId, status) => updateStatusMutation.mutate({ orderId, status })}
+                        isUpdating={updateStatusMutation.isPending}
+                      />
+                    </TableCell>
                   </TableRow>
                 ))
               ) : (
