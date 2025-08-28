@@ -14,6 +14,12 @@ const ShoppingCartPage = () => {
     }).format(price);
   };
 
+  const handleProceedToCheckout = () => {
+    const phoneNumber = "27761120900"; // The specified WhatsApp number
+    const message = `Hello, I'd like to proceed with my order. My cart total is ${formatPrice(cartTotal)}.`;
+    window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
+  };
+
   if (cartItems.length === 0) {
     return (
       <div className="container mx-auto py-12 px-4 md:px-6 text-center">
@@ -81,7 +87,7 @@ const ShoppingCartPage = () => {
             <span>Total:</span>
             <span>{formatPrice(cartTotal)}</span>
           </div>
-          <Button className="w-full mt-6 py-3 text-lg">Proceed to Checkout</Button>
+          <Button className="w-full mt-6 py-3 text-lg" onClick={handleProceedToCheckout}>Proceed to Checkout</Button>
           <Button variant="outline" className="w-full mt-3" onClick={clearCart}>
             Clear Cart
           </Button>
