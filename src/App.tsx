@@ -13,6 +13,7 @@ import DashboardPage from "./pages/admin/DashboardPage";
 import ProductsPage from "./pages/admin/ProductsPage";
 import CustomersPage from "./pages/admin/CustomersPage";
 import OrdersPage from "./pages/admin/OrdersPage";
+import ReceiptsPage from "./pages/admin/ReceiptsPage";
 import AnalyticsPage from "./pages/admin/AnalyticsPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import Login from "./pages/Login";
@@ -45,6 +46,7 @@ const App = () => (
                 <Route path="products" element={<ProductsPage />} />
                 <Route path="customers" element={<CustomersPage />} />
                 <Route path="orders" element={<OrdersPage />} />
+                <Route path="receipts" element={<ReceiptsPage />} />
                 <Route path="analytics" element={<AnalyticsPage />} />
               </Route>
             </Route>
