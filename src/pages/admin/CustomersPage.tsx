@@ -33,6 +33,7 @@ export type Customer = {
   id: string;
   full_name: string | null;
   email: string | null;
+  phone_number: string | null; // Added phone_number
   created_at: string;
 };
 
@@ -60,6 +61,7 @@ const CustomersPage = () => {
         {
           full_name: values.full_name,
           email: values.email,
+          phone_number: values.phone_number, // Include phone_number
           user_id: user.id,
         },
       ]);
@@ -119,6 +121,7 @@ const CustomersPage = () => {
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
+                <TableHead>Phone</TableHead> {/* New table header */}
                 <TableHead>Added On</TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
@@ -128,13 +131,13 @@ const CustomersPage = () => {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="h-24 text-center">
+                  <TableCell colSpan={5} className="h-24 text-center">
                     Loading customers...
                   </TableCell>
                 </TableRow>
               ) : error ? (
                  <TableRow>
-                  <TableCell colSpan={4} className="h-24 text-center text-red-500">
+                  <TableCell colSpan={5} className="h-24 text-center text-red-500">
                     Error loading customers: {error.message}
                   </TableCell>
                 </TableRow>
@@ -143,6 +146,7 @@ const CustomersPage = () => {
                   <TableRow key={customer.id}>
                     <TableCell className="font-medium">{customer.full_name || 'N/A'}</TableCell>
                     <TableCell>{customer.email}</TableCell>
+                    <TableCell>{customer.phone_number || 'N/A'}</TableCell> {/* Display phone number */}
                     <TableCell>
                       {new Date(customer.created_at).toLocaleDateString()}
                     </TableCell>
@@ -153,7 +157,7 @@ const CustomersPage = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={4} className="h-24 text-center">
+                  <TableCell colSpan={5} className="h-24 text-center">
                     No customers found.
                   </TableCell>
                 </TableRow>
