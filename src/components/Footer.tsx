@@ -54,13 +54,21 @@ const Footer = () => {
           <ul className="space-y-2 text-sm">
             <li className="flex items-start">
               <MapPin size={16} className="mr-2 mt-1 shrink-0" />
-              <span className="text-secondary-foreground/70">10 Oleander Street, Olifantsvlei 327 IQ, Kibler Park</span>
+              <span className="text-secondary-foreground/70">Regus, Johannesburg South Africa</span>
             </li>
             <li className="flex items-center">
               <Phone size={16} className="mr-2 shrink-0" />
-              <span className="text-secondary-foreground/70">+27 63 049 8076</span>
+              <span className="text-secondary-foreground/70">+27 76 112 0900</span>
+            </li>
+             <li className="flex items-center">
+              <Phone size={16} className="mr-2 shrink-0" />
+              <span className="text-secondary-foreground/70">+27 76 817 0495</span>
             </li>
             <li className="flex items-center">
+              <Mail size={16} className="mr-2 shrink-0" />
+              <span className="text-secondary-foreground/70">Suzan@sueguard.com</span>
+            </li>
+             <li className="flex items-center">
               <Mail size={16} className="mr-2 shrink-0" />
               <span className="text-secondary-foreground/70">info@sueguard.com</span>
             </li>

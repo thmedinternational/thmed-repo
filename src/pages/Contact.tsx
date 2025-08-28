@@ -43,7 +43,7 @@ const Contact = () => {
 
   const openWhatsApp = () => {
     // Replace with your actual phone number
-    const phoneNumber = "1234567890";
+    const phoneNumber = "27761120900";
     const message = "Hello! I'm interested in your products.";
     window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
   };
