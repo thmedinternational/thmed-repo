@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client"; // Changed from default to named import
+import { supabase } from "@/integrations/supabase/client";
 import { Product } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
@@ -9,6 +9,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner"; // Import toast for notifications
 
 const fetchProductById = async (id: string): Promise<Product> => {
   const { data, error } = await supabase.from("products").select("*").eq("id", id).single();
@@ -24,6 +25,8 @@ const fetchProductById = async (id: string): Promise<Product> => {
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const { addToCart } = useCart();
+  const [quantity, setQuantity] = useState<number>(1);
 
   const { data: product, isLoading, isError, error } = useQuery({
     queryKey: ["product", id],
@@ -36,6 +39,20 @@ const ProductDetail = () => {
       style: "currency",
       currency: "USD",
     }).format(price);
+  };
+
+  const handleAddToCart = () => {
+    if (product) {
+      if (quantity <= 0) {
+        toast.error("Quantity must be at least 1.");
+        return;
+      }
+      if (quantity > product.stock) {
+        toast.error(`Cannot add more than ${product.stock} of ${product.name} to cart.`);
+        return;
+      }
+      addToCart(product, quantity);
+    }
   };
 
   if (isLoading) {
@@ -83,10 +100,27 @@ const ProductDetail = () => {
           <div className="text-md text-muted-foreground">
             Stock: <span className="font-semibold">{product.stock} available</span>
           </div>
-          <Button className="w-full py-6 text-lg" disabled={product.stock === 0}>
-            <ShoppingCart className="mr-2 h-5 w-5" />
-            {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
-          </Button>
+          <div className="flex items-center space-x-4">
+            <Label htmlFor="quantity" className="sr-only">Quantity</Label>
+            <Input
+              id="quantity"
+              type="number"
+              min="1"
+              max={product.stock}
+              value={quantity}
+              onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+              className="w-24 text-center"
+              disabled={product.stock === 0}
+            />
+            <Button 
+              className="flex-grow py-6 text-lg" 
+              onClick={handleAddToCart} 
+              disabled={product.stock === 0 || quantity > product.stock || quantity <= 0}
+            >
+              <ShoppingCart className="mr-2 h-5 w-5" />
+              {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
