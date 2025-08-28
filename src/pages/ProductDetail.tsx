@@ -1,10 +1,14 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import supabase from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/client"; // Changed from default to named import
 import { Product } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useCart } from "@/contexts/CartContext";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const fetchProductById = async (id: string): Promise<Product> => {
   const { data, error } = await supabase.from("products").select("*").eq("id", id).single();
