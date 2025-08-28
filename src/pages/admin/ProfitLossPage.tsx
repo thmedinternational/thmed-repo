@@ -18,13 +18,26 @@ import { Calendar as CalendarIcon, Loader2, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // --- Types ---
-type PaidOrder = { total: number; };
+type PaidOrder = {
+  id: string;
+  total: number;
+  order_items: {
+    quantity: number;
+    products: {
+      cost: number;
+    } | null;
+  }[];
+};
 type Expense = { id: string; name: string; amount: number; expense_date: string; };
-type Purchase = { total_amount: number };
 
 // --- Data Fetching ---
 const fetchPaidOrders = async (from: string, to: string) => {
-  const { data, error } = await supabase.from("orders").select("total").eq("status", "paid").gte("created_at", from).lte("created_at", to);
+  const { data, error } = await supabase
+    .from("orders")
+    .select("id, total, order_items(quantity, products(cost))")
+    .eq("status", "paid")
+    .gte("created_at", from)
+    .lte("created_at", to);
   if (error) throw new Error(error.message);
   return data as PaidOrder[];
 };
@@ -34,12 +47,6 @@ const fetchExpenses = async (from: string, to: string) => {
   if (error) throw new Error(error.message);
   return data as Expense[];
 };
-
-const fetchCompletedPurchases = async (from: string, to: string) => {
-    const { data, error } = await supabase.from("purchases").select("total_amount").eq("status", "completed").gte("created_at", from).lte("created_at", to);
-    if (error) throw new Error(error.message);
-    return data as Purchase[];
-}
 
 // --- Expense Form ---
 const expenseFormSchema = z.object({
@@ -64,7 +71,7 @@ const ProfitLossPage = () => {
   const to = date?.to ? format(date.to, "yyyy-MM-dd") : "";
 
   const { data: paidOrders } = useQuery({
-    queryKey: ["paidOrders", from, to],
+    queryKey: ["paidOrdersWithCost", from, to],
     queryFn: () => fetchPaidOrders(from, to),
     enabled: !!from && !!to,
   });
@@ -75,20 +82,22 @@ const ProfitLossPage = () => {
     enabled: !!from && !!to,
   });
 
-  const { data: purchases } = useQuery({
-    queryKey: ["completedPurchases", from, to],
-    queryFn: () => fetchCompletedPurchases(from, to),
-    enabled: !!from && !!to,
-  });
-
-  const { revenue, totalPurchases, grossProfit, totalExpenses, netProfit } = useMemo(() => {
+  const { revenue, cogs, grossProfit, totalExpenses, netProfit } = useMemo(() => {
     const revenue = paidOrders?.reduce((sum, order) => sum + order.total, 0) ?? 0;
-    const totalPurchases = purchases?.reduce((sum, p) => sum + p.total_amount, 0) ?? 0;
+    
+    const cogs = paidOrders?.reduce((sum, order) => {
+      const orderCost = order.order_items.reduce((itemSum, item) => {
+        const cost = item.products?.cost ?? 0;
+        return itemSum + (cost * item.quantity);
+      }, 0);
+      return sum + orderCost;
+    }, 0) ?? 0;
+
     const totalExpenses = expenses?.reduce((sum, expense) => sum + expense.amount, 0) ?? 0;
-    const grossProfit = revenue - totalPurchases;
+    const grossProfit = revenue - cogs;
     const netProfit = grossProfit - totalExpenses;
-    return { revenue, totalPurchases, grossProfit, totalExpenses, netProfit };
-  }, [paidOrders, expenses, purchases]);
+    return { revenue, cogs, grossProfit, totalExpenses, netProfit };
+  }, [paidOrders, expenses]);
 
   const expenseForm = useForm<ExpenseFormValues>({
     resolver: zodResolver(expenseFormSchema),
@@ -150,7 +159,7 @@ const ProfitLossPage = () => {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         <Card><CardHeader><CardTitle>Revenue</CardTitle></CardHeader><CardContent><p className="text-2xl font-bold">{formatCurrency(revenue)}</p></CardContent></Card>
-        <Card><CardHeader><CardTitle>Purchases</CardTitle></CardHeader><CardContent><p className="text-2xl font-bold">{formatCurrency(totalPurchases)}</p></CardContent></Card>
+        <Card><CardHeader><CardTitle>Cost of Goods Sold</CardTitle></CardHeader><CardContent><p className="text-2xl font-bold">{formatCurrency(cogs)}</p></CardContent></Card>
         <Card><CardHeader><CardTitle>Gross Profit</CardTitle></CardHeader><CardContent><p className="text-2xl font-bold">{formatCurrency(grossProfit)}</p></CardContent></Card>
         <Card><CardHeader><CardTitle>Other Expenses</CardTitle></CardHeader><CardContent><p className="text-2xl font-bold">{formatCurrency(totalExpenses)}</p></CardContent></Card>
         <Card className={netProfit >= 0 ? "bg-green-50 dark:bg-green-900/20" : "bg-red-50 dark:bg-red-900/20"}>
