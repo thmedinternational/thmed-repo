@@ -13,7 +13,7 @@ const sliderItems = [
   {
     title: "Occupational Safety & Health Compliance",
     description: "We help businesses meet legal and regulatory health and safety obligations through detailed audits, policy guidance, and on-site inspections. From documentation to day-to-day practices, we make sure your workplace is compliant, safe, and audit-ready.",
-    imageUrl: "https://placehold.co/1200x500/000000/FFFFFF?text=Health+Compliance",
+    imageUrl: "/images/slide1.jpg",
   },
   {
     title: "Risk Management Solutions",
