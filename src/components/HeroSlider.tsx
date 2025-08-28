@@ -18,17 +18,17 @@ const sliderItems = [
   {
     title: "Risk Management Solutions",
     description: "Identify, assess, and mitigate workplace risks with our expert support. We tailor risk management strategies for your specific industry—minimizing hazards, reducing downtime, and ensuring peace of mind across all operations.",
-    imageUrl: "https://placehold.co/1200x500/1E40AF/FFFFFF?text=Risk+Management",
+    imageUrl: "/images/slide2.jpg",
   },
   {
     title: "Workplace Safety Training",
     description: "Equip your team with essential safety knowledge through our online and in-person training programs. We offer toolbox talks, fire safety sessions, and SHEQ-focused workshops that are practical, engaging, and fully certified.",
-    imageUrl: "https://placehold.co/1200x500/991B1B/FFFFFF?text=Safety+Training",
+    imageUrl: "/images/slide3.jpg",
   },
   {
     title: "PPE & Safety Equipment Supply",
     description: "We supply certified, high-quality personal protective equipment (PPE) and safety gear from trusted brands. Whether you need boots, helmets, signage, or full PPE kits—we’ve got your team covered and protected.",
-    imageUrl: "https://placehold.co/1200x500/78350F/FFFFFF?text=PPE+Supply",
+    imageUrl: "/images/slide4.jpg",
   },
 ];
 
