@@ -14,10 +14,26 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { MessageSquare } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email." }),
+  phone_number: z.string().optional(),
+  company_name: z.string().optional(),
+  service_required: z.enum([
+    "Safety Training",
+    "Risk Assessment",
+    "PPE Supply",
+    "Compliance Audits",
+    "Other",
+  ], { required_error: "Please select a service." }),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
 });
 
@@ -28,6 +44,9 @@ const Contact = () => {
     defaultValues: {
       name: "",
       email: "",
+      phone_number: "",
+      company_name: "",
+      service_required: undefined, // Set to undefined for initial empty state
       message: "",
     },
   });
@@ -75,7 +94,7 @@ const Contact = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>Full Name</FormLabel>
                     <FormControl>
                       <Input placeholder="Your Name" {...field} />
                     </FormControl>
@@ -88,10 +107,60 @@ const Contact = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Email Address</FormLabel>
                     <FormControl>
                       <Input type="email" placeholder="your.email@example.com" {...field} />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phone_number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone Number (Optional)</FormLabel>
+                    <FormControl>
+                      <Input type="tel" placeholder="(123) 456-7890" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="company_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Company Name (Optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Your Company Inc." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="service_required"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Service Required</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a service" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Safety Training">Safety Training</SelectItem>
+                        <SelectItem value="Risk Assessment">Risk Assessment</SelectItem>
+                        <SelectItem value="PPE Supply">PPE Supply</SelectItem>
+                        <SelectItem value="Compliance Audits">Compliance Audits</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -109,7 +178,7 @@ const Contact = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">Send Message</Button>
+              <Button type="submit" className="w-full bg-primary hover:bg-primary/90">Send Message</Button>
               <Button type="button" variant="outline" onClick={onRequestCallback} className="w-full">
                 Request a Callback
               </Button>
@@ -120,7 +189,7 @@ const Contact = () => {
           {/* Optional: Add a background image here, e.g., style={{ backgroundImage: 'url(/path/to/safety-helmet.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', filter: 'blur(2px)' }} */}
           <h2 className="text-2xl font-bold text-center">Prefer a quick chat?</h2>
           <p className="mt-2 text-muted-foreground text-center">Click the button below to message us on WhatsApp.</p>
-          <Button onClick={openWhatsApp} className="mt-6 bg-[#25D366] hover:bg-[#1DAE52] text-white">
+          <Button onClick={openWhatsApp} className="w-full mt-6 bg-[#25D366] hover:bg-[#1DAE52] text-white">
             <MessageSquare className="mr-2 h-5 w-5" />
             Chat on WhatsApp
           </Button>
