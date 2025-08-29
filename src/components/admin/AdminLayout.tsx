@@ -26,7 +26,18 @@ const AdminLayout = () => {
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-2 p-2">
-            {loading ? <Skeleton className="h-6 w-6" /> : <Store className="size-6" />}
+            {loading ? (
+              <Skeleton className="h-8 w-8 rounded-md" />
+            ) : settings?.logo_url ? (
+              <img 
+                src={settings.logo_url} 
+                alt="Store Logo" 
+                style={{ width: settings.logo_width || 32, height: 'auto' }}
+                className="max-h-8 object-contain"
+              />
+            ) : (
+              <Store className="size-6" />
+            )}
             <span className="text-lg font-semibold">
               {loading ? <Skeleton className="h-5 w-32" /> : settings?.store_name || 'Store Manager'}
             </span>
