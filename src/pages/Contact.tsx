@@ -70,118 +70,111 @@ const Contact = () => {
 
   return (
     <div className="container mx-auto py-12 px-4 md:px-6">
-      <div className="grid md:grid-cols-2 gap-12 items-start">
-        <div className="text-left">
-          <h1 className="text-4xl font-bold tracking-tight">Talk to Us</h1>
-          <p className="mt-4 text-lg text-muted-foreground">
-            We're here to help with your safety, compliance, and equipment needs.
-          </p>
-          <p className="mt-2 text-muted-foreground">
-            Have a question or want to place an order? Fill out the form or contact us directly on WhatsApp.
-          </p>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Full Name</FormLabel>
+      <div className="max-w-3xl mx-auto text-left"> {/* Adjusted for full width and centering */}
+        <h1 className="text-4xl font-bold tracking-tight">Talk to Us</h1>
+        <p className="mt-4 text-lg text-muted-foreground">
+          We're here to help with your safety, compliance, and equipment needs.
+        </p>
+        <p className="mt-2 text-muted-foreground">
+          Have a question or want to place an order? Fill out the form below.
+        </p>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Full Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Your Name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email Address</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="your.email@example.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phone_number"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone Number (Optional)</FormLabel>
+                  <FormControl>
+                    <Input type="tel" placeholder="(123) 456-7890" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="company_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Company Name (Optional)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Your Company Inc." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="service_required"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Service Required</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <Input placeholder="Your Name" {...field} />
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a service" />
+                      </SelectTrigger>
                     </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email Address</FormLabel>
-                    <FormControl>
-                      <Input type="email" placeholder="your.email@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="phone_number"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone Number (Optional)</FormLabel>
-                    <FormControl>
-                      <Input type="tel" placeholder="(123) 456-7890" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="company_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Company Name (Optional)</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Your Company Inc." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="service_required"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Service Required</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a service" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Safety Training">Safety Training</SelectItem>
-                        <SelectItem value="Risk Assessment">Risk Assessment</SelectItem>
-                        <SelectItem value="PPE Supply">PPE Supply</SelectItem>
-                        <SelectItem value="Compliance Audits">Compliance Audits</SelectItem>
-                        <SelectItem value="Other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="message"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Message</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Your message..." className="min-h-[120px]" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" className="w-full bg-primary hover:bg-primary/90">Send Message</Button>
-              <Button type="button" variant="outline" onClick={onRequestCallback} className="w-full">
-                Request a Callback
-              </Button>
-            </form>
-          </Form>
-        </div>
-        <div className="flex flex-col items-center justify-center bg-secondary p-8 rounded-lg mt-10 md:mt-0">
-          {/* Optional: Add a background image here, e.g., style={{ backgroundImage: 'url(/path/to/safety-helmet.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', filter: 'blur(2px)' }} */}
-          <h2 className="text-2xl font-bold text-center">Prefer a quick chat?</h2>
-          <p className="mt-2 text-muted-foreground text-center">Click the button below to message us on WhatsApp.</p>
-        </div>
+                    <SelectContent>
+                      <SelectItem value="Safety Training">Safety Training</SelectItem>
+                      <SelectItem value="Risk Assessment">Risk Assessment</SelectItem>
+                      <SelectItem value="PPE Supply">PPE Supply</SelectItem>
+                      <SelectItem value="Compliance Audits">Compliance Audits</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="message"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Message</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Your message..." className="min-h-[120px]" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90">Send Message</Button>
+            <Button type="button" variant="outline" onClick={onRequestCallback} className="w-full">
+              Request a Callback
+            </Button>
+          </form>
+        </Form>
       </div>
     </div>
   );
