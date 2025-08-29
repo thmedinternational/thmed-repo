@@ -18,7 +18,7 @@ const About = () => {
             </p>
             <Link to="/">
               <Button size="lg" className="bg-primary hover:bg-primary/90">
-                Explore Our Services
+                Explore Our Shop
               </Button>
             </Link>
           </div>
