@@ -13,7 +13,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { MessageSquare } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -59,13 +58,6 @@ const Contact = () => {
     console.log(values);
     form.reset();
   }
-
-  const openWhatsApp = () => {
-    // Replace with your actual phone number
-    const phoneNumber = "27761120900";
-    const message = "Hello! I'm interested in your products.";
-    window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
-  };
 
   const onRequestCallback = () => {
     toast({
@@ -189,10 +181,6 @@ const Contact = () => {
           {/* Optional: Add a background image here, e.g., style={{ backgroundImage: 'url(/path/to/safety-helmet.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', filter: 'blur(2px)' }} */}
           <h2 className="text-2xl font-bold text-center">Prefer a quick chat?</h2>
           <p className="mt-2 text-muted-foreground text-center">Click the button below to message us on WhatsApp.</p>
-          <Button onClick={openWhatsApp} className="w-full mt-6 bg-[#25D366] hover:bg-[#1DAE52] text-white">
-            <MessageSquare className="mr-2 h-5 w-5" />
-            Chat on WhatsApp
-          </Button>
         </div>
       </div>
     </div>
