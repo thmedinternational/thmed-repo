@@ -77,7 +77,7 @@ const Footer = () => {
       </div>
       <div className="container mx-auto text-center text-sm mt-12 pt-6 border-t border-gray-700">
         <p>
-          All rights reserved to{' '}
+          Website design by{' '}
           <a
             href="https://www.camsnett.com"
             target="_blank"
@@ -85,8 +85,10 @@ const Footer = () => {
             className="font-semibold underline hover:text-primary"
           >
             www.camsnett.com
-          </a>{' '}
-          the designing company.
+          </a>
+        </p>
+        <p className="mt-2">
+          © 2025 SueGuard Risk & Management (Pty) Ltd. All rights reserved.
         </p>
       </div>
     </footer>
