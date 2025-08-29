@@ -48,12 +48,24 @@ const Contact = () => {
     window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
   };
 
+  const onRequestCallback = () => {
+    toast({
+      title: "Callback Requested!",
+      description: "We'll contact you shortly.",
+    });
+    console.log("Callback requested");
+    // Implement further logic for callback request, e.g., sending to a backend service
+  };
+
   return (
     <div className="container mx-auto py-12 px-4 md:px-6">
       <div className="grid md:grid-cols-2 gap-12 items-start">
         <div className="text-left">
           <h1 className="text-4xl font-bold tracking-tight">Talk to Us</h1>
           <p className="mt-4 text-lg text-muted-foreground">
+            We're here to help with your safety, compliance, and equipment needs.
+          </p>
+          <p className="mt-2 text-muted-foreground">
             Have a question or want to place an order? Fill out the form or contact us directly on WhatsApp.
           </p>
           <Form {...form}>
@@ -78,7 +90,7 @@ const Contact = () => {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="your.email@example.com" {...field} />
+                      <Input type="email" placeholder="your.email@example.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -97,11 +109,15 @@ const Contact = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Send Message</Button>
+              <Button type="submit" className="w-full">Send Message</Button>
+              <Button type="button" variant="outline" onClick={onRequestCallback} className="w-full">
+                Request a Callback
+              </Button>
             </form>
           </Form>
         </div>
         <div className="flex flex-col items-center justify-center bg-secondary p-8 rounded-lg mt-10 md:mt-0">
+          {/* Optional: Add a background image here, e.g., style={{ backgroundImage: 'url(/path/to/safety-helmet.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', filter: 'blur(2px)' }} */}
           <h2 className="text-2xl font-bold text-center">Prefer a quick chat?</h2>
           <p className="mt-2 text-muted-foreground text-center">Click the button below to message us on WhatsApp.</p>
           <Button onClick={openWhatsApp} className="mt-6 bg-[#25D366] hover:bg-[#1DAE52] text-white">
