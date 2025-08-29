@@ -52,8 +52,8 @@ const Contact = () => {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     toast({
-      title: "Message Sent!",
-      description: "We've received your message and will get back to you soon.",
+      title: "Thank you!",
+      description: "Your message has been received. A member of our team will be in touch shortly.",
     });
     console.log(values);
     form.reset();
