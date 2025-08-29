@@ -24,8 +24,8 @@ const About = () => {
           </div>
           <div className="flex justify-center">
             <img
-              src="/placeholder.svg"
-              alt="Professional office or training facility"
+              src="/images/Whisk_f24fcd5bd4.jpg"
+              alt="Two women in hard hats and safety vests reviewing data on a tablet at a construction site"
               className="rounded-lg object-cover w-full max-w-md h-auto"
             />
           </div>
