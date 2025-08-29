@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import FeatureCard from "@/components/FeatureCard";
+import { ShieldCheck, Users, ClipboardCheck, HardHat, Briefcase, AlertTriangle } from "lucide-react";
 
 const About = () => {
   return (
@@ -27,6 +29,43 @@ const About = () => {
               className="rounded-lg object-cover w-full max-w-md h-auto"
             />
           </div>
+        </div>
+      </section>
+
+      {/* What We Offer Section */}
+      <section className="py-16 px-4 md:px-6">
+        <h2 className="text-4xl font-bold tracking-tight text-center mb-12">What We Offer</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <FeatureCard
+            icon={ShieldCheck}
+            title="Workplace Safety Setup"
+            description="Comprehensive workplace safety systems design and implementation to prevent accidents and ensure compliance."
+          />
+          <FeatureCard
+            icon={Users}
+            title="OSHE Advisor & Committee Training"
+            description="Specialized training for Occupational Safety, Health and Environment advisors and committee members."
+          />
+          <FeatureCard
+            icon={ClipboardCheck}
+            title="Compliance Audits"
+            description="Thorough audits to identify compliance gaps and provide actionable recommendations for improvement."
+          />
+          <FeatureCard
+            icon={HardHat}
+            title="PPE Recommendations"
+            description="Expert advice on appropriate Personal Protective Equipment for various workplace environments and tasks."
+          />
+          <FeatureCard
+            icon={Briefcase}
+            title="Health & Safety Consulting"
+            description="Strategic consulting services to help businesses develop and maintain effective health and safety programs."
+          />
+          <FeatureCard
+            icon={AlertTriangle}
+            title="Risk Assessment Reports"
+            description="Detailed risk assessments to identify potential hazards and develop mitigation strategies."
+          />
         </div>
       </section>
 
