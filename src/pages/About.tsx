@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import FeatureCard from "@/components/FeatureCard";
-import { ShieldCheck, Users, ClipboardCheck, HardHat, Briefcase, AlertTriangle } from "lucide-react";
+import { ShieldCheck, Users, ClipboardCheck, HardHat, Briefcase, AlertTriangle, LifeBuoy, DollarSign, Globe } from "lucide-react";
 
 const About = () => {
   return (
@@ -65,6 +65,31 @@ const About = () => {
             icon={AlertTriangle}
             title="Risk Assessment Reports"
             description="Detailed risk assessments to identify potential hazards and develop mitigation strategies."
+          />
+        </div>
+      </section>
+
+      {/* Who We Are Section */}
+      <section className="py-16 px-4 md:px-6 bg-muted/40">
+        <h2 className="text-4xl font-bold tracking-tight text-center mb-8">Who We Are</h2>
+        <p className="text-lg text-muted-foreground max-w-3xl mx-auto text-center mb-12">
+          SueGuard is a South African company specializing in Risk Management, Occupational Safety, and Business Compliance. We assist organizations in building safety systems, training OSHE committees, and staying legally compliant.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <FeatureCard
+            icon={LifeBuoy}
+            title="24/7 Support"
+            description="Our team is always available to address emergencies and safety concerns whenever they arise."
+          />
+          <FeatureCard
+            icon={DollarSign}
+            title="Affordable Compliance Services"
+            description="We provide cost-effective solutions to help businesses meet regulatory requirements without breaking the bank."
+          />
+          <FeatureCard
+            icon={Globe}
+            title="Nationwide Coverage"
+            description="Our services extend throughout South Africa, ensuring businesses across the country can benefit from our expertise."
           />
         </div>
       </section>
