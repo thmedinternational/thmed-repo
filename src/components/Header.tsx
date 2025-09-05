@@ -1,16 +1,35 @@
-import { Link, NavLink } from "react-router-dom";
+"use client";
+
+import { Link, NavLink, useSearchParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Menu, Instagram, Facebook, Youtube } from "lucide-react"; // Removed Tiktok
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import React from "react";
+import { ShoppingCart, Menu, Instagram, Facebook, Youtube, Search, ChevronDown } from "lucide-react";
+import React, { useState } from "react";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Skeleton } from "./ui/skeleton";
 import { useCart } from "@/contexts/CartContext";
+import { Input } from "@/components/ui/input";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+
+const fetchCategories = async () => {
+  const { data, error } = await supabase.from("products").select("category").distinct("category");
+  if (error) throw new Error(error.message);
+  return data.map((item) => item.category).filter(Boolean) as string[];
+};
 
 const Header = () => {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const { settings, loading } = useSettings();
   const { cartItemCount } = useCart();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const { data: categories, isLoading: isLoadingCategories } = useQuery({
+    queryKey: ["productCategories"],
+    queryFn: fetchCategories,
+  });
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `transition-colors hover:text-foreground/80 ${isActive ? 'text-foreground' : 'text-foreground/60'}`;
@@ -24,9 +43,9 @@ const Header = () => {
         <Skeleton className="h-8 w-8 rounded-md" />
       ) : (
         settings?.logo_url && (
-          <img 
-            src={settings.logo_url} 
-            alt="Store Logo" 
+          <img
+            src={settings.logo_url}
+            alt="Store Logo"
             style={{ width: settings.logo_width || 120, height: 'auto' }}
             className="max-h-8 object-contain"
           />
@@ -37,6 +56,21 @@ const Header = () => {
       </span>
     </div>
   );
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/?search=${encodeURIComponent(searchQuery.trim())}`);
+      setIsOpen(false);
+    } else {
+      navigate('/');
+    }
+  };
+
+  const handleCategorySelect = (category: string) => {
+    navigate(`/?category=${encodeURIComponent(category)}`);
+    setIsOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -55,6 +89,31 @@ const Header = () => {
             <NavLink to="/contact" className={navLinkClass}>
               Talk to Us
             </NavLink>
+            {/* Shop by Department Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="text-sm font-medium text-foreground/60 hover:text-foreground/80">
+                  Shop by Department <ChevronDown className="ml-1 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                {isLoadingCategories ? (
+                  <DropdownMenuItem disabled>Loading categories...</DropdownMenuItem>
+                ) : categories?.length ? (
+                  categories.map((category) => (
+                    <DropdownMenuItem key={category} onClick={() => handleCategorySelect(category)}>
+                      {category}
+                    </DropdownMenuItem>
+                  ))
+                ) : (
+                  <DropdownMenuItem disabled>No departments found</DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            {/* Other Services Link */}
+            <Link to="/about" className={navLinkClass}>
+              Other Services
+            </Link>
           </nav>
         </div>
 
@@ -81,6 +140,30 @@ const Header = () => {
                   <NavLink to="/contact" className={mobileNavLinkClass} onClick={() => setIsOpen(false)}>
                     Talk to Us
                   </NavLink>
+                  {/* Mobile Shop by Department */}
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-medium text-muted-foreground">Shop by Department</h3>
+                    {isLoadingCategories ? (
+                      <p className="text-muted-foreground">Loading categories...</p>
+                    ) : categories?.length ? (
+                      categories.map((category) => (
+                        <Button
+                          key={category}
+                          variant="ghost"
+                          className="w-full justify-start"
+                          onClick={() => handleCategorySelect(category)}
+                        >
+                          {category}
+                        </Button>
+                      ))
+                    ) : (
+                      <p className="text-muted-foreground">No departments found</p>
+                    )}
+                  </div>
+                  {/* Mobile Other Services Link */}
+                  <Link to="/about" className={mobileNavLinkClass} onClick={() => setIsOpen(false)}>
+                    Other Services
+                  </Link>
                 </nav>
               </div>
             </SheetContent>
@@ -93,8 +176,19 @@ const Header = () => {
                 <span className="font-bold">{settings?.store_name || 'SueGuard'}</span>
               </Link>
            </div>
+          {/* Search Bar */}
+          <form onSubmit={handleSearchSubmit} className="relative flex items-center">
+            <Input
+              type="text"
+              placeholder="Search products..."
+              className="pl-8 pr-2 py-1 rounded-md text-sm w-40 md:w-auto"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <Search className="absolute left-2 h-4 w-4 text-muted-foreground" />
+          </form>
+
           {/* Social Media Icons */}
-          {/* Removed TikTok icon due to import error */}
           <a href="https://www.instagram.com/sueguard" target="_blank" rel="noopener noreferrer">
             <Button variant="ghost" size="icon" aria-label="Instagram">
               <Instagram className="h-5 w-5" />
