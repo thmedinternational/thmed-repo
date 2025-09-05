@@ -77,7 +77,7 @@ const ShoppingCartPage = () => {
             <span>Shipping:</span>
             <span>Free</span> {/* For now, assuming free shipping */}
           </div>
-          <div className="border-t pt-4 mt-4 flex justify-between text-xl font-bold">
+          <div className="border-t pt-4 mt-4 flex justify-between text-xl font-bold tracking-tight">
             <span>Total:</span>
             <span>{formatCurrency(cartTotal)}</span>
           </div>
