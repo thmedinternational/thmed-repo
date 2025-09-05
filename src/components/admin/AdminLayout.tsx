@@ -39,20 +39,9 @@ const AdminLayout = () => {
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-2 p-2">
-            {loading ? (
-              <Skeleton className="h-8 w-8 rounded-md" />
-            ) : settings?.logo_url ? (
-              <img 
-                src={settings.logo_url} 
-                alt="Store Logo" 
-                style={{ width: settings.logo_width || 32, height: 'auto' }}
-                className="max-h-8 object-contain"
-              />
-            ) : (
-              <Store className="size-6" />
-            )}
-            <span className="text-lg font-semibold">
-              {loading ? <Skeleton className="h-5 w-32" /> : settings?.store_name || 'SueGuard Admin'}
+            <SidebarTrigger className="md:hidden" /> {/* Only show trigger on mobile */}
+            <span className="text-lg font-semibold hidden md:block"> {/* Show generic title on desktop sidebar */}
+              {loading ? <Skeleton className="h-5 w-32" /> : 'Admin Panel'}
             </span>
           </div>
         </SidebarHeader>
@@ -166,9 +155,24 @@ const AdminLayout = () => {
         <header className="flex h-14 items-center border-b bg-background px-4 lg:px-6">
           <div className="flex items-center gap-2">
             <SidebarTrigger className="md:hidden" />
-            <h1 className="text-xl font-semibold">
-              {loading ? <Skeleton className="h-5 w-40" /> : settings?.store_name || 'SueGuard Dashboard'}
-            </h1>
+            <h1 className="text-xl font-semibold">Dashboard</h1> {/* Generic Dashboard title */}
+          </div>
+          <div className="ml-auto flex items-center gap-2"> {/* Logo on the far right */}
+            {loading ? (
+              <Skeleton className="h-8 w-8 rounded-md" />
+            ) : settings?.logo_url ? (
+              <img 
+                src={settings.logo_url} 
+                alt="Store Logo" 
+                style={{ width: settings.logo_width || 32, height: 'auto' }}
+                className="max-h-8 object-contain"
+              />
+            ) : (
+              <Store className="size-6" />
+            )}
+            <span className="text-lg font-semibold hidden md:block"> {/* Store name next to logo on larger screens */}
+              {loading ? <Skeleton className="h-5 w-32" /> : settings?.store_name || 'SueGuard'}
+            </span>
           </div>
         </header>
         <main className="flex-1 p-4 md:p-6">
