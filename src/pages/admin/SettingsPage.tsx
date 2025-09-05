@@ -106,7 +106,7 @@ const SettingsPage = () => {
     onSuccess: () => {
       toast.success("Settings updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["settings", session?.user.id] });
-      window.location.reload();
+      // Removed window.location.reload();
     },
     onError: (error: Error) => {
       toast.error(`Failed to update settings: ${error.message}`);
