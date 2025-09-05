@@ -1,9 +1,9 @@
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart } from "lucide-react";
+import { Plus } from "lucide-react"; // Changed from ShoppingCart to Plus
 import { Link } from "react-router-dom";
-import { useCart } from "@/contexts/CartContext"; // Import useCart
-import { toast } from "sonner"; // Import toast for notifications
+import { useCart } from "@/contexts/CartContext";
+import { toast } from "sonner";
 
 export type Product = {
   id: string;
@@ -19,7 +19,7 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
-  const { addToCart } = useCart(); // Use the cart context
+  const { addToCart } = useCart();
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -31,8 +31,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const imageUrl = product.image_urls?.[0] || "https://placehold.co/600x400?text=No+Image";
 
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent any default link behavior
-    e.stopPropagation(); // Stop event from propagating to parent elements (like a potential outer Link)
+    e.preventDefault();
+    e.stopPropagation();
     if (product.stock > 0) {
       addToCart(product, 1);
     } else {
@@ -42,7 +42,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     <Card className="flex flex-col overflow-hidden rounded-lg shadow-md transition-shadow duration-300 hover:shadow-xl h-full">
-      <CardHeader className="p-0">
+      <CardHeader className="p-0 relative"> {/* Added relative positioning */}
         <Link to={`/products/${product.id}`} className="block aspect-square w-full overflow-hidden">
           <img
             src={imageUrl}
@@ -50,17 +50,21 @@ const ProductCard = ({ product }: ProductCardProps) => {
             className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
           />
         </Link>
+        {product.stock > 0 && (
+          <Button
+            className="absolute top-2 right-2 rounded-lg px-3 py-1.5 text-sm bg-add-to-cart-button text-add-to-cart-button-foreground hover:bg-add-to-cart-button/90 shadow-md"
+            onClick={handleAddToCart}
+            size="sm"
+          >
+            <Plus className="mr-1 h-4 w-4" /> Add
+          </Button>
+        )}
       </CardHeader>
       <CardContent className="flex-grow p-4">
         <CardTitle className="text-lg font-semibold">{product.name}</CardTitle>
-        <p className="mt-2 text-2xl font-bold">{formatPrice(product.price)}</p>
+        <p className="mt-2 text-4xl font-bold text-primary">{formatPrice(product.price)}</p> {/* Increased font size */}
       </CardContent>
-      <CardFooter className="p-4 pt-0">
-        <Button className="w-full" onClick={handleAddToCart} disabled={product.stock === 0}>
-          <ShoppingCart className="mr-2 h-4 w-4" />
-          {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
-        </Button>
-      </CardFooter>
+      {/* Removed CardFooter */}
     </Card>
   );
 };

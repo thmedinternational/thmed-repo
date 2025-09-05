@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Product } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart } from "lucide-react";
+import { Plus } from "lucide-react"; // Changed from ShoppingCart to Plus
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCart } from "@/contexts/CartContext";
 import { useState } from "react";
@@ -117,7 +117,7 @@ const ProductDetail = () => {
               onClick={handleAddToCart} 
               disabled={product.stock === 0 || quantity > product.stock || quantity <= 0}
             >
-              <ShoppingCart className="mr-2 h-5 w-5" />
+              <Plus className="mr-2 h-5 w-5" />
               {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
             </Button>
           </div>
