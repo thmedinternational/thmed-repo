@@ -9,7 +9,7 @@ import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
 
 const ShoppingCartPage = () => {
   const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
-  const whatsAppNumber = "27761120900"; // Your specified WhatsApp number
+  const whatsAppNumber = "27768170495"; // Updated WhatsApp number
   const { settings } = useSettings(); // Use the hook
   const currencyCode = settings?.currency || "USD"; // Get currency code
 
