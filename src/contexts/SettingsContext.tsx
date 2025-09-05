@@ -50,7 +50,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
 
   const value = { settings, loading };
 
-  return <SettingsContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
 };
 
 export const useSettings = () => {
