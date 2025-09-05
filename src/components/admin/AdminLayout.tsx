@@ -1,4 +1,4 @@
-import { Outlet, Link, useLocation } from "react-router-dom";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import {
   SidebarProvider,
   Sidebar,
@@ -12,14 +12,27 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag, FileText, Settings, GalleryHorizontal } from "lucide-react";
+import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag, FileText, Settings, GalleryHorizontal, LogOut } from "lucide-react";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Skeleton } from "../ui/skeleton";
+import { supabase } from "@/integrations/supabase/client"; // Import supabase client
+import { toast } from "sonner"; // Import toast for notifications
 
 const AdminLayout = () => {
   const location = useLocation();
+  const navigate = useNavigate(); // Initialize useNavigate
   const { settings, loading } = useSettings();
   const isActive = (path: string) => location.pathname === path || (path !== "/admin" && location.pathname.startsWith(path));
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast.error("Failed to log out: " + error.message);
+    } else {
+      toast.info("You have been logged out.");
+      navigate("/login"); // Redirect to login page after logout
+    }
+  };
 
   return (
     <SidebarProvider>
@@ -135,6 +148,12 @@ const AdminLayout = () => {
                     <Settings />
                     <span>Settings</span>
                   </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={handleLogout}>
+                  <LogOut />
+                  <span>Logout</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
            </SidebarMenu>
