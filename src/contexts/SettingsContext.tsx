@@ -25,17 +25,30 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const fetchSettings = async () => {
-      if (!session) {
-        setLoading(false);
-        return;
-      };
-
       setLoading(true);
-      const { data, error } = await supabase
-        .from('settings')
-        .select('store_name, company_name, logo_url, logo_width, banking_details, currency') // Select currency
-        .eq('user_id', session.user.id)
-        .single();
+      let data = null;
+      let error = null;
+
+      if (session) {
+        // If a user is logged in, fetch their specific settings
+        const { data: userData, error: userError } = await supabase
+          .from('settings')
+          .select('store_name, company_name, logo_url, logo_width, banking_details, currency')
+          .eq('user_id', session.user.id)
+          .single();
+        data = userData;
+        error = userError;
+      } else {
+        // If no user is logged in (public view), fetch the first available settings
+        // This assumes there's one primary set of store settings for the public site
+        const { data: publicData, error: publicError } = await supabase
+          .from('settings')
+          .select('store_name, company_name, logo_url, logo_width, banking_details, currency')
+          .limit(1)
+          .single();
+        data = publicData;
+        error = publicError;
+      }
 
       if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found
         console.error("Error fetching settings:", error);
