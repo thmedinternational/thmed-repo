@@ -1,10 +1,7 @@
-import { useSettings } from "@/contexts/SettingsContext";
+import { useSettings } from "@/contexts/SettingsContext"; // Keep import for context, but not used directly in formatCurrency
 
-export const formatCurrency = (amount: number, options?: Intl.NumberFormatOptions) => {
-  const { settings } = useSettings();
-  const currencyCode = settings?.currency || "USD"; // Default to USD if not set
-
-  return new Intl.NumberFormat("en-ZA", { // Changed locale to 'en-ZA'
+export const formatCurrency = (amount: number, currencyCode: string, options?: Intl.NumberFormatOptions) => {
+  return new Intl.NumberFormat("en-ZA", {
     style: "currency",
     currency: currencyCode,
     ...options,

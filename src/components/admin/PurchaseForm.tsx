@@ -10,7 +10,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Trash2, PlusCircle } from "lucide-react";
 import { Product } from "@/pages/admin/ProductsPage";
-import { formatCurrency } from "@/lib/currency"; // Import the new utility
+import { formatCurrency } from "@/lib/currency";
+import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
 
 const purchaseItemSchema = z.object({
   product_id: z.string().min(1, "Product is required."),
@@ -41,6 +42,8 @@ export function PurchaseForm({ onSubmit, isSubmitting }: PurchaseFormProps) {
     queryKey: ["allProducts"],
     queryFn: fetchProducts,
   });
+  const { settings } = useSettings(); // Use the hook
+  const currencyCode = settings?.currency || "USD"; // Get currency code
 
   const form = useForm<PurchaseFormValues>({
     resolver: zodResolver(purchaseFormSchema),

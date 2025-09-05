@@ -24,7 +24,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { FileText } from "lucide-react";
 import { Invoice } from "@/components/admin/Invoice";
-import { formatCurrency } from "@/lib/currency"; // Import the new utility
+import { formatCurrency } from "@/lib/currency";
+import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
 
 // --- Type Definitions ---
 export type OrderItemWithProduct = {
@@ -69,6 +70,8 @@ const fetchOrdersWithDetails = async () => {
 const ReceiptsPage = () => {
   const [selectedOrder, setSelectedOrder] = useState<OrderWithDetails | null>(null);
   const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
+  const { settings } = useSettings(); // Use the hook
+  const currencyCode = settings?.currency || "USD"; // Get currency code
 
   const { data: orders, isLoading, error } = useQuery<OrderWithDetails[]>({
     queryKey: ["ordersWithDetails"],
@@ -127,7 +130,7 @@ const ReceiptsPage = () => {
                     <TableCell>
                       <Badge variant={getStatusVariant(order.status)} className="capitalize">{order.status}</Badge>
                     </TableCell>
-                    <TableCell className="text-right">{formatCurrency(order.total)}</TableCell>
+                    <TableCell className="text-right">{formatCurrency(order.total, currencyCode)}</TableCell>
                     <TableCell className="text-right">
                       <Button variant="outline" size="sm" onClick={() => handleOpenInvoice(order)}>
                         <FileText className="mr-2 h-4 w-4" />

@@ -16,7 +16,8 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Calendar as CalendarIcon, Loader2, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { formatCurrency } from "@/lib/currency"; // Import the new utility
+import { formatCurrency } from "@/lib/currency";
+import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
 
 // --- Types ---
 type PaidOrder = {
@@ -60,6 +61,9 @@ type ExpenseFormValues = z.infer<typeof expenseFormSchema>;
 // --- Main Component ---
 const ProfitLossPage = () => {
   const queryClient = useQueryClient();
+  const { settings } = useSettings(); // Use the hook
+  const currencyCode = settings?.currency || "USD"; // Get currency code
+
   const [date, setDate] = useState<DateRange | undefined>({
     from: startOfMonth(new Date()),
     to: endOfMonth(new Date()),
@@ -156,13 +160,13 @@ const ProfitLossPage = () => {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-        <Card><CardHeader><CardTitle>Revenue</CardTitle></CardHeader><CardContent><p className="text-2xl font-bold">{formatCurrency(revenue)}</p></CardContent></Card>
-        <Card><CardHeader><CardTitle>Cost of Goods Sold</CardTitle></CardHeader><CardContent><p className="text-2xl font-bold">{formatCurrency(cogs)}</p></CardContent></Card>
-        <Card><CardHeader><CardTitle>Gross Profit</CardTitle></CardHeader><CardContent><p className="text-2xl font-bold">{formatCurrency(grossProfit)}</p></CardContent></Card>
-        <Card><CardHeader><CardTitle>Other Expenses</CardTitle></CardHeader><CardContent><p className="text-2xl font-bold">{formatCurrency(totalExpenses)}</p></CardContent></Card>
+        <Card><CardHeader><CardTitle>Revenue</CardTitle></CardHeader><CardContent><p className="text-2xl font-bold">{formatCurrency(revenue, currencyCode)}</p></CardContent></Card>
+        <Card><CardHeader><CardTitle>Cost of Goods Sold</CardTitle></CardHeader><CardContent><p className="text-2xl font-bold">{formatCurrency(cogs, currencyCode)}</p></CardContent></Card>
+        <Card><CardHeader><CardTitle>Gross Profit</CardTitle></CardHeader><CardContent><p className="text-2xl font-bold">{formatCurrency(grossProfit, currencyCode)}</p></CardContent></Card>
+        <Card><CardHeader><CardTitle>Other Expenses</CardTitle></CardHeader><CardContent><p className="text-2xl font-bold">{formatCurrency(totalExpenses, currencyCode)}</p></CardContent></Card>
         <Card className={netProfit >= 0 ? "bg-green-50 dark:bg-green-900/20" : "bg-red-50 dark:bg-red-900/20"}>
             <CardHeader><CardTitle>Net Profit</CardTitle></CardHeader>
-            <CardContent><p className="text-2xl font-bold">{formatCurrency(netProfit)}</p></CardContent>
+            <CardContent><p className="text-2xl font-bold">{formatCurrency(netProfit, currencyCode)}</p></CardContent>
         </Card>
       </div>
 
@@ -191,7 +195,7 @@ const ProfitLossPage = () => {
                   <TableRow key={exp.id}>
                     <TableCell className="font-medium">{exp.name}</TableCell>
                     <TableCell>{format(new Date(exp.expense_date), "LLL dd, y")}</TableCell>
-                    <TableCell className="text-right">{formatCurrency(exp.amount)}</TableCell>
+                    <TableCell className="text-right">{formatCurrency(exp.amount, currencyCode)}</TableCell>
                     <TableCell className="text-right">
                       <Button variant="ghost" size="icon" onClick={() => deleteExpenseMutation.mutate(exp.id)} disabled={deleteExpenseMutation.isPending}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                     </TableCell>

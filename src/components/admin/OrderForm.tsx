@@ -27,7 +27,8 @@ import { Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Product } from "@/pages/admin/ProductsPage";
 import type { Customer } from "@/pages/admin/CustomersPage";
-import { formatCurrency } from "@/lib/currency"; // Import the new utility
+import { formatCurrency } from "@/lib/currency";
+import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
 
 // --- Data Fetching ---
 const fetchProducts = async () => {
@@ -68,6 +69,8 @@ interface OrderFormProps {
 export const OrderForm = ({ onSubmit, isSubmitting, onCancel }: OrderFormProps) => {
   const { data: products, isLoading: isLoadingProducts } = useQuery<Product[]>({ queryKey: ["products"], queryFn: fetchProducts });
   const { data: customers, isLoading: isLoadingCustomers } = useQuery<Customer[]>({ queryKey: ["customers"], queryFn: fetchCustomers });
+  const { settings } = useSettings(); // Use the hook
+  const currencyCode = settings?.currency || "USD"; // Get currency code
 
   const form = useForm<OrderFormValues>({
     resolver: zodResolver(orderFormSchema),
@@ -181,7 +184,7 @@ export const OrderForm = ({ onSubmit, isSubmitting, onCancel }: OrderFormProps) 
                     <SelectValue placeholder="Select a product..." />
                   </SelectTrigger>
                   <SelectContent>
-                    {products?.map((p) => <SelectItem key={p.id} value={p.id}>{p.name} ({formatCurrency(p.price)})</SelectItem>)}
+                    {products?.map((p) => <SelectItem key={p.id} value={p.id}>{p.name} ({formatCurrency(p.price, currencyCode)})</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
@@ -211,8 +214,8 @@ export const OrderForm = ({ onSubmit, isSubmitting, onCancel }: OrderFormProps) 
                       <TableRow key={item.id}>
                         <TableCell>{item.name}</TableCell>
                         <TableCell>{item.quantity}</TableCell>
-                        <TableCell className="text-right">{formatCurrency(item.price)}</TableCell>
-                        <TableCell className="text-right">{formatCurrency(item.price * item.quantity)}</TableCell>
+                        <TableCell className="text-right">{formatCurrency(item.price, currencyCode)}</TableCell>
+                        <TableCell className="text-right">{formatCurrency(item.price * item.quantity, currencyCode)}</TableCell>
                         <TableCell className="text-right">
                           <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
                             <Trash2 className="h-4 w-4 text-destructive" />
@@ -227,7 +230,7 @@ export const OrderForm = ({ onSubmit, isSubmitting, onCancel }: OrderFormProps) 
             {form.formState.errors.items && <p className="text-sm font-medium text-destructive mt-2">{form.formState.errors.items.message}</p>}
 
             <div className="text-right text-xl font-bold mt-4">
-              Total: {formatCurrency(total)}
+              Total: {formatCurrency(total, currencyCode)}
             </div>
           </CardContent>
         </Card>

@@ -31,7 +31,8 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/pages/admin/ProductsPage";
 import type { Customer } from "@/pages/admin/CustomersPage";
-import { formatCurrency } from "@/lib/currency"; // Import the new utility
+import { formatCurrency } from "@/lib/currency";
+import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
 
 // --- Data Fetching ---
 const fetchProducts = async () => {
@@ -57,7 +58,7 @@ const quotationItemSchema = z.object({
 const quotationFormSchema = z.object({
   customer_id: z.string().uuid("Please select a customer."),
   valid_until: z.date().optional(),
-  items: z.array(quotationItemSchema).min(1, "Please add at least one product."),
+  items: z.array(quotationItemSchema).min(1, "Please add at least one product to the order."),
 });
 
 export type QuotationFormValues = z.infer<typeof quotationFormSchema>;
@@ -72,6 +73,8 @@ interface QuotationFormProps {
 export const QuotationForm = ({ onSubmit, isSubmitting, onCancel }: QuotationFormProps) => {
   const { data: products, isLoading: isLoadingProducts } = useQuery<Product[]>({ queryKey: ["products"], queryFn: fetchProducts });
   const { data: customers, isLoading: isLoadingCustomers } = useQuery<Customer[]>({ queryKey: ["customers"], queryFn: fetchCustomers });
+  const { settings } = useSettings(); // Use the hook
+  const currencyCode = settings?.currency || "USD"; // Get currency code
 
   const form = useForm<QuotationFormValues>({
     resolver: zodResolver(quotationFormSchema),
@@ -203,7 +206,7 @@ export const QuotationForm = ({ onSubmit, isSubmitting, onCancel }: QuotationFor
                         <TableCell>
                           <Input type="number" {...form.register(`items.${index}.price`, { valueAsNumber: true })} step="0.01" min="0" className="w-24" />
                         </TableCell>
-                        <TableCell className="text-right">{formatCurrency(item.price * item.quantity)}</TableCell>
+                        <TableCell className="text-right">{formatCurrency(item.price * item.quantity, currencyCode)}</TableCell>
                         <TableCell className="text-right">
                           <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
                             <Trash2 className="h-4 w-4 text-destructive" />
@@ -217,7 +220,7 @@ export const QuotationForm = ({ onSubmit, isSubmitting, onCancel }: QuotationFor
             </div>
             {form.formState.errors.items && <p className="text-sm font-medium text-destructive mt-2">{form.formState.errors.items.message}</p>}
 
-            <div className="text-right text-xl font-bold mt-4">Total: {formatCurrency(total)}</div>
+            <div className="text-right text-xl font-bold mt-4">Total: {formatCurrency(total, currencyCode)}</div>
           </CardContent>
         </Card>
 

@@ -29,7 +29,8 @@ import { PlusCircle, FileText } from "lucide-react";
 import { QuotationForm, QuotationFormValues } from "@/components/admin/QuotationForm";
 import { Quotation } from "@/components/admin/Quotation";
 import { toast } from "sonner";
-import { formatCurrency } from "@/lib/currency"; // Import the new utility
+import { formatCurrency } from "@/lib/currency";
+import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
 
 // --- Type Definitions ---
 export type QuotationItemWithProduct = {
@@ -66,6 +67,8 @@ const QuotationsPage = () => {
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [selectedQuotation, setSelectedQuotation] = useState<QuotationWithDetails | null>(null);
   const queryClient = useQueryClient();
+  const { settings } = useSettings(); // Use the hook
+  const currencyCode = settings?.currency || "USD"; // Get currency code
 
   const { data: quotations, isLoading, error } = useQuery<QuotationWithDetails[]>({
     queryKey: ["quotations"],
@@ -165,7 +168,7 @@ const QuotationsPage = () => {
                     <TableCell className="font-medium">{quote.customers?.full_name || "N/A"}</TableCell>
                     <TableCell>{new Date(quote.created_at).toLocaleDateString()}</TableCell>
                     <TableCell><Badge variant="secondary" className="capitalize">{quote.status}</Badge></TableCell>
-                    <TableCell className="text-right">{formatCurrency(quote.total)}</TableCell>
+                    <TableCell className="text-right">{formatCurrency(quote.total, currencyCode)}</TableCell>
                     <TableCell className="text-right">
                       <Button variant="outline" size="sm" onClick={() => handleViewQuotation(quote)}>
                         <FileText className="mr-2 h-4 w-4" /> View

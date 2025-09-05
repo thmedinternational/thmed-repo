@@ -7,7 +7,7 @@ import html2canvas from 'html2canvas';
 import { toast } from 'sonner';
 import type { OrderWithDetails } from '@/pages/admin/ReceiptsPage';
 import { useSettings } from '@/contexts/SettingsContext';
-import { formatCurrency } from "@/lib/currency"; // Import the new utility
+import { formatCurrency } from "@/lib/currency";
 
 interface InvoiceProps {
   order: OrderWithDetails;
@@ -18,6 +18,7 @@ const formatDate = (dateString: string) => new Date(dateString).toLocaleDateStri
 export const Invoice = ({ order }: InvoiceProps) => {
   const invoiceRef = useRef<HTMLDivElement>(null);
   const { settings } = useSettings();
+  const currencyCode = settings?.currency || "USD"; // Get currency code
 
   const handleDownloadPdf = () => {
     const input = invoiceRef.current;
@@ -90,8 +91,8 @@ export const Invoice = ({ order }: InvoiceProps) => {
               <TableRow key={item.id}>
                 <TableCell>{item.products?.[0]?.name || 'Unknown Product'}</TableCell>
                 <TableCell className="text-center">{item.quantity}</TableCell>
-                <TableCell className="text-right">{formatCurrency(item.price)}</TableCell>
-                <TableCell className="text-right">{formatCurrency(item.price * item.quantity)}</TableCell>
+                <TableCell className="text-right">{formatCurrency(item.price, currencyCode)}</TableCell>
+                <TableCell className="text-right">{formatCurrency(item.price * item.quantity, currencyCode)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -101,7 +102,7 @@ export const Invoice = ({ order }: InvoiceProps) => {
           <div className="w-full max-w-xs">
             <div className="flex justify-between py-4 border-t-2 border-gray-300">
               <span className="text-xl font-bold">Total:</span>
-              <span className="text-xl font-bold">{formatCurrency(order.total)}</span>
+              <span className="text-xl font-bold">{formatCurrency(order.total, currencyCode)}</span>
             </div>
           </div>
         </div>

@@ -28,7 +28,8 @@ import { Badge } from "@/components/ui/badge";
 import { PlusCircle, CheckCircle } from "lucide-react";
 import { PurchaseForm, PurchaseFormValues } from "@/components/admin/PurchaseForm";
 import { toast } from "sonner";
-import { formatCurrency } from "@/lib/currency"; // Import the new utility
+import { formatCurrency } from "@/lib/currency";
+import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
 
 export type Purchase = {
   id: string;
@@ -51,6 +52,8 @@ const fetchPurchases = async () => {
 const PurchasesPage = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const queryClient = useQueryClient();
+  const { settings } = useSettings(); // Use the hook
+  const currencyCode = settings?.currency || "USD"; // Get currency code
 
   const { data: purchases, isLoading, error } = useQuery<Purchase[]>({
     queryKey: ["purchases"],
@@ -161,7 +164,7 @@ const PurchasesPage = () => {
                     <TableCell>
                       <Badge variant={purchase.status === 'completed' ? 'success' : 'secondary'} className="capitalize">{purchase.status}</Badge>
                     </TableCell>
-                    <TableCell className="text-right">{formatCurrency(purchase.total_amount)}</TableCell>
+                    <TableCell className="text-right">{formatCurrency(purchase.total_amount, currencyCode)}</TableCell>
                     <TableCell className="text-right">
                       {purchase.status === 'pending' && (
                         <Button

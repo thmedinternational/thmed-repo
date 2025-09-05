@@ -29,7 +29,8 @@ import { PlusCircle } from "lucide-react";
 import { OrderForm, OrderFormValues } from "@/components/admin/OrderForm";
 import { OrderActions } from "@/components/admin/OrderActions";
 import { toast } from "sonner";
-import { formatCurrency } from "@/lib/currency"; // Import the new utility
+import { formatCurrency } from "@/lib/currency";
+import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
 
 export type Order = {
   id: string;
@@ -52,6 +53,8 @@ const fetchOrders = async () => {
 const OrdersPage = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const queryClient = useQueryClient();
+  const { settings } = useSettings(); // Use the hook
+  const currencyCode = settings?.currency || "USD"; // Get currency code
 
   const { data: orders, isLoading, error } = useQuery<Order[]>({
     queryKey: ["orders"],
@@ -186,7 +189,7 @@ const OrdersPage = () => {
                     <TableCell>
                       <Badge variant={getStatusVariant(order.status)} className="capitalize">{order.status}</Badge>
                     </TableCell>
-                    <TableCell className="text-right">{formatCurrency(order.total)}</TableCell>
+                    <TableCell className="text-right">{formatCurrency(order.total, currencyCode)}</TableCell>
                     <TableCell className="text-right">
                       <OrderActions
                         order={order}

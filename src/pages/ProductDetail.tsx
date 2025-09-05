@@ -10,7 +10,8 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { formatCurrency } from "@/lib/currency"; // Import the new utility
+import { formatCurrency } from "@/lib/currency";
+import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
 
 const fetchProductById = async (id: string): Promise<Product> => {
   const { data, error } = await supabase.from("products").select("*").eq("id", id).single();
@@ -28,6 +29,8 @@ const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState<number>(1);
+  const { settings } = useSettings(); // Use the hook
+  const currencyCode = settings?.currency || "USD"; // Get currency code
 
   const { data: product, isLoading, isError, error } = useQuery({
     queryKey: ["product", id],
@@ -89,7 +92,7 @@ const ProductDetail = () => {
         </div>
         <div className="space-y-6 text-left">
           <h1 className="text-4xl font-bold tracking-tight">{product.name}</h1>
-          <p className="text-2xl md:text-3xl font-bold text-primary tracking-tight">{formatCurrency(product.price)}</p>
+          <p className="text-2xl md:text-3xl font-bold text-primary tracking-tight">{formatCurrency(product.price, currencyCode)}</p>
           <p className="text-lg text-muted-foreground">{product.description}</p>
           <div className="text-md text-muted-foreground">
             Stock: <span className="font-semibold">{product.stock} available</span>

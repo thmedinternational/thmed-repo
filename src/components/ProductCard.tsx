@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import { formatCurrency } from "@/lib/currency";
+import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
 
 export type Product = {
   id: string;
@@ -21,6 +22,8 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useCart();
+  const { settings } = useSettings(); // Use the hook
+  const currencyCode = settings?.currency || "USD"; // Get currency code
 
   const imageUrl = product.image_urls?.[0] || "https://placehold.co/600x400?text=No+Image";
 
@@ -38,7 +41,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
     e.preventDefault();
     e.stopPropagation();
     const productUrl = `${window.location.origin}/products/${product.id}`;
-    const message = `Check out this product: ${product.name} for ${formatCurrency(product.price)}! ${productUrl}`;
+    const message = `Check out this product: ${product.name} for ${formatCurrency(product.price, currencyCode)}! ${productUrl}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank");
   };
 
@@ -66,7 +69,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             </p>
           )}
           <p className="mt-2 text-base font-bold text-primary tracking-tight"> {/* 16px, bold, red, tight tracking */}
-            {formatCurrency(product.price)}
+            {formatCurrency(product.price, currencyCode)}
           </p>
         </div>
         <div className="flex justify-end mt-2 space-x-2"> {/* Aligned to bottom right, added space-x-2 */}

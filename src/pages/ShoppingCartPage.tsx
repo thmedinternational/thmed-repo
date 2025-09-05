@@ -3,12 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Trash2, MessageSquare, FileText, Truck } from "lucide-react"; // Added new icons
 import { Link } from "react-router-dom";
-import { formatCurrency } from "@/lib/currency"; // Import the new utility
+import { formatCurrency } from "@/lib/currency";
 import { toast } from "sonner";
+import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
 
 const ShoppingCartPage = () => {
   const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
   const whatsAppNumber = "27761120900"; // Your specified WhatsApp number
+  const { settings } = useSettings(); // Use the hook
+  const currencyCode = settings?.currency || "USD"; // Get currency code
 
   const generateWhatsAppMessage = (type: 'checkout' | 'quotation' | 'delivery') => {
     if (cartItems.length === 0) {
@@ -17,17 +20,17 @@ const ShoppingCartPage = () => {
     }
 
     let message = "";
-    const productList = cartItems.map(item => `- ${item.name} (x${item.quantity}) - ${formatCurrency(item.price * item.quantity)}`).join("\n");
+    const productList = cartItems.map(item => `- ${item.name} (x${item.quantity}) - ${formatCurrency(item.price * item.quantity, currencyCode)}`).join("\n");
 
     switch (type) {
       case 'checkout':
-        message = `Hello, I'd like to proceed with my order from SueGuard. My cart details are:\n\n${productList}\n\nTotal: ${formatCurrency(cartTotal)}\n\nPlease confirm my order and delivery options.`;
+        message = `Hello, I'd like to proceed with my order from SueGuard. My cart details are:\n\n${productList}\n\nTotal: ${formatCurrency(cartTotal, currencyCode)}\n\nPlease confirm my order and delivery options.`;
         break;
       case 'quotation':
-        message = `Hello, I'd like to request a quotation for the following items from SueGuard:\n\n${productList}\n\nEstimated Total: ${formatCurrency(cartTotal)}\n\nPlease provide a formal quote.`;
+        message = `Hello, I'd like to request a quotation for the following items from SueGuard:\n\n${productList}\n\nEstimated Total: ${formatCurrency(cartTotal, currencyCode)}\n\nPlease provide a formal quote.`;
         break;
       case 'delivery':
-        message = `Hello, I'd like to discuss delivery arrangements for my order from SueGuard. My cart details are:\n\n${productList}\n\nTotal: ${formatCurrency(cartTotal)}\n\nPlease assist with delivery options.`;
+        message = `Hello, I'd like to discuss delivery arrangements for my order from SueGuard. My cart details are:\n\n${productList}\n\nTotal: ${formatCurrency(cartTotal, currencyCode)}\n\nPlease assist with delivery options.`;
         break;
       default:
         message = "Hello, I have a question about my cart from SueGuard.";
@@ -75,7 +78,7 @@ const ShoppingCartPage = () => {
                 <Link to={`/products/${item.id}`}>
                   <h2 className="text-xl font-semibold hover:underline">{item.name}</h2>
                 </Link>
-                <p className="text-muted-foreground">{formatCurrency(item.price)}</p>
+                <p className="text-muted-foreground">{formatCurrency(item.price, currencyCode)}</p>
               </div>
               <div className="flex items-center space-x-4">
                 <Input
@@ -99,7 +102,7 @@ const ShoppingCartPage = () => {
           <h2 className="text-2xl font-bold mb-4">Order Summary</h2>
           <div className="flex justify-between text-lg font-medium mb-2">
             <span>Subtotal:</span>
-            <span>{formatCurrency(cartTotal)}</span>
+            <span>{formatCurrency(cartTotal, currencyCode)}</span>
           </div>
           <div className="flex justify-between text-lg font-medium mb-4">
             <span>Shipping:</span>
@@ -107,7 +110,7 @@ const ShoppingCartPage = () => {
           </div>
           <div className="border-t pt-4 mt-4 flex justify-between text-xl font-bold tracking-tight">
             <span>Total:</span>
-            <span>{formatCurrency(cartTotal)}</span>
+            <span>{formatCurrency(cartTotal, currencyCode)}</span>
           </div>
           
           <div className="mt-6 space-y-3">

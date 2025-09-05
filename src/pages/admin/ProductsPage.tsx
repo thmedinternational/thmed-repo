@@ -35,7 +35,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ProductForm, ProductFormValues } from "@/components/admin/ProductForm";
 import { toast } from "sonner";
-import { formatCurrency } from "@/lib/currency"; // Import the new utility
+import { formatCurrency } from "@/lib/currency";
+import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
 
 export type Product = {
   id: string;
@@ -58,6 +59,8 @@ const ProductsPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null); // New state for editing
   const queryClient = useQueryClient();
+  const { settings } = useSettings(); // Use the hook
+  const currencyCode = settings?.currency || "USD"; // Get currency code
 
   const { data: products, isLoading, error } = useQuery<Product[]>({
     queryKey: ["products"],
@@ -277,8 +280,8 @@ const ProductsPage = () => {
                     </TableCell>
                     <TableCell className="font-medium">{product.name}</TableCell>
                     <TableCell>{product.stock}</TableCell>
-                    <TableCell>{formatCurrency(product.price)}</TableCell>
-                    <TableCell>{formatCurrency(product.cost)}</TableCell>
+                    <TableCell>{formatCurrency(product.price, currencyCode)}</TableCell>
+                    <TableCell>{formatCurrency(product.cost, currencyCode)}</TableCell>
                     <TableCell>
                       {new Date(product.created_at).toLocaleDateString()}
                     </TableCell>
