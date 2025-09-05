@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react"; // Changed from ShoppingCart to Plus
+import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
@@ -42,7 +42,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     <Card className="flex flex-col overflow-hidden rounded-lg shadow-md transition-shadow duration-300 hover:shadow-xl h-full">
-      <CardHeader className="p-0 relative"> {/* Added relative positioning */}
+      <CardHeader className="p-0 relative">
         <Link to={`/products/${product.id}`} className="block aspect-square w-full overflow-hidden">
           <img
             src={imageUrl}
@@ -62,9 +62,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
       </CardHeader>
       <CardContent className="flex-grow p-4">
         <CardTitle className="text-lg font-semibold">{product.name}</CardTitle>
-        <p className="mt-2 text-4xl font-bold text-primary">{formatPrice(product.price)}</p> {/* Increased font size */}
+        {product.description && (
+          <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+            {product.description}
+          </p>
+        )}
+        <p className="mt-2 text-4xl font-bold text-primary">{formatPrice(product.price)}</p>
       </CardContent>
-      {/* Removed CardFooter */}
     </Card>
   );
 };
