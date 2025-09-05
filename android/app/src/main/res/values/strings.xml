@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">wandering-panda-hum</string>
-    <string name="title_activity_main">wandering-panda-hum</string>
-    <string name="package_name">com.example.wanderingpandahum</string>
-    <string name="custom_url_scheme">com.example.wanderingpandahum</string>
+    <string name="app_name">SueGuard Risk &amp; Management</string>
+    <string name="title_activity_main">SueGuard Risk &amp; Management</string>
+    <string name="package_name">com.sueguard.riskmanagement</string>
+    <string name="custom_url_scheme">com.sueguard.riskmanagement</string>
 </resources>

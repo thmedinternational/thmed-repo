@@ -33,7 +33,7 @@ const Header = () => {
         )
       )}
       <span className="font-bold">
-        {loading ? <Skeleton className="h-5 w-24" /> : settings?.store_name || 'MyStore'}
+        {loading ? <Skeleton className="h-5 w-24" /> : settings?.store_name || 'SueGuard'}
       </span>
     </div>
   );
@@ -69,7 +69,7 @@ const Header = () => {
             <SheetContent side="left">
               <div className="p-4">
                 <Link to="/" className="mb-8 flex items-center space-x-2" onClick={() => setIsOpen(false)}>
-                  <span className="font-bold text-xl">{settings?.store_name || 'MyStore'}</span>
+                  <span className="font-bold text-xl">{settings?.store_name || 'SueGuard'}</span>
                 </Link>
                 <nav className="flex flex-col space-y-4">
                   <NavLink to="/" className={mobileNavLinkClass} onClick={() => setIsOpen(false)}>
@@ -90,7 +90,7 @@ const Header = () => {
         <div className="flex flex-1 items-center justify-end space-x-2">
            <div className="md:hidden flex-1">
              <Link to="/" className="flex items-center justify-center space-x-2">
-                <span className="font-bold">{settings?.store_name || 'MyStore'}</span>
+                <span className="font-bold">{settings?.store_name || 'SueGuard'}</span>
               </Link>
            </div>
           <Link to="/cart" className="relative"> {/* Added relative positioning for the badge */}

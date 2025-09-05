@@ -39,7 +39,7 @@ const AdminLayout = () => {
               <Store className="size-6" />
             )}
             <span className="text-lg font-semibold">
-              {loading ? <Skeleton className="h-5 w-32" /> : settings?.store_name || 'Store Manager'}
+              {loading ? <Skeleton className="h-5 w-32" /> : settings?.store_name || 'SueGuard Admin'}
             </span>
           </div>
         </SidebarHeader>
@@ -148,7 +148,7 @@ const AdminLayout = () => {
           <div className="flex items-center gap-2">
             <SidebarTrigger className="md:hidden" />
             <h1 className="text-xl font-semibold">
-              {loading ? <Skeleton className="h-5 w-40" /> : settings?.store_name || 'Store Dashboard'}
+              {loading ? <Skeleton className="h-5 w-40" /> : settings?.store_name || 'SueGuard Dashboard'}
             </h1>
           </div>
         </header>

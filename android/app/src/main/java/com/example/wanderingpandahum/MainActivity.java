@@ -1,4 +1,4 @@
-package com.example.wanderingpandahum;
+package com.sueguard.riskmanagement;
 
 import com.getcapacitor.BridgeActivity;
 

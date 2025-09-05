@@ -13,7 +13,7 @@ const Footer = () => {
         {/* Store Info */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">
-            {loading ? <Skeleton className="h-6 w-32 bg-gray-700" /> : settings?.store_name || 'MyStore'}
+            {loading ? <Skeleton className="h-6 w-32 bg-gray-700" /> : settings?.store_name || 'SueGuard'}
           </h3>
           <p className="text-sm text-secondary-foreground/70">
             Your one-stop shop for high-quality products and exceptional service.
@@ -88,7 +88,7 @@ const Footer = () => {
           </a>
         </p>
         <p className="mt-2">
-          © 2025 SueGuard Risk & Management (Pty) Ltd. All rights reserved.
+          © 2025 SueGuard Risk &amp; Management (Pty) Ltd. All rights reserved.
         </p>
       </div>
     </footer>
