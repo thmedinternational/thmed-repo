@@ -63,8 +63,8 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
         "add-to-cart-button": {
-          DEFAULT: "hsl(var(--add-to-cart-button))",
-          foreground: "hsl(var(--add-to-cart-button-foreground))",
+          DEFAULT: "hsl(var(--primary))", // Changed to primary
+          foreground: "hsl(var(--primary-foreground))", // Changed to primary-foreground
         },
       },
       borderRadius: {

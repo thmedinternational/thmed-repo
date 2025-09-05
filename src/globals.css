@@ -45,8 +45,8 @@
     --sidebar-ring: 0 84.2% 60.2%; /* Red */
 
     /* Add to Cart Button Color */
-    --add-to-cart-button: 175 65% 42%; /* HSL for #20B2AA */
-    --add-to-cart-button-foreground: 210 40% 98%; /* Off-white */
+    --add-to-cart-button: var(--primary); /* Changed to primary */
+    --add-to-cart-button-foreground: var(--primary-foreground); /* Changed to primary-foreground */
   }
 
   .dark {
@@ -89,8 +89,8 @@
     --sidebar-ring: 0 84.2% 60.2%; /* Red */
 
     /* Add to Cart Button Color */
-    --add-to-cart-button: 175 65% 42%; /* HSL for #20B2AA */
-    --add-to-cart-button-foreground: 210 40% 98%; /* Off-white */
+    --add-to-cart-button: var(--primary); /* Changed to primary */
+    --add-to-cart-button-foreground: var(--primary-foreground); /* Changed to primary-foreground */
   }
 }
 
