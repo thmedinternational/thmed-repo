@@ -35,6 +35,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ProductForm, ProductFormValues } from "@/components/admin/ProductForm";
 import { toast } from "sonner";
+import { useIsMobile } from "@/hooks/use-mobile"; // Import the hook
+import ProductMobileCard from "@/components/admin/ProductMobileCard"; // Import the new component
 
 export type Product = {
   id: string;
@@ -55,8 +57,9 @@ const fetchProducts = async () => {
 
 const ProductsPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null); // New state for editing
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const queryClient = useQueryClient();
+  const isMobile = useIsMobile(); // Use the hook
 
   const { data: products, isLoading, error } = useQuery<Product[]>({
     queryKey: ["products"],
@@ -121,10 +124,9 @@ const ProductsPage = () => {
     mutationFn: async (updatedValues: ProductFormValues) => {
       if (!editingProduct) throw new Error("No product selected for update.");
 
-      let imageUrlsToSave: string[] | null = editingProduct.image_urls; // Start with existing images
+      let imageUrlsToSave: string[] | null = editingProduct.image_urls;
 
       if (updatedValues.images && updatedValues.images.length > 0) {
-        // New images provided, upload them
         const uploadPromises = Array.from(updatedValues.images).map(async (file) => {
           const fileName = `public/${Date.now()}-${file.name}`;
           const { error: uploadError } = await supabase.storage
@@ -146,7 +148,6 @@ const ProductsPage = () => {
         });
         imageUrlsToSave = await Promise.all(uploadPromises);
       }
-      // If updatedValues.images is undefined/empty, imageUrlsToSave remains editingProduct.image_urls
 
       const { error } = await supabase
         .from("products")
@@ -168,10 +169,24 @@ const ProductsPage = () => {
       toast.success("Product updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["products"] });
       setIsDialogOpen(false);
-      setEditingProduct(null); // Clear editing state
+      setEditingProduct(null);
     },
     onError: (error) => {
       toast.error(`Failed to update product: ${error.message}`);
+    },
+  });
+
+  const deleteProductMutation = useMutation({
+    mutationFn: async (productId: string) => {
+      const { error } = await supabase.from("products").delete().eq("id", productId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Product deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to delete product: ${error.message}`);
     },
   });
 
@@ -188,11 +203,14 @@ const ProductsPage = () => {
     setIsDialogOpen(true);
   };
 
-  // Reset editingProduct when dialog closes
+  const handleDeleteClick = (productId: string) => {
+    deleteProductMutation.mutate(productId);
+  };
+
   const handleDialogChange = (open: boolean) => {
     setIsDialogOpen(open);
     if (!open) {
-      setEditingProduct(null); // Clear editing state when dialog closes
+      setEditingProduct(null);
     }
   };
 
@@ -200,23 +218,23 @@ const ProductsPage = () => {
     <>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Products</h1>
-        <Dialog open={isDialogOpen} onOpenChange={handleDialogChange}> {/* Use handleDialogChange */}
+        <Dialog open={isDialogOpen} onOpenChange={handleDialogChange}>
           <DialogTrigger asChild>
-            <Button onClick={() => setEditingProduct(null)}> {/* Clear editing state when opening for new product */}
+            <Button onClick={() => setEditingProduct(null)}>
               <PlusCircle className="mr-2 h-4 w-4" />
               Add Product
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>{editingProduct ? "Edit Product" : "Add New Product"}</DialogTitle> {/* Dynamic title */}
+              <DialogTitle>{editingProduct ? "Edit Product" : "Add New Product"}</DialogTitle>
               <DialogDescription>
-                {editingProduct ? "Update the details for this product." : "Fill in the details below to add a new product to your store."} {/* Dynamic description */}
+                {editingProduct ? "Update the details for this product." : "Fill in the details below to add a new product to your store."}
               </DialogDescription>
             </DialogHeader>
             <ProductForm
               onSubmit={editingProduct ? handleUpdateProduct : handleAddProduct}
-              product={editingProduct || undefined} // Pass product for editing
+              product={editingProduct || undefined}
               isSubmitting={addProductMutation.isPending || updateProductMutation.isPending}
             />
           </DialogContent>
@@ -231,82 +249,97 @@ const ProductsPage = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[64px]">Image</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Stock</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Cost</TableHead>
-                <TableHead>Created At</TableHead>
-                <TableHead>
-                  <span className="sr-only">Actions</span>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={7} className="h-24 text-center">
-                    Loading products...
-                  </TableCell>
-                </TableRow>
-              ) : error ? (
-                 <TableRow>
-                  <TableCell colSpan={7} className="h-24 text-center text-red-500">
-                    Error loading products: {error.message}
-                  </TableCell>
-                </TableRow>
-              ) : products?.length ? (
-                products.map((product) => (
-                  <TableRow key={product.id}>
-                    <TableCell>
-                      {product.image_urls && product.image_urls.length > 0 ? (
-                        <img
-                          src={product.image_urls[0]}
-                          alt={product.name}
-                          className="h-10 w-10 rounded-md object-cover"
-                        />
-                      ) : (
-                        <div className="h-10 w-10 rounded-md bg-secondary flex items-center justify-center">
-                          <Package className="h-5 w-5 text-muted-foreground" />
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell className="font-medium">{product.name}</TableCell>
-                    <TableCell>{product.stock}</TableCell>
-                    <TableCell>${product.price.toFixed(2)}</TableCell>
-                    <TableCell>${product.cost.toFixed(2)}</TableCell>
-                    <TableCell>
-                      {new Date(product.created_at).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup="true" size="icon" variant="ghost">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem onClick={() => handleEditClick(product)}>Edit</DropdownMenuItem> {/* Add onClick */}
-                          <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+          {isLoading ? (
+            <div className="grid gap-4">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="flex items-center space-x-4 rounded-md border p-4">
+                  <Skeleton className="h-12 w-12 rounded-md" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : error ? (
+            <div className="text-center text-red-500">
+              Error loading products: {error.message}
+            </div>
+          ) : products?.length ? (
+            isMobile ? (
+              <div className="grid gap-4">
+                {products.map((product) => (
+                  <ProductMobileCard
+                    key={product.id}
+                    product={product}
+                    onEdit={handleEditClick}
+                    onDelete={handleDeleteClick}
+                  />
+                ))}
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[64px]">Image</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Stock</TableHead>
+                    <TableHead>Price</TableHead>
+                    <TableHead>Cost</TableHead>
+                    <TableHead>Created At</TableHead>
+                    <TableHead>
+                      <span className="sr-only">Actions</span>
+                    </TableHead>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={7} className="h-24 text-center">
-                    No products found.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                </TableHeader>
+                <TableBody>
+                  {products.map((product) => (
+                    <TableRow key={product.id}>
+                      <TableCell>
+                        {product.image_urls && product.image_urls.length > 0 ? (
+                          <img
+                            src={product.image_urls[0]}
+                            alt={product.name}
+                            className="h-10 w-10 rounded-md object-cover"
+                          />
+                        ) : (
+                          <div className="h-10 w-10 rounded-md bg-secondary flex items-center justify-center">
+                            <Package className="h-5 w-5 text-muted-foreground" />
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell className="font-medium">{product.name}</TableCell>
+                      <TableCell>{product.stock}</TableCell>
+                      <TableCell>${product.price.toFixed(2)}</TableCell>
+                      <TableCell>${product.cost.toFixed(2)}</TableCell>
+                      <TableCell>
+                        {new Date(product.created_at).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button aria-haspopup="true" size="icon" variant="ghost">
+                              <MoreHorizontal className="h-4 w-4" />
+                              <span className="sr-only">Toggle menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem onClick={() => handleEditClick(product)}>Edit</DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-600" onClick={() => handleDeleteClick(product.id)}>Delete</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )
+          ) : (
+            <div className="h-24 text-center">
+              No products found.
+            </div>
+          )}
         </CardContent>
       </Card>
     </>
