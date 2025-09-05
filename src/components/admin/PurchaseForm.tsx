@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Trash2, PlusCircle } from "lucide-react";
 import { Product } from "@/pages/admin/ProductsPage";
+import { formatCurrency } from "@/lib/currency"; // Import the new utility
 
 const purchaseItemSchema = z.object({
   product_id: z.string().min(1, "Product is required."),

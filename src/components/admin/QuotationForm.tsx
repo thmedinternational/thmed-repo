@@ -31,6 +31,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/pages/admin/ProductsPage";
 import type { Customer } from "@/pages/admin/CustomersPage";
+import { formatCurrency } from "@/lib/currency"; // Import the new utility
 
 // --- Data Fetching ---
 const fetchProducts = async () => {
@@ -118,8 +119,6 @@ export const QuotationForm = ({ onSubmit, isSubmitting, onCancel }: QuotationFor
     });
     setSelectedProductId("");
   };
-
-  const formatCurrency = (amount: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
 
   return (
     <Form {...form}>

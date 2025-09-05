@@ -28,6 +28,7 @@ import { Badge } from "@/components/ui/badge";
 import { PlusCircle, CheckCircle } from "lucide-react";
 import { PurchaseForm, PurchaseFormValues } from "@/components/admin/PurchaseForm";
 import { toast } from "sonner";
+import { formatCurrency } from "@/lib/currency"; // Import the new utility
 
 export type Purchase = {
   id: string;
@@ -112,8 +113,6 @@ const PurchasesPage = () => {
     },
     onError: (err: Error) => toast.error(`Failed to complete purchase: ${err.message}`),
   });
-
-  const formatCurrency = (amount: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
 
   return (
     <>

@@ -3,13 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Product } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react"; // Changed from ShoppingCart to Plus
+import { Plus } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCart } from "@/contexts/CartContext";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner"; // Import toast for notifications
+import { toast } from "sonner";
+import { formatCurrency } from "@/lib/currency"; // Import the new utility
 
 const fetchProductById = async (id: string): Promise<Product> => {
   const { data, error } = await supabase.from("products").select("*").eq("id", id).single();
@@ -31,15 +32,8 @@ const ProductDetail = () => {
   const { data: product, isLoading, isError, error } = useQuery({
     queryKey: ["product", id],
     queryFn: () => fetchProductById(id!),
-    enabled: !!id, // Only run query if id is available
+    enabled: !!id,
   });
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(price);
-  };
 
   const handleAddToCart = () => {
     if (product) {
@@ -95,7 +89,7 @@ const ProductDetail = () => {
         </div>
         <div className="space-y-6 text-left">
           <h1 className="text-4xl font-bold tracking-tight">{product.name}</h1>
-          <p className="text-3xl font-bold text-primary">{formatPrice(product.price)}</p>
+          <p className="text-3xl font-bold text-primary">{formatCurrency(product.price)}</p>
           <p className="text-lg text-muted-foreground">{product.description}</p>
           <div className="text-md text-muted-foreground">
             Stock: <span className="font-semibold">{product.stock} available</span>

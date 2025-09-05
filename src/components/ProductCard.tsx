@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
+import { formatCurrency } from "@/lib/currency"; // Import the new utility
 
 export type Product = {
   id: string;
@@ -20,13 +21,6 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useCart();
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(price);
-  };
 
   const imageUrl = product.image_urls?.[0] || "https://placehold.co/600x400?text=No+Image";
 
@@ -67,7 +61,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             {product.description}
           </p>
         )}
-        <p className="mt-2 text-4xl font-bold text-primary">{formatPrice(product.price)}</p>
+        <p className="mt-2 text-4xl font-bold text-primary">{formatCurrency(product.price)}</p>
       </CardContent>
     </Card>
   );

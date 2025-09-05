@@ -7,12 +7,12 @@ import html2canvas from 'html2canvas';
 import { toast } from 'sonner';
 import type { QuotationWithDetails } from '@/pages/admin/QuotationsPage';
 import { useSettings } from '@/contexts/SettingsContext';
+import { formatCurrency } from "@/lib/currency"; // Import the new utility
 
 interface QuotationProps {
   quotation: QuotationWithDetails;
 }
 
-const formatCurrency = (amount: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
 const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString();
 
 export const Quotation = ({ quotation }: QuotationProps) => {

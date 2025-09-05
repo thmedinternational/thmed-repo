@@ -24,6 +24,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { FileText } from "lucide-react";
 import { Invoice } from "@/components/admin/Invoice";
+import { formatCurrency } from "@/lib/currency"; // Import the new utility
 
 // --- Type Definitions ---
 export type OrderItemWithProduct = {
@@ -79,7 +80,6 @@ const ReceiptsPage = () => {
     setIsInvoiceOpen(true);
   };
 
-  const formatCurrency = (amount: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
   const getStatusVariant = (status: OrderWithDetails["status"]) => {
     switch (status) {
       case "paid": return "success";

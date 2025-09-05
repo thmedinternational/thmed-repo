@@ -27,6 +27,7 @@ import { Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Product } from "@/pages/admin/ProductsPage";
 import type { Customer } from "@/pages/admin/CustomersPage";
+import { formatCurrency } from "@/lib/currency"; // Import the new utility
 
 // --- Data Fetching ---
 const fetchProducts = async () => {
@@ -117,8 +118,6 @@ export const OrderForm = ({ onSubmit, isSubmitting, onCancel }: OrderFormProps) 
     setSelectedProductId("");
     setQuantity(1);
   };
-
-  const formatCurrency = (amount: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
 
   return (
     <Form {...form}>

@@ -7,12 +7,12 @@ import html2canvas from 'html2canvas';
 import { toast } from 'sonner';
 import type { OrderWithDetails } from '@/pages/admin/ReceiptsPage';
 import { useSettings } from '@/contexts/SettingsContext';
+import { formatCurrency } from "@/lib/currency"; // Import the new utility
 
 interface InvoiceProps {
   order: OrderWithDetails;
 }
 
-const formatCurrency = (amount: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
 const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString();
 
 export const Invoice = ({ order }: InvoiceProps) => {

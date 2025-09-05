@@ -8,6 +8,7 @@ export type StoreSettings = {
   logo_url: string | null;
   logo_width: number | null;
   banking_details: string | null;
+  currency: string | null; // Added currency field
 };
 
 interface SettingsContextType {
@@ -32,7 +33,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
       setLoading(true);
       const { data, error } = await supabase
         .from('settings')
-        .select('store_name, company_name, logo_url, logo_width, banking_details')
+        .select('store_name, company_name, logo_url, logo_width, banking_details, currency') // Select currency
         .eq('user_id', session.user.id)
         .single();
 
@@ -49,7 +50,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
 
   const value = { settings, loading };
 
-  return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
+  return <SettingsContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useSettings = () => {

@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const settingsFormSchema = z.object({
   store_name: z.string().min(2, "Store name must be at least 2 characters."),
@@ -21,6 +22,7 @@ const settingsFormSchema = z.object({
   logo: z.custom<FileList>().optional(),
   logo_width: z.number().min(20).max(300),
   banking_details: z.string().optional(),
+  currency: z.string().min(3, "Currency code must be 3 characters (e.g., USD, ZAR)."), // Added currency field
 });
 
 type SettingsFormValues = z.infer<typeof settingsFormSchema>;
@@ -48,6 +50,7 @@ const SettingsPage = () => {
       company_name: "",
       logo_width: 120,
       banking_details: "",
+      currency: "USD", // Default currency
     },
   });
 
@@ -58,6 +61,7 @@ const SettingsPage = () => {
         company_name: settings.company_name || "",
         logo_width: settings.logo_width || 120,
         banking_details: settings.banking_details || "",
+        currency: settings.currency || "USD", // Set default from fetched settings
       });
     }
   }, [settings, form]);
@@ -93,6 +97,7 @@ const SettingsPage = () => {
         logo_url: logoUrl,
         logo_width: values.logo_width,
         banking_details: values.banking_details,
+        currency: values.currency, // Save currency
         updated_at: new Date().toISOString(),
       }, { onConflict: 'user_id' });
 
@@ -149,6 +154,32 @@ const SettingsPage = () => {
                 <FormMessage />
               </FormItem>
             )} />
+            <FormField
+              control={form.control}
+              name="currency"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Currency</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a currency" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="USD">USD - United States Dollar</SelectItem>
+                      <SelectItem value="ZAR">ZAR - South African Rand</SelectItem>
+                      <SelectItem value="EUR">EUR - Euro</SelectItem>
+                      <SelectItem value="GBP">GBP - British Pound</SelectItem>
+                      <SelectItem value="JPY">JPY - Japanese Yen</SelectItem>
+                      <SelectItem value="AUD">AUD - Australian Dollar</SelectItem>
+                      <SelectItem value="CAD">CAD - Canadian Dollar</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField control={form.control} name="banking_details" render={({ field }) => (
               <FormItem>
                 <FormLabel>Banking Details</FormLabel>

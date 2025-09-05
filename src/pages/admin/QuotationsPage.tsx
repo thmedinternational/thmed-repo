@@ -29,6 +29,7 @@ import { PlusCircle, FileText } from "lucide-react";
 import { QuotationForm, QuotationFormValues } from "@/components/admin/QuotationForm";
 import { Quotation } from "@/components/admin/Quotation";
 import { toast } from "sonner";
+import { formatCurrency } from "@/lib/currency"; // Import the new utility
 
 // --- Type Definitions ---
 export type QuotationItemWithProduct = {
@@ -117,8 +118,6 @@ const QuotationsPage = () => {
     setSelectedQuotation(quotation);
     setIsViewDialogOpen(true);
   };
-
-  const formatCurrency = (amount: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
 
   return (
     <>

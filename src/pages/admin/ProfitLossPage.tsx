@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Calendar as CalendarIcon, Loader2, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/lib/currency"; // Import the new utility
 
 // --- Types ---
 type PaidOrder = {
@@ -55,9 +56,6 @@ const expenseFormSchema = z.object({
   expense_date: z.date({ required_error: "Expense date is required." }),
 });
 type ExpenseFormValues = z.infer<typeof expenseFormSchema>;
-
-// --- Helper ---
-const formatCurrency = (amount: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
 
 // --- Main Component ---
 const ProfitLossPage = () => {

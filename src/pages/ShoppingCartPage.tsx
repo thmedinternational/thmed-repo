@@ -3,20 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { formatCurrency } from "@/lib/currency"; // Import the new utility
 
 const ShoppingCartPage = () => {
   const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(price);
-  };
-
   const handleProceedToCheckout = () => {
     const phoneNumber = "27761120900"; // The specified WhatsApp number
-    const message = `Hello, I'd like to proceed with my order. My cart total is ${formatPrice(cartTotal)}.`;
+    const message = `Hello, I'd like to proceed with my order. My cart total is ${formatCurrency(cartTotal)}.`;
     window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
   };
 
@@ -53,7 +47,7 @@ const ShoppingCartPage = () => {
                 <Link to={`/products/${item.id}`}>
                   <h2 className="text-xl font-semibold hover:underline">{item.name}</h2>
                 </Link>
-                <p className="text-muted-foreground">{formatPrice(item.price)}</p>
+                <p className="text-muted-foreground">{formatCurrency(item.price)}</p>
               </div>
               <div className="flex items-center space-x-4">
                 <Input
@@ -77,7 +71,7 @@ const ShoppingCartPage = () => {
           <h2 className="text-2xl font-bold mb-4">Order Summary</h2>
           <div className="flex justify-between text-lg font-medium mb-2">
             <span>Subtotal:</span>
-            <span>{formatPrice(cartTotal)}</span>
+            <span>{formatCurrency(cartTotal)}</span>
           </div>
           <div className="flex justify-between text-lg font-medium mb-4">
             <span>Shipping:</span>
@@ -85,7 +79,7 @@ const ShoppingCartPage = () => {
           </div>
           <div className="border-t pt-4 mt-4 flex justify-between text-xl font-bold">
             <span>Total:</span>
-            <span>{formatPrice(cartTotal)}</span>
+            <span>{formatCurrency(cartTotal)}</span>
           </div>
           <Button className="w-full mt-6 py-3 text-lg" onClick={handleProceedToCheckout}>Proceed to Checkout</Button>
           <Button variant="outline" className="w-full mt-3" onClick={clearCart}>

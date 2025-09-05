@@ -29,6 +29,7 @@ import { PlusCircle } from "lucide-react";
 import { OrderForm, OrderFormValues } from "@/components/admin/OrderForm";
 import { OrderActions } from "@/components/admin/OrderActions";
 import { toast } from "sonner";
+import { formatCurrency } from "@/lib/currency"; // Import the new utility
 
 export type Order = {
   id: string;
@@ -121,13 +122,6 @@ const OrdersPage = () => {
       toast.error(`Failed to update status: ${error.message}`);
     },
   });
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
-  };
 
   const getStatusVariant = (status: Order["status"]) => {
     switch (status) {

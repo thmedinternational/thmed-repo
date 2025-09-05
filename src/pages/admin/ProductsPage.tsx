@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ProductForm, ProductFormValues } from "@/components/admin/ProductForm";
 import { toast } from "sonner";
+import { formatCurrency } from "@/lib/currency"; // Import the new utility
 
 export type Product = {
   id: string;
@@ -276,8 +277,8 @@ const ProductsPage = () => {
                     </TableCell>
                     <TableCell className="font-medium">{product.name}</TableCell>
                     <TableCell>{product.stock}</TableCell>
-                    <TableCell>${product.price.toFixed(2)}</TableCell>
-                    <TableCell>${product.cost.toFixed(2)}</TableCell>
+                    <TableCell>{formatCurrency(product.price)}</TableCell>
+                    <TableCell>{formatCurrency(product.cost)}</TableCell>
                     <TableCell>
                       {new Date(product.created_at).toLocaleDateString()}
                     </TableCell>
