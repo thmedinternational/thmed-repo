@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client"; // Changed from default to named import
+import { supabase } from "@/integrations/supabase/client";
 import ProductCard, { Product } from "./ProductCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -21,7 +21,7 @@ const ProductList = () => {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"> {/* Changed to grid-cols-2 for mobile, and gap-4 */}
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="flex flex-col space-y-3">
             <Skeleton className="h-[250px] w-full rounded-xl" />
@@ -47,7 +47,7 @@ const ProductList = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"> {/* Changed to grid-cols-2 for mobile, and gap-4 */}
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
