@@ -1,17 +1,45 @@
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2 } from "lucide-react";
+import { Trash2, MessageSquare, FileText, Truck } from "lucide-react"; // Added new icons
 import { Link } from "react-router-dom";
 import { formatCurrency } from "@/lib/currency"; // Import the new utility
+import { toast } from "sonner";
 
 const ShoppingCartPage = () => {
   const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
+  const whatsAppNumber = "27761120900"; // Your specified WhatsApp number
 
-  const handleProceedToCheckout = () => {
-    const phoneNumber = "27761120900"; // The specified WhatsApp number
-    const message = `Hello, I'd like to proceed with my order. My cart total is ${formatCurrency(cartTotal)}.`;
-    window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
+  const generateWhatsAppMessage = (type: 'checkout' | 'quotation' | 'delivery') => {
+    if (cartItems.length === 0) {
+      toast.error("Your cart is empty!");
+      return "";
+    }
+
+    let message = "";
+    const productList = cartItems.map(item => `- ${item.name} (x${item.quantity}) - ${formatCurrency(item.price * item.quantity)}`).join("\n");
+
+    switch (type) {
+      case 'checkout':
+        message = `Hello, I'd like to proceed with my order from SueGuard. My cart details are:\n\n${productList}\n\nTotal: ${formatCurrency(cartTotal)}\n\nPlease confirm my order and delivery options.`;
+        break;
+      case 'quotation':
+        message = `Hello, I'd like to request a quotation for the following items from SueGuard:\n\n${productList}\n\nEstimated Total: ${formatCurrency(cartTotal)}\n\nPlease provide a formal quote.`;
+        break;
+      case 'delivery':
+        message = `Hello, I'd like to discuss delivery arrangements for my order from SueGuard. My cart details are:\n\n${productList}\n\nTotal: ${formatCurrency(cartTotal)}\n\nPlease assist with delivery options.`;
+        break;
+      default:
+        message = "Hello, I have a question about my cart from SueGuard.";
+    }
+    return encodeURIComponent(message);
+  };
+
+  const handleWhatsAppAction = (type: 'checkout' | 'quotation' | 'delivery') => {
+    const encodedMessage = generateWhatsAppMessage(type);
+    if (encodedMessage) {
+      window.open(`https://wa.me/${whatsAppNumber}?text=${encodedMessage}`, "_blank");
+    }
   };
 
   if (cartItems.length === 0) {
@@ -55,7 +83,7 @@ const ShoppingCartPage = () => {
                   min="1"
                   max={item.stock}
                   value={item.quantity}
-                  onChange={(e) => updateQuantity(item.id, parseInt(e.target.value))}
+                  onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 1)}
                   className="w-20 text-center"
                 />
                 <Button variant="destructive" size="icon" onClick={() => removeFromCart(item.id)}>
@@ -67,7 +95,7 @@ const ShoppingCartPage = () => {
           ))}
         </div>
 
-        <div className="md:col-span-1 bg-secondary p-6 rounded-lg shadow-md sticky top-20">
+        <div className="md:col-span-1 bg-secondary p-6 rounded-lg shadow-md sticky top-20 text-secondary-foreground">
           <h2 className="text-2xl font-bold mb-4">Order Summary</h2>
           <div className="flex justify-between text-lg font-medium mb-2">
             <span>Subtotal:</span>
@@ -81,10 +109,21 @@ const ShoppingCartPage = () => {
             <span>Total:</span>
             <span>{formatCurrency(cartTotal)}</span>
           </div>
-          <Button className="w-full mt-6 py-3 text-lg" onClick={handleProceedToCheckout}>Proceed to Checkout</Button>
-          <Button variant="outline" className="w-full mt-3" onClick={clearCart}>
-            Clear Cart
-          </Button>
+          
+          <div className="mt-6 space-y-3">
+            <Button className="w-full py-3 text-lg bg-primary hover:bg-primary/90" onClick={() => handleWhatsAppAction('checkout')}>
+              <MessageSquare className="mr-2 h-5 w-5" /> Proceed to Checkout
+            </Button>
+            <Button variant="outline" className="w-full py-3 text-lg" onClick={() => handleWhatsAppAction('quotation')}>
+              <FileText className="mr-2 h-5 w-5" /> Request Quotation
+            </Button>
+            <Button variant="outline" className="w-full py-3 text-lg" onClick={() => handleWhatsAppAction('delivery')}>
+              <Truck className="mr-2 h-5 w-5" /> Arrange Delivery
+            </Button>
+            <Button variant="ghost" className="w-full mt-3 text-destructive hover:bg-destructive/10" onClick={clearCart}>
+              Clear Cart
+            </Button>
+          </div>
         </div>
       </div>
     </div>
