@@ -1,5 +1,3 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -17,7 +15,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Product } from "@/pages/admin/ProductsPage";
 import { useEffect, useState } from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const productFormSchema = z.object({
   name: z.string().min(2, {
@@ -28,7 +25,6 @@ const productFormSchema = z.object({
   cost: z.coerce.number().min(0, { message: "Cost must be a positive number." }),
   stock: z.coerce.number().int().min(0, { message: "Stock must be a positive integer." }),
   images: z.custom<FileList>().optional(),
-  category: z.string().optional(),
 });
 
 export type ProductFormValues = z.infer<typeof productFormSchema>;
@@ -48,7 +44,6 @@ export function ProductForm({ onSubmit, product, isSubmitting }: ProductFormProp
       price: product?.price ?? 0,
       cost: product?.cost ?? 0,
       stock: product?.stock ?? 0,
-      category: product?.category ?? "",
     },
   });
 
@@ -138,33 +133,6 @@ export function ProductForm({ onSubmit, product, isSubmitting }: ProductFormProp
             )}
             />
         </div>
-        <FormField
-          control={form.control}
-          name="category"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Category</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="Safety Training">Safety Training</SelectItem>
-                  <SelectItem value="Risk Assessment">Risk Assessment</SelectItem>
-                  <SelectItem value="PPE Supply">PPE Supply</SelectItem>
-                  <SelectItem value="Compliance Audits">Compliance Audits</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                Assign a category to this product for easier filtering.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="images"

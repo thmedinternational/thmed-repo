@@ -1,14 +1,7 @@
-"use client";
-
 import ProductList from "@/components/ProductList";
 import { HeroSlider } from "@/components/HeroSlider";
-import { useSearchParams } from "react-router-dom";
 
 const Index = () => {
-  const [searchParams] = useSearchParams();
-  const searchQuery = searchParams.get("search") || "";
-  const category = searchParams.get("category") || "";
-
   return (
     <div>
       <HeroSlider />
@@ -22,7 +15,7 @@ const Index = () => {
 
         <div className="mt-16">
           <h2 className="text-3xl font-bold text-center mb-8">Our Products</h2>
-          <ProductList searchQuery={searchQuery} category={category} />
+          <ProductList />
         </div>
       </div>
     </div>

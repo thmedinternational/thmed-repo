@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -37,7 +35,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ProductForm, ProductFormValues } from "@/components/admin/ProductForm";
 import { toast } from "sonner";
-import { formatCurrency } from "@/lib/currency";
+import { formatCurrency } from "@/lib/currency"; // Import the new utility
 
 export type Product = {
   id: string;
@@ -48,7 +46,6 @@ export type Product = {
   stock: number;
   image_urls: string[] | null;
   created_at: string;
-  category: string | null;
 };
 
 const fetchProducts = async () => {
@@ -59,7 +56,7 @@ const fetchProducts = async () => {
 
 const ProductsPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null); // New state for editing
   const queryClient = useQueryClient();
 
   const { data: products, isLoading, error } = useQuery<Product[]>({
@@ -104,7 +101,6 @@ const ProductsPage = () => {
           cost: newProduct.cost,
           stock: newProduct.stock,
           image_urls: imageUrls,
-          category: newProduct.category,
         },
       ]);
 
@@ -126,9 +122,10 @@ const ProductsPage = () => {
     mutationFn: async (updatedValues: ProductFormValues) => {
       if (!editingProduct) throw new Error("No product selected for update.");
 
-      let imageUrlsToSave: string[] | null = editingProduct.image_urls;
+      let imageUrlsToSave: string[] | null = editingProduct.image_urls; // Start with existing images
 
       if (updatedValues.images && updatedValues.images.length > 0) {
+        // New images provided, upload them
         const uploadPromises = Array.from(updatedValues.images).map(async (file) => {
           const fileName = `public/${Date.now()}-${file.name}`;
           const { error: uploadError } = await supabase.storage
@@ -150,6 +147,7 @@ const ProductsPage = () => {
         });
         imageUrlsToSave = await Promise.all(uploadPromises);
       }
+      // If updatedValues.images is undefined/empty, imageUrlsToSave remains editingProduct.image_urls
 
       const { error } = await supabase
         .from("products")
@@ -160,7 +158,6 @@ const ProductsPage = () => {
           cost: updatedValues.cost,
           stock: updatedValues.stock,
           image_urls: imageUrlsToSave,
-          category: updatedValues.category,
         })
         .eq("id", editingProduct.id);
 
@@ -172,7 +169,7 @@ const ProductsPage = () => {
       toast.success("Product updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["products"] });
       setIsDialogOpen(false);
-      setEditingProduct(null);
+      setEditingProduct(null); // Clear editing state
     },
     onError: (error) => {
       toast.error(`Failed to update product: ${error.message}`);
@@ -192,10 +189,11 @@ const ProductsPage = () => {
     setIsDialogOpen(true);
   };
 
+  // Reset editingProduct when dialog closes
   const handleDialogChange = (open: boolean) => {
     setIsDialogOpen(open);
     if (!open) {
-      setEditingProduct(null);
+      setEditingProduct(null); // Clear editing state when dialog closes
     }
   };
 
@@ -203,23 +201,23 @@ const ProductsPage = () => {
     <>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Products</h1>
-        <Dialog open={isDialogOpen} onOpenChange={handleDialogChange}>
+        <Dialog open={isDialogOpen} onOpenChange={handleDialogChange}> {/* Use handleDialogChange */}
           <DialogTrigger asChild>
-            <Button onClick={() => setEditingProduct(null)}>
+            <Button onClick={() => setEditingProduct(null)}> {/* Clear editing state when opening for new product */}
               <PlusCircle className="mr-2 h-4 w-4" />
               Add Product
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>{editingProduct ? "Edit Product" : "Add New Product"}</DialogTitle>
+              <DialogTitle>{editingProduct ? "Edit Product" : "Add New Product"}</DialogTitle> {/* Dynamic title */}
               <DialogDescription>
-                {editingProduct ? "Update the details for this product." : "Fill in the details below to add a new product to your store."}
+                {editingProduct ? "Update the details for this product." : "Fill in the details below to add a new product to your store."} {/* Dynamic description */}
               </DialogDescription>
             </DialogHeader>
             <ProductForm
               onSubmit={editingProduct ? handleUpdateProduct : handleAddProduct}
-              product={editingProduct || undefined}
+              product={editingProduct || undefined} // Pass product for editing
               isSubmitting={addProductMutation.isPending || updateProductMutation.isPending}
             />
           </DialogContent>
@@ -239,7 +237,6 @@ const ProductsPage = () => {
               <TableRow>
                 <TableHead className="w-[64px]">Image</TableHead>
                 <TableHead>Name</TableHead>
-                <TableHead>Category</TableHead>
                 <TableHead>Stock</TableHead>
                 <TableHead>Price</TableHead>
                 <TableHead>Cost</TableHead>
@@ -252,13 +249,13 @@ const ProductsPage = () => {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="h-24 text-center">
+                  <TableCell colSpan={7} className="h-24 text-center">
                     Loading products...
                   </TableCell>
                 </TableRow>
               ) : error ? (
                  <TableRow>
-                  <TableCell colSpan={8} className="h-24 text-center text-red-500">
+                  <TableCell colSpan={7} className="h-24 text-center text-red-500">
                     Error loading products: {error.message}
                   </TableCell>
                 </TableRow>
@@ -279,7 +276,6 @@ const ProductsPage = () => {
                       )}
                     </TableCell>
                     <TableCell className="font-medium">{product.name}</TableCell>
-                    <TableCell>{product.category || 'N/A'}</TableCell>
                     <TableCell>{product.stock}</TableCell>
                     <TableCell>{formatCurrency(product.price)}</TableCell>
                     <TableCell>{formatCurrency(product.cost)}</TableCell>
@@ -296,7 +292,7 @@ const ProductsPage = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem onClick={() => handleEditClick(product)}>Edit</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleEditClick(product)}>Edit</DropdownMenuItem> {/* Add onClick */}
                           <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -305,7 +301,7 @@ const ProductsPage = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={8} className="h-24 text-center">
+                  <TableCell colSpan={7} className="h-24 text-center">
                     No products found.
                   </TableCell>
                 </TableRow>

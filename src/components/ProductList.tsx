@@ -1,26 +1,10 @@
-"use client";
-
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import ProductCard, { Product } from "./ProductCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
-interface ProductListProps {
-  searchQuery?: string;
-  category?: string;
-}
-
-const fetchProducts = async ({ searchQuery, category }: ProductListProps): Promise<Product[]> => {
-  let query = supabase.from("products").select("*").order('created_at', { ascending: false });
-
-  if (searchQuery) {
-    query = query.ilike("name", `%${searchQuery}%`);
-  }
-  if (category) {
-    query = query.eq("category", category);
-  }
-
-  const { data, error } = await query;
+const fetchProducts = async (): Promise<Product[]> => {
+  const { data, error } = await supabase.from("products").select("*").order('created_at', { ascending: false });
 
   if (error) {
     throw new Error(error.message);
@@ -29,15 +13,15 @@ const fetchProducts = async ({ searchQuery, category }: ProductListProps): Promi
   return data as Product[];
 };
 
-const ProductList = ({ searchQuery, category }: ProductListProps) => {
+const ProductList = () => {
   const { data: products, isLoading, isError, error } = useQuery({
-    queryKey: ["products", searchQuery, category],
-    queryFn: () => fetchProducts({ searchQuery, category }),
+    queryKey: ["products"],
+    queryFn: fetchProducts,
   });
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"> {/* Changed to grid-cols-2 for mobile, and gap-4 */}
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="flex flex-col space-y-3">
             <Skeleton className="h-[250px] w-full rounded-xl" />
@@ -63,7 +47,7 @@ const ProductList = ({ searchQuery, category }: ProductListProps) => {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"> {/* Changed to grid-cols-2 for mobile, and gap-4 */}
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
