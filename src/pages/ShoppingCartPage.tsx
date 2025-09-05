@@ -117,10 +117,16 @@ const ShoppingCartPage = () => {
             <Button className="w-full py-3 text-lg bg-primary hover:bg-primary/90" onClick={() => handleWhatsAppAction('checkout')}>
               <MessageSquare className="mr-2 h-5 w-5" /> Proceed to Checkout
             </Button>
-            <Button variant="outline" className="w-full py-3 text-lg border-white text-secondary-foreground hover:bg-secondary/80" onClick={() => handleWhatsAppAction('quotation')}>
+            <Button 
+              className="w-full py-3 text-lg bg-secondary text-secondary-foreground border border-white hover:bg-secondary/80" 
+              onClick={() => handleWhatsAppAction('quotation')}
+            >
               <FileText className="mr-2 h-5 w-5" /> Request Quotation
             </Button>
-            <Button variant="outline" className="w-full py-3 text-lg border-white text-secondary-foreground hover:bg-secondary/80" onClick={() => handleWhatsAppAction('delivery')}>
+            <Button 
+              className="w-full py-3 text-lg bg-secondary text-secondary-foreground border border-white hover:bg-secondary/80" 
+              onClick={() => handleWhatsAppAction('delivery')}
+            >
               <Truck className="mr-2 h-5 w-5" /> Arrange Delivery
             </Button>
             <Button variant="ghost" className="w-full mt-3 text-destructive hover:bg-destructive/10" onClick={clearCart}>
