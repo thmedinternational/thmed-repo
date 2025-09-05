@@ -168,7 +168,7 @@ const SettingsPage = () => {
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="USD">USD - United States Dollar</SelectItem>
-                      <SelectItem value="ZAR">ZAR - South African Rand</SelectItem>
+                      <SelectItem value="ZAR">R - South African Rand</SelectItem>
                       <SelectItem value="EUR">EUR - Euro</SelectItem>
                       <SelectItem value="GBP">GBP - British Pound</SelectItem>
                       <SelectItem value="JPY">JPY - Japanese Yen</SelectItem>
