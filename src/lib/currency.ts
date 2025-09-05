@@ -4,7 +4,7 @@ export const formatCurrency = (amount: number, options?: Intl.NumberFormatOption
   const { settings } = useSettings();
   const currencyCode = settings?.currency || "USD"; // Default to USD if not set
 
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("en-ZA", { // Changed locale to 'en-ZA'
     style: "currency",
     currency: currencyCode,
     ...options,
