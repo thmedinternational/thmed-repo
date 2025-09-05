@@ -76,9 +76,9 @@ const ShoppingCartPage = () => {
               </Link>
               <div className="flex-grow">
                 <Link to={`/products/${item.id}`}>
-                  <h2 className="text-xl font-semibold hover:underline">{item.name}</h2>
+                  <h2 className="text-base md:text-xl font-semibold hover:underline">{item.name}</h2>
                 </Link>
-                <p className="text-muted-foreground">{formatCurrency(item.price, currencyCode)}</p>
+                <p className="text-sm md:text-base text-muted-foreground">{formatCurrency(item.price, currencyCode)}</p>
               </div>
               <div className="flex items-center space-x-4">
                 <Input
