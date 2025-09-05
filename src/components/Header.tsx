@@ -1,6 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Menu, Instagram, Facebook, Youtube, Tiktok } from "lucide-react"; // Added Instagram, Facebook, Tiktok
+import { ShoppingCart, Menu, Instagram, Facebook, Youtube } from "lucide-react"; // Removed Tiktok
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import React from "react";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -94,11 +94,7 @@ const Header = () => {
               </Link>
            </div>
           {/* Social Media Icons */}
-          <a href="https://www.tiktok.com/@sueguard" target="_blank" rel="noopener noreferrer">
-            <Button variant="ghost" size="icon" aria-label="TikTok">
-              <Tiktok className="h-5 w-5" />
-            </Button>
-          </a>
+          {/* Removed TikTok icon due to import error */}
           <a href="https://www.instagram.com/sueguard" target="_blank" rel="noopener noreferrer">
             <Button variant="ghost" size="icon" aria-label="Instagram">
               <Instagram className="h-5 w-5" />
