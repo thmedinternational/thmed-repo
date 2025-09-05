@@ -1,16 +1,16 @@
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Menu } from "lucide-react";
+import { ShoppingCart, Menu, Instagram, Facebook, Youtube, Tiktok } from "lucide-react"; // Added Instagram, Facebook, Tiktok
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import React from "react";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Skeleton } from "./ui/skeleton";
-import { useCart } from "@/contexts/CartContext"; // Import useCart
+import { useCart } from "@/contexts/CartContext";
 
 const Header = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const { settings, loading } = useSettings();
-  const { cartItemCount } = useCart(); // Get cart item count
+  const { cartItemCount } = useCart();
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `transition-colors hover:text-foreground/80 ${isActive ? 'text-foreground' : 'text-foreground/60'}`;
@@ -93,7 +93,23 @@ const Header = () => {
                 <span className="font-bold">{settings?.store_name || 'SueGuard'}</span>
               </Link>
            </div>
-          <Link to="/cart" className="relative"> {/* Added relative positioning for the badge */}
+          {/* Social Media Icons */}
+          <a href="https://www.tiktok.com/@sueguard" target="_blank" rel="noopener noreferrer">
+            <Button variant="ghost" size="icon" aria-label="TikTok">
+              <Tiktok className="h-5 w-5" />
+            </Button>
+          </a>
+          <a href="https://www.instagram.com/sueguard" target="_blank" rel="noopener noreferrer">
+            <Button variant="ghost" size="icon" aria-label="Instagram">
+              <Instagram className="h-5 w-5" />
+            </Button>
+          </a>
+          <a href="https://www.facebook.com/sueguard" target="_blank" rel="noopener noreferrer">
+            <Button variant="ghost" size="icon" aria-label="Facebook">
+              <Facebook className="h-5 w-5" />
+            </Button>
+          </a>
+          <Link to="/cart" className="relative">
             <Button variant="ghost" size="icon">
               <ShoppingCart className="h-5 w-5" />
               {cartItemCount > 0 && (
