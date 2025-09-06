@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import FeatureCard from "@/components/FeatureCard";
-import { Stethoscope, Heart, FlaskConical, Shield, Truck, Handshake } from "lucide-react"; // Updated icons
+import { Stethoscope, Heart, FlaskConical, Shield, Truck, Handshake, Globe, LifeBuoy } from "lucide-react"; // Updated icons
 
 const About = () => {
   return (
@@ -55,7 +55,7 @@ const About = () => {
             </p>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* What We Offer Section */}
       <section className="py-16 px-4 md:px-6">

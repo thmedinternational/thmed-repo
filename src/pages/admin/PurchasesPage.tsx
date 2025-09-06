@@ -25,7 +25,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { PlusCircle, CheckCircle, DollarSign, TrendingUp } from "lucide-react"; // Added DollarSign and TrendingUp icons
+import { PlusCircle, CheckCircle, DollarSign, TrendingUp, ShoppingBag } from "lucide-react"; // Added DollarSign, TrendingUp, and ShoppingBag icons
 import { PurchaseForm, PurchaseFormValues } from "@/components/admin/PurchaseForm";
 import { toast } from "sonner";
 import { formatCurrency } from "@/lib/currency";

@@ -7,7 +7,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarMenuLink,
   SidebarFooter,
   SidebarTrigger,
   SidebarInset,
