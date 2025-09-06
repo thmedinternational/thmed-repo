@@ -1,6 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Menu, Instagram, Facebook } from "lucide-react"; // Removed Youtube
+import { ShoppingCart, Menu } from "lucide-react"; // Removed Instagram, Facebook
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import React from "react";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -93,17 +93,6 @@ const Header = () => {
                 <span className="font-bold">{settings?.store_name || 'TH-MED International'}</span>
               </Link>
            </div>
-          {/* Social Media Icons */}
-          <a href="https://www.instagram.com/thmedinternational" target="_blank" rel="noopener noreferrer">
-            <Button variant="ghost" size="icon" aria-label="Instagram">
-              <Instagram className="h-5 w-5" />
-            </Button>
-          </a>
-          <a href="https://www.facebook.com/thmedinternational" target="_blank" rel="noopener noreferrer">
-            <Button variant="ghost" size="icon" aria-label="Facebook">
-              <Facebook className="h-5 w-5" />
-            </Button>
-          </a>
           <Link to="/cart" className="relative">
             <Button variant="ghost" size="icon">
               <ShoppingCart className="h-5 w-5" />
