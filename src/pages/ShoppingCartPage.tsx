@@ -8,12 +8,36 @@ import { toast } from "sonner";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { useState } from "react"; // Import useState
 
 const ShoppingCartPage = () => {
   const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
   const whatsAppNumber = "27768170495";
   const { settings } = useSettings();
   const currencyCode = settings?.currency || "USD";
+
+  const [userLocation, setUserLocation] = useState<string>("");
+  const [deliveryStatus, setDeliveryStatus] = useState<string>("");
+  const [showArrangeDeliveryButton, setShowArrangeDeliveryButton] = useState<boolean>(false);
+
+  const handleLocationInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserLocation(e.target.value);
+    setDeliveryStatus(""); // Clear status when input changes
+    setShowArrangeDeliveryButton(false);
+  };
+
+  const handleCheckLocation = () => {
+    if (userLocation.toLowerCase().includes("harare cbd")) {
+      setDeliveryStatus("Available");
+      setShowArrangeDeliveryButton(false);
+    } else if (userLocation.trim() !== "") {
+      setDeliveryStatus("Available on arranged delivery");
+      setShowArrangeDeliveryButton(true);
+    } else {
+      setDeliveryStatus("");
+      setShowArrangeDeliveryButton(false);
+    }
+  };
 
   const generateWhatsAppMessage = (type: 'checkout' | 'quotation' | 'delivery') => {
     if (cartItems.length === 0) {
@@ -32,7 +56,7 @@ const ShoppingCartPage = () => {
         message = `Hello, I'd like to request a quotation for the following items from TH-MED International:\n\n${productList}\n\nEstimated Total: ${formatCurrency(cartTotal, currencyCode)}\n\nPlease provide a formal quote.`;
         break;
       case 'delivery':
-        message = `Hello, I'd like to discuss delivery arrangements for my order from TH-MED International. My cart details are:\n\n${productList}\n\nTotal: ${formatCurrency(cartTotal, currencyCode)}\n\nPlease assist with delivery options.`;
+        message = `Hello, I'd like to discuss delivery arrangements for my order from TH-MED International. My cart details are:\n\n${productList}\n\nTotal: ${formatCurrency(cartTotal, currencyCode)}\n\nMy location is: ${userLocation}\n\nPlease assist with delivery options.`;
         break;
       default:
         message = "Hello, I have a question about my cart from TH-MED International.";
@@ -72,14 +96,42 @@ const ShoppingCartPage = () => {
         <div className="md:col-span-2 space-y-6">
           {/* Your Location Card */}
           <Card className="p-4">
-            <CardContent className="p-0 flex items-start space-x-3">
-              <MapPin className="h-5 w-5 text-muted-foreground mt-1" />
-              <div className="flex-grow">
-                <h3 className="font-semibold text-lg">Your location</h3>
-                <p className="text-muted-foreground">Harare, Zimbabwe</p>
-                <p className="text-sm text-blue-500">We need your address to check item availability</p>
+            <CardContent className="p-0 flex flex-col space-y-3">
+              <div className="flex items-start space-x-3">
+                <MapPin className="h-5 w-5 text-muted-foreground mt-1" />
+                <div className="flex-grow">
+                  <h3 className="font-semibold text-lg">Your location</h3>
+                  <p className="text-muted-foreground">Harare, Zimbabwe</p>
+                  <p className="text-sm text-blue-500">Enter your address to check item availability</p>
+                </div>
               </div>
-              <Button variant="outline" size="sm" className="rounded-md">Add address</Button>
+              <div className="flex space-x-2">
+                <Input 
+                  placeholder="e.g., Harare CBD, Avondale" 
+                  value={userLocation} 
+                  onChange={handleLocationInputChange} 
+                  className="flex-grow" 
+                />
+                <Button variant="outline" size="sm" onClick={handleCheckLocation}>Check</Button>
+              </div>
+              {deliveryStatus && (
+                <div className="mt-2 text-sm font-medium">
+                  {deliveryStatus === "Available" ? (
+                    <p className="text-green-600 flex items-center"><Info className="h-4 w-4 mr-1" /> {deliveryStatus}</p>
+                  ) : (
+                    <p className="text-orange-600 flex items-center"><Info className="h-4 w-4 mr-1" /> {deliveryStatus}</p>
+                  )}
+                </div>
+              )}
+              {showArrangeDeliveryButton && (
+                <Button 
+                  variant="secondary" 
+                  className="w-full mt-4 bg-secondary text-secondary-foreground hover:bg-secondary/80" 
+                  onClick={() => handleWhatsAppAction('delivery')}
+                >
+                  <Truck className="mr-2 h-5 w-5" /> Arrange Delivery via WhatsApp
+                </Button>
+              )}
             </CardContent>
           </Card>
 
