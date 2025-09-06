@@ -25,11 +25,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { PlusCircle, CheckCircle } from "lucide-react";
+import { PlusCircle, CheckCircle, DollarSign, TrendingUp } from "lucide-react"; // Added DollarSign and TrendingUp icons
 import { PurchaseForm, PurchaseFormValues } from "@/components/admin/PurchaseForm";
 import { toast } from "sonner";
 import { formatCurrency } from "@/lib/currency";
-import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
+import { useSettings } from "@/contexts/SettingsContext";
+import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton for loading states
 
 export type Purchase = {
   id: string;
@@ -49,16 +50,35 @@ const fetchPurchases = async () => {
   return data as Purchase[];
 };
 
+// New function to fetch total sales from paid orders
+const fetchTotalPaidSales = async () => {
+  const { data, error } = await supabase
+    .from("orders")
+    .select("total")
+    .eq("status", "paid");
+
+  if (error) throw new Error(error.message);
+  return data.reduce((sum, order) => sum + order.total, 0);
+};
+
 const PurchasesPage = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const queryClient = useQueryClient();
-  const { settings } = useSettings(); // Use the hook
-  const currencyCode = settings?.currency || "USD"; // Get currency code
+  const { settings } = useSettings();
+  const currencyCode = settings?.currency || "USD";
 
-  const { data: purchases, isLoading, error } = useQuery<Purchase[]>({
+  const { data: purchases, isLoading: isLoadingPurchases, error: purchasesError } = useQuery<Purchase[]>({
     queryKey: ["purchases"],
     queryFn: fetchPurchases,
   });
+
+  const { data: totalPaidSales, isLoading: isLoadingSales } = useQuery<number>({
+    queryKey: ["totalPaidSales"],
+    queryFn: fetchTotalPaidSales,
+  });
+
+  const totalPurchasesAmount = purchases?.reduce((sum, p) => sum + p.total_amount, 0) ?? 0;
+  const grossAmount = (totalPaidSales ?? 0) - totalPurchasesAmount;
 
   const addPurchaseMutation = useMutation({
     mutationFn: async (values: PurchaseFormValues) => {
@@ -96,6 +116,7 @@ const PurchasesPage = () => {
     onSuccess: () => {
       toast.success("Purchase created successfully!");
       queryClient.invalidateQueries({ queryKey: ["purchases"] });
+      queryClient.invalidateQueries({ queryKey: ["totalPaidSales"] }); // Invalidate sales data too
       setIsAddDialogOpen(false);
     },
     onError: (err: Error) => toast.error(`Failed to create purchase: ${err.message}`),
@@ -135,6 +156,48 @@ const PurchasesPage = () => {
         </Dialog>
       </div>
 
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Sales (Paid Orders)</CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            {isLoadingSales ? (
+              <Skeleton className="h-8 w-1/2" />
+            ) : (
+              <div className="text-2xl font-bold">{formatCurrency(totalPaidSales ?? 0, currencyCode)}</div>
+            )}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Purchases</CardTitle>
+            <ShoppingBag className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            {isLoadingPurchases ? (
+              <Skeleton className="h-8 w-1/2" />
+            ) : (
+              <div className="text-2xl font-bold">{formatCurrency(totalPurchasesAmount, currencyCode)}</div>
+            )}
+          </CardContent>
+        </Card>
+        <Card className={grossAmount >= 0 ? "bg-green-50 dark:bg-green-900/20" : "bg-red-50 dark:bg-red-900/20"}>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Gross (Sales - Purchases)</CardTitle>
+            <TrendingUp className="h-4 w-4" />
+          </CardHeader>
+          <CardContent>
+            {(isLoadingSales || isLoadingPurchases) ? (
+              <Skeleton className="h-8 w-1/2" />
+            ) : (
+              <div className="text-2xl font-bold">{formatCurrency(grossAmount, currencyCode)}</div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
       <Card>
         <CardHeader>
           <CardTitle>Purchase History</CardTitle>
@@ -152,10 +215,10 @@ const PurchasesPage = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading ? (
+              {isLoadingPurchases ? (
                 <TableRow><TableCell colSpan={5} className="h-24 text-center">Loading...</TableCell></TableRow>
-              ) : error ? (
-                <TableRow><TableCell colSpan={5} className="h-24 text-center text-red-500">{error.message}</TableCell></TableRow>
+              ) : purchasesError ? (
+                <TableRow><TableCell colSpan={5} className="h-24 text-center text-red-500">{purchasesError.message}</TableCell></TableRow>
               ) : purchases?.length ? (
                 purchases.map((purchase) => (
                   <TableRow key={purchase.id}>
