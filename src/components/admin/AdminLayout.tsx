@@ -7,6 +7,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarMenuLink,
   SidebarFooter,
   SidebarTrigger,
   SidebarInset,
@@ -171,7 +172,7 @@ const AdminLayout = () => {
               <Store className="size-6" />
             )}
             <span className="text-lg font-semibold hidden md:block"> {/* Store name next to logo on larger screens */}
-              {loading ? <Skeleton className="h-5 w-32" /> : settings?.store_name || 'SueGuard'}
+              {loading ? <Skeleton className="h-5 w-32" /> : settings?.store_name || 'TH-MED International'}
             </span>
           </div>
         </header>

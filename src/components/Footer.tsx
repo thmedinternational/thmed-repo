@@ -13,16 +13,16 @@ const Footer = () => {
         {/* Store Info */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">
-            {loading ? <Skeleton className="h-6 w-32 bg-gray-700" /> : settings?.store_name || 'SueGuard'}
+            {loading ? <Skeleton className="h-6 w-32 bg-gray-700" /> : settings?.store_name || 'TH-MED International'}
           </h3>
           <p className="text-sm text-secondary-foreground/70">
-            Your one-stop shop for high-quality products and exceptional service.
+            Your trusted partner for high-quality medical and health products.
           </p>
           <div className="flex space-x-4">
-            <a href="#" aria-label="Facebook" className="text-secondary-foreground/70 hover:text-primary">
+            <a href="https://www.facebook.com/thmedinternational" aria-label="Facebook" className="text-secondary-foreground/70 hover:text-primary">
               <Facebook size={20} />
             </a>
-            <a href="#" aria-label="WhatsApp" className="text-secondary-foreground/70 hover:text-primary">
+            <a href="https://wa.me/27768170495" aria-label="WhatsApp" className="text-secondary-foreground/70 hover:text-primary">
               <MessageCircle size={20} />
             </a>
           </div>
@@ -42,9 +42,9 @@ const Footer = () => {
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Services</h3>
            <ul className="space-y-2 text-sm">
-            <li><span className="text-secondary-foreground/70">Product Sales</span></li>
+            <li><span className="text-secondary-foreground/70">Medical Equipment Sales</span></li>
+            <li><span className="text-secondary-foreground/70">Health Product Distribution</span></li>
             <li><span className="text-secondary-foreground/70">Customer Support</span></li>
-            <li><span className="text-secondary-foreground/70">Order Management</span></li>
           </ul>
         </div>
 
@@ -66,29 +66,18 @@ const Footer = () => {
             </li>
             <li className="flex items-center">
               <Mail size={16} className="mr-2 shrink-0" />
-              <span className="text-secondary-foreground/70">Suzan@sueguard.com</span>
+              <span className="text-secondary-foreground/70">info@thmedinternational.com</span>
             </li>
              <li className="flex items-center">
               <Mail size={16} className="mr-2 shrink-0" />
-              <span className="text-secondary-foreground/70">info@sueguard.com</span>
+              <span className="text-secondary-foreground/70">sales@thmedinternational.com</span>
             </li>
           </ul>
         </div>
       </div>
       <div className="container mx-auto text-center text-sm mt-12 pt-6 border-t border-gray-700">
-        <p>
-          Website design by{' '}
-          <a
-            href="https://www.camsnett.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold underline hover:text-primary"
-          >
-            www.camsnett.com
-          </a>
-        </p>
         <p className="mt-2">
-          © 2025 SueGuard Risk &amp; Management (Pty) Ltd. All rights reserved.
+          © 2025 TH-MED International. All rights reserved.
         </p>
       </div>
     </footer>

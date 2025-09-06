@@ -18,6 +18,11 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["Montserrat", "sans-serif"], // Default body font
+        montserrat: ["Montserrat", "sans-serif"], // Explicitly add Montserrat
+        poppins: ["Poppins", "sans-serif"], // For headlines
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -66,6 +71,7 @@ export default {
           DEFAULT: "hsl(var(--primary))", // Changed to primary
           foreground: "hsl(var(--primary-foreground))", // Changed to primary-foreground
         },
+        magenta: "hsl(var(--magenta))", // Custom magenta color
       },
       borderRadius: {
         lg: "var(--radius)",

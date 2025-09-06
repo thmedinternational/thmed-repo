@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">SueGuard Risk &amp; Management</string>
-    <string name="title_activity_main">SueGuard Risk &amp; Management</string>
-    <string name="package_name">com.sueguard.riskmanagement</string>
-    <string name="custom_url_scheme">com.sueguard.riskmanagement</string>
+    <string name="app_name">TH-MED International</string>
+    <string name="title_activity_main">TH-MED International</string>
+    <string name="package_name">com.thmedinternational.app</string>
+    <string name="custom_url_scheme">com.thmedinternational.app</string>
 </resources>

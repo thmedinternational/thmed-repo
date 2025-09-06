@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Poppins:wght@400;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -47,6 +49,9 @@
     /* Add to Cart Button Color */
     --add-to-cart-button: var(--primary); /* Changed to primary */
     --add-to-cart-button-foreground: var(--primary-foreground); /* Changed to primary-foreground */
+
+    /* Custom Magenta Color */
+    --magenta: 300 100% 50%; /* HSL for a vibrant magenta */
   }
 
   .dark {
@@ -91,6 +96,9 @@
     /* Add to Cart Button Color */
     --add-to-cart-button: var(--primary); /* Changed to primary */
     --add-to-cart-button-foreground: var(--primary-foreground); /* Changed to primary-foreground */
+
+    /* Custom Magenta Color */
+    --magenta: 300 100% 50%; /* HSL for a vibrant magenta */
   }
 }
 
@@ -100,6 +108,6 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-montserrat font-light; /* Set Montserrat Light as default body font */
   }
 }

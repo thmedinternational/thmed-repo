@@ -1,6 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Menu, Instagram, Facebook, Youtube } from "lucide-react"; // Removed Tiktok
+import { ShoppingCart, Menu, Instagram, Facebook } from "lucide-react"; // Removed Youtube
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import React from "react";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -33,7 +33,7 @@ const Header = () => {
         )
       )}
       <span className="font-bold">
-        {loading ? <Skeleton className="h-5 w-24" /> : settings?.store_name || 'SueGuard'}
+        {loading ? <Skeleton className="h-5 w-24" /> : settings?.store_name || 'TH-MED International'}
       </span>
     </div>
   );
@@ -69,7 +69,7 @@ const Header = () => {
             <SheetContent side="left">
               <div className="p-4">
                 <Link to="/" className="mb-8 flex items-center space-x-2" onClick={() => setIsOpen(false)}>
-                  <span className="font-bold text-xl">{settings?.store_name || 'SueGuard'}</span>
+                  <span className="font-bold text-xl">{settings?.store_name || 'TH-MED International'}</span>
                 </Link>
                 <nav className="flex flex-col space-y-4">
                   <NavLink to="/" className={mobileNavLinkClass} onClick={() => setIsOpen(false)}>
@@ -90,17 +90,16 @@ const Header = () => {
         <div className="flex flex-1 items-center justify-end space-x-2">
            <div className="md:hidden flex-1">
              <Link to="/" className="flex items-center justify-center space-x-2">
-                <span className="font-bold">{settings?.store_name || 'SueGuard'}</span>
+                <span className="font-bold">{settings?.store_name || 'TH-MED International'}</span>
               </Link>
            </div>
           {/* Social Media Icons */}
-          {/* Removed TikTok icon due to import error */}
-          <a href="https://www.instagram.com/sueguard" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.instagram.com/thmedinternational" target="_blank" rel="noopener noreferrer">
             <Button variant="ghost" size="icon" aria-label="Instagram">
               <Instagram className="h-5 w-5" />
             </Button>
           </a>
-          <a href="https://www.facebook.com/sueguard" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.facebook.com/thmedinternational" target="_blank" rel="noopener noreferrer">
             <Button variant="ghost" size="icon" aria-label="Facebook">
               <Facebook className="h-5 w-5" />
             </Button>

@@ -27,10 +27,9 @@ const formSchema = z.object({
   phone_number: z.string().optional(),
   company_name: z.string().optional(),
   service_required: z.enum([
-    "Safety Training",
-    "Risk Assessment",
-    "PPE Supply",
-    "Compliance Audits",
+    "Medical Equipment",
+    "Pharmaceutical Supplies",
+    "Health & Wellness Products",
     "Other",
   ], { required_error: "Please select a service." }),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
@@ -70,12 +69,12 @@ const Contact = () => {
 
   return (
     <div className="container mx-auto py-12 px-4 md:px-6">
-      <div className="max-w-3xl mx-auto text-left"> {/* Adjusted for full width and centering */}
-        <h1 className="text-4xl font-bold tracking-tight">Talk to Us</h1>
-        <p className="mt-4 text-lg text-muted-foreground">
-          We're here to help with your safety, compliance, and equipment needs.
+      <div className="max-w-3xl mx-auto text-left">
+        <h1 className="text-4xl font-poppins font-bold tracking-tight text-magenta">Talk to Us</h1>
+        <p className="mt-4 text-lg font-montserrat font-light text-muted-foreground">
+          We're here to help with your medical equipment and health product needs.
         </p>
-        <p className="mt-2 text-muted-foreground">
+        <p className="mt-2 font-montserrat font-light text-muted-foreground">
           Have a question or want to place an order? Fill out the form below.
         </p>
         <Form {...form}>
@@ -145,10 +144,9 @@ const Contact = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Safety Training">Safety Training</SelectItem>
-                      <SelectItem value="Risk Assessment">Risk Assessment</SelectItem>
-                      <SelectItem value="PPE Supply">PPE Supply</SelectItem>
-                      <SelectItem value="Compliance Audits">Compliance Audits</SelectItem>
+                      <SelectItem value="Medical Equipment">Medical Equipment</SelectItem>
+                      <SelectItem value="Pharmaceutical Supplies">Pharmaceutical Supplies</SelectItem>
+                      <SelectItem value="Health & Wellness Products">Health & Wellness Products</SelectItem>
                       <SelectItem value="Other">Other</SelectItem>
                     </SelectContent>
                   </Select>

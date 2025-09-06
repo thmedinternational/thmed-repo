@@ -24,16 +24,16 @@ const ShoppingCartPage = () => {
 
     switch (type) {
       case 'checkout':
-        message = `Hello, I'd like to proceed with my order from SueGuard. My cart details are:\n\n${productList}\n\nTotal: ${formatCurrency(cartTotal, currencyCode)}\n\nPlease confirm my order and delivery options.`;
+        message = `Hello, I'd like to proceed with my order from TH-MED International. My cart details are:\n\n${productList}\n\nTotal: ${formatCurrency(cartTotal, currencyCode)}\n\nPlease confirm my order and delivery options.`;
         break;
       case 'quotation':
-        message = `Hello, I'd like to request a quotation for the following items from SueGuard:\n\n${productList}\n\nEstimated Total: ${formatCurrency(cartTotal, currencyCode)}\n\nPlease provide a formal quote.`;
+        message = `Hello, I'd like to request a quotation for the following items from TH-MED International:\n\n${productList}\n\nEstimated Total: ${formatCurrency(cartTotal, currencyCode)}\n\nPlease provide a formal quote.`;
         break;
       case 'delivery':
-        message = `Hello, I'd like to discuss delivery arrangements for my order from SueGuard. My cart details are:\n\n${productList}\n\nTotal: ${formatCurrency(cartTotal, currencyCode)}\n\nPlease assist with delivery options.`;
+        message = `Hello, I'd like to discuss delivery arrangements for my order from TH-MED International. My cart details are:\n\n${productList}\n\nTotal: ${formatCurrency(cartTotal, currencyCode)}\n\nPlease assist with delivery options.`;
         break;
       default:
-        message = "Hello, I have a question about my cart from SueGuard.";
+        message = "Hello, I have a question about my cart from TH-MED International.";
     }
     return encodeURIComponent(message);
   };
@@ -48,8 +48,8 @@ const ShoppingCartPage = () => {
   if (cartItems.length === 0) {
     return (
       <div className="container mx-auto py-12 px-4 md:px-6 text-center">
-        <h1 className="text-4xl font-bold tracking-tight mb-4">Your Cart is Empty</h1>
-        <p className="text-lg text-muted-foreground mb-8">
+        <h1 className="text-4xl font-poppins font-bold tracking-tight mb-4 text-magenta">Your Cart is Empty</h1>
+        <p className="text-lg font-montserrat font-light text-muted-foreground mb-8">
           Looks like you haven't added anything to your cart yet.
         </p>
         <Link to="/">
@@ -61,7 +61,7 @@ const ShoppingCartPage = () => {
 
   return (
     <div className="container mx-auto py-12 px-4 md:px-6">
-      <h1 className="text-4xl font-bold tracking-tight mb-8 text-center">Your Shopping Cart</h1>
+      <h1 className="text-4xl font-poppins font-bold tracking-tight mb-8 text-center text-magenta">Your Shopping Cart</h1>
 
       <div className="grid md:grid-cols-3 gap-8">
         <div className="md:col-span-2 space-y-6">
@@ -99,7 +99,7 @@ const ShoppingCartPage = () => {
         </div>
 
         <div className="md:col-span-1 bg-secondary p-6 rounded-lg shadow-md sticky top-20 text-secondary-foreground">
-          <h2 className="text-2xl font-bold mb-4">Order Summary</h2>
+          <h2 className="text-2xl font-poppins font-bold mb-4">Order Summary</h2>
           <div className="flex justify-between text-lg font-medium mb-2">
             <span>Subtotal:</span>
             <span>{formatCurrency(cartTotal, currencyCode)}</span>
@@ -108,7 +108,7 @@ const ShoppingCartPage = () => {
             <span>Shipping:</span>
             <span>Free</span> {/* For now, assuming free shipping */}
           </div>
-          <div className="border-t pt-4 mt-4 flex justify-between text-xl font-bold tracking-tight">
+          <div className="border-t pt-4 mt-4 flex justify-between text-xl font-poppins font-bold tracking-tight">
             <span>Total:</span>
             <span>{formatCurrency(cartTotal, currencyCode)}</span>
           </div>
