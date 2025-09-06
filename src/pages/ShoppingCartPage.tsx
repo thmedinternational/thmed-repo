@@ -76,7 +76,7 @@ const ShoppingCartPage = () => {
               <MapPin className="h-5 w-5 text-muted-foreground mt-1" />
               <div className="flex-grow">
                 <h3 className="font-semibold text-lg">Your location</h3>
-                <p className="text-muted-foreground">c/o Gauteng, Midrand, 1682</p>
+                <p className="text-muted-foreground">Harare, Zimbabwe</p>
                 <p className="text-sm text-blue-500">We need your address to check item availability</p>
               </div>
               <Button variant="outline" size="sm" className="rounded-md">Add address</Button>
