@@ -15,9 +15,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setSession(session);
-      setLoading(false);
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Error fetching Supabase session:", error);
+          // Optionally, you could set an error state here to display a message to the user
+        } else {
+          setSession(session);
+        }
+      } catch (err) {
+        console.error("An unexpected error occurred while getting Supabase session:", err);
+      } finally {
+        setLoading(false);
+      }
     }
     getSession();
 
