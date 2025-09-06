@@ -37,6 +37,7 @@ import { ProductForm, ProductFormValues } from "@/components/admin/ProductForm";
 import { toast } from "sonner";
 import { formatCurrency } from "@/lib/currency";
 import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
+import { useAuth } from "@/contexts/AuthContext"; // Import useAuth to get session
 
 export type Product = {
   id: string;
@@ -60,6 +61,7 @@ const ProductsPage = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null); // New state for editing
   const queryClient = useQueryClient();
   const { settings } = useSettings(); // Use the hook
+  const { session } = useAuth(); // Get session from AuthContext
   const currencyCode = settings?.currency || "USD"; // Get currency code
 
   const { data: products, isLoading, error } = useQuery<Product[]>({
@@ -69,13 +71,15 @@ const ProductsPage = () => {
 
   const addProductMutation = useMutation({
     mutationFn: async (newProduct: ProductFormValues) => {
+      if (!session) throw new Error("User not authenticated.");
+
       let imageUrls: string[] = [];
 
       if (newProduct.images && newProduct.images.length > 0) {
         const uploadPromises = Array.from(newProduct.images).map(async (file) => {
-          const fileName = `public/${Date.now()}-${file.name}`;
+          const fileName = `public/${session.user.id}/${Date.now()}-${file.name}`; // Include user.id in path
           const { error: uploadError } = await supabase.storage
-            .from("product-images") // Changed from "store-assets" to "product-images"
+            .from("product-images")
             .upload(fileName, file);
 
           if (uploadError) {
@@ -83,7 +87,7 @@ const ProductsPage = () => {
           }
 
           const { data: { publicUrl } } = supabase.storage
-            .from("product-images") // Changed from "store-assets" to "product-images"
+            .from("product-images")
             .getPublicUrl(fileName);
           
           if (!publicUrl) {
@@ -124,15 +128,16 @@ const ProductsPage = () => {
   const updateProductMutation = useMutation({
     mutationFn: async (updatedValues: ProductFormValues) => {
       if (!editingProduct) throw new Error("No product selected for update.");
+      if (!session) throw new Error("User not authenticated.");
 
       let imageUrlsToSave: string[] | null = editingProduct.image_urls; // Start with existing images
 
       if (updatedValues.images && updatedValues.images.length > 0) {
         // New images provided, upload them
         const uploadPromises = Array.from(updatedValues.images).map(async (file) => {
-          const fileName = `public/${Date.now()}-${file.name}`;
+          const fileName = `public/${session.user.id}/${Date.now()}-${file.name}`; // Include user.id in path
           const { error: uploadError } = await supabase.storage
-            .from("product-images") // Changed from "store-assets" to "product-images"
+            .from("product-images")
             .upload(fileName, file);
 
           if (uploadError) {
@@ -140,7 +145,7 @@ const ProductsPage = () => {
           }
 
           const { data: { publicUrl } } = supabase.storage
-            .from("product-images") // Changed from "store-assets" to "product-images"
+            .from("product-images")
             .getPublicUrl(fileName);
 
           if (!publicUrl) {
