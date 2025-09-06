@@ -21,7 +21,7 @@ const Footer = () => {
           />
         )
       )}
-      <span className="font-bold text-background">
+      <span className="font-bold text-white"> {/* Changed text-background to text-white */}
         {loading ? <Skeleton className="h-5 w-24 bg-gray-500" /> : settings?.store_name || 'TH-MED International'}
       </span>
     </div>
@@ -36,13 +36,13 @@ const Footer = () => {
             <StoreLogoAndName />
           </Link>
           <div className="flex items-center space-x-4">
-            <a href="https://www.instagram.com/thmedinternational" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-background hover:text-primary">
+            <a href="https://www.instagram.com/thmedinternational" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-white hover:text-primary"> {/* Changed text-background to text-white */}
               <Instagram size={20} />
             </a>
-            <a href="https://www.facebook.com/thmedinternational" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-background hover:text-primary">
+            <a href="https://www.facebook.com/thmedinternational" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-white hover:text-primary"> {/* Changed text-background to text-white */}
               <Facebook size={20} />
             </a>
-            <a href="https://wa.me/27768170495" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-background hover:text-primary">
+            <a href="https://wa.me/27768170495" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-white hover:text-primary"> {/* Changed text-background to text-white */}
               <MessageCircle size={20} />
             </a>
           </div>
