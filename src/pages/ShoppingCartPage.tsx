@@ -164,7 +164,7 @@ const ShoppingCartPage = () => {
           </Card>
 
           {/* Order Summary Card */}
-          <Card className="p-4 bg-secondary text-secondary-foreground shadow-md">
+          <Card className="p-4 bg-white text-muted-foreground shadow-sm border border-gray-200">
             <CardHeader className="p-0 mb-4">
               <CardTitle className="text-2xl font-poppins font-bold">Price details</CardTitle>
             </CardHeader>
@@ -177,7 +177,7 @@ const ShoppingCartPage = () => {
                 <span>Promotional Savings</span>
                 <span>- {formatCurrency(400, currencyCode)}</span>
               </div> */}
-              <div className="flex justify-between text-base font-medium border-t border-secondary-foreground/50 pt-2">
+              <div className="flex justify-between text-base font-medium border-t border-gray-200 pt-2">
                 <span>Sub Total</span>
                 <span>{formatCurrency(cartTotal, currencyCode)}</span>
               </div>
@@ -185,11 +185,11 @@ const ShoppingCartPage = () => {
                 <span>Delivery fee</span>
                 <span>Delivery fee may be added</span>
               </div>
-              <div className="border-t border-secondary-foreground/50 pt-4 mt-4 flex justify-between text-xl font-poppins font-bold tracking-tight">
+              <div className="border-t border-gray-200 pt-4 mt-4 flex justify-between text-xl font-poppins font-bold tracking-tight">
                 <span>Total amount:</span>
                 <span>{formatCurrency(cartTotal, currencyCode)}</span>
               </div>
-              <div className="flex items-center space-x-2 text-sm mt-4 pt-4 border-t border-secondary-foreground/50">
+              <div className="flex items-center space-x-2 text-sm mt-4 pt-4 border-t border-gray-200">
                 <Info className="h-4 w-4" />
                 <p>Get free delivery on orders above {formatCurrency(500, currencyCode)}</p>
               </div>
