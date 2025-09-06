@@ -79,6 +79,9 @@ const Footer = () => {
         <p className="mt-2">
           © 2025 TH-MED International. All rights reserved.
         </p>
+        <p className="mt-1">
+          Designed by <a href="https://camsnett.com" target="_blank" rel="noopener noreferrer" className="hover:underline text-primary">camsnett.com</a>
+        </p>
       </div>
     </footer>
   );
