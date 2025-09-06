@@ -43,7 +43,7 @@ export function HeroSlider() {
 
   if (isLoading) {
     return (
-      <div className="w-full"> {/* Changed from section to div */}
+      <div className="w-full">
         <Skeleton className="w-full aspect-[3/1]" />
       </div>
     );
@@ -51,7 +51,7 @@ export function HeroSlider() {
 
   if (isError || !slides || slides.length === 0) {
     return (
-        <div className="w-full"> {/* Changed from section to div */}
+        <div className="w-full">
             <div className="flex aspect-[3/1] items-center justify-center bg-muted">
                 <p className="text-muted-foreground">Could not load slides. Please add slides in the admin dashboard.</p>
             </div>
@@ -60,7 +60,7 @@ export function HeroSlider() {
   }
 
   return (
-    <div className="w-full"> {/* Changed from section to div */}
+    <div className="w-full">
       <Carousel
         plugins={[plugin.current]}
         className="w-full"
