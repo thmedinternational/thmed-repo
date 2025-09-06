@@ -146,7 +146,7 @@ const AdminLayout = () => {
                 </SidebarMenuButton>
               </SidebarMenuItem>
            </SidebarMenu>
-           <Button asChild className="w-full bg-blue-600 text-white hover:bg-blue-600">
+           <Button asChild className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/80">
               <Link to="/">Back to Store</Link>
             </Button>
         </SidebarFooter>
