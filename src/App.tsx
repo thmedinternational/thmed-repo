@@ -19,7 +19,6 @@ import ProfitLossPage from "./pages/admin/ProfitLossPage";
 import PurchasesPage from "./pages/admin/PurchasesPage";
 import QuotationsPage from "./pages/admin/QuotationsPage";
 import SettingsPage from "./pages/admin/SettingsPage";
-import HeroSettingsPage from "./pages/admin/HeroSettingsPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import { SettingsProvider } from "./contexts/SettingsContext";
 import Login from "./pages/Login";
@@ -64,7 +63,7 @@ const App = () => (
                     <Route path="receipts" element={<ReceiptsPage />} />
                     <Route path="profit-loss" element={<ProfitLossPage />} />
                     <Route path="analytics" element={<AnalyticsPage />} />
-                    <Route path="hero-settings" element={<HeroSettingsPage />} />
+                    {/* <Route path="hero-settings" element={<HeroSettingsPage />} /> */}
                     <Route path="settings" element={<SettingsPage />} />
                   </Route>
                 </Route>

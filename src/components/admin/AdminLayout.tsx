@@ -12,7 +12,7 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag, FileText, Settings, GalleryHorizontal, LogOut } from "lucide-react";
+import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag, FileText, Settings, LogOut } from "lucide-react"; // Removed GalleryHorizontal
 import { useSettings } from "@/contexts/SettingsContext";
 import { Skeleton } from "../ui/skeleton";
 import { supabase } from "@/integrations/supabase/client"; // Import supabase client
@@ -123,14 +123,7 @@ const AdminLayout = () => {
         </SidebarContent>
         <SidebarFooter>
            <SidebarMenu>
-             <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive("/admin/hero-settings")}>
-                  <Link to="/admin/hero-settings">
-                    <GalleryHorizontal />
-                    <span>Hero Section</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+             {/* Removed Hero Section Link */}
              <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={isActive("/admin/settings")}>
                   <Link to="/admin/settings">
