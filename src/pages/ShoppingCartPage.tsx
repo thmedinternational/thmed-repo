@@ -202,19 +202,19 @@ const ShoppingCartPage = () => {
             </Button>
             <Button 
               variant="outline" 
-              className="w-full py-3 text-lg border-secondary-foreground text-secondary-foreground hover:bg-secondary/80" 
+              className="w-full py-3 text-lg border-gray-300 text-gray-700 hover:bg-gray-100" 
               onClick={() => handleWhatsAppAction('quotation')}
             >
               <FileText className="mr-2 h-5 w-5" /> Request Quotation
             </Button>
             <Button 
               variant="outline" 
-              className="w-full py-3 text-lg border-secondary-foreground text-secondary-foreground hover:bg-secondary/80" 
+              className="w-full py-3 text-lg border-gray-300 text-gray-700 hover:bg-gray-100" 
               onClick={() => handleWhatsAppAction('delivery')}
             >
               <Truck className="mr-2 h-5 w-5" /> Arrange Delivery
             </Button>
-            <Button variant="ghost" className="w-full mt-3 text-destructive hover:bg-destructive/10" onClick={clearCart}>
+            <Button variant="ghost" className="w-full mt-3 text-red-600 hover:bg-red-50" onClick={clearCart}>
               Clear Cart
             </Button>
           </div>
