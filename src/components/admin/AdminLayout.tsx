@@ -12,7 +12,7 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag, FileText, Settings, LogOut } from "lucide-react"; // Removed GalleryHorizontal
+import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag, FileText, Settings, LogOut, Image as ImageIcon } from "lucide-react"; // Added ImageIcon
 import { useSettings } from "@/contexts/SettingsContext";
 import { Skeleton } from "../ui/skeleton";
 import { supabase } from "@/integrations/supabase/client"; // Import supabase client
@@ -119,11 +119,18 @@ const AdminLayout = () => {
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={isActive("/admin/banner-settings")}> {/* New navigation item */}
+                <Link to="/admin/banner-settings">
+                  <ImageIcon />
+                  <span>Banner Settings</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
            <SidebarMenu>
-             {/* Removed Hero Section Link */}
              <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={isActive("/admin/settings")}>
                   <Link to="/admin/settings">
