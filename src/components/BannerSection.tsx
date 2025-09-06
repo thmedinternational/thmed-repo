@@ -8,13 +8,11 @@ const BannerSection: React.FC = () => {
   return (
     <section className="bg-secondary text-secondary-foreground py-12 md:py-16 px-4 md:px-6 text-center">
       <div className="container mx-auto max-w-3xl space-y-6">
-        <h2 className="text-3xl md:text-4xl font-poppins font-bold tracking-tight">
-          Need a Custom Solution?
-        </h2>
-        <p className="text-lg font-montserrat font-light opacity-90">
-          Our team is ready to assist you with tailored medical equipment and health product solutions.
-          Contact us today for a personalized consultation.
-        </p>
+        <img 
+          src="/images/summer-banner.png" 
+          alt="From Sun Care to Supplements: Everything for a Healthier Summer" 
+          className="w-full h-auto object-cover mx-auto rounded-lg shadow-lg"
+        />
         <Link to="/contact">
           <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
             Get in Touch
