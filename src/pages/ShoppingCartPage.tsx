@@ -1,17 +1,19 @@
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2, MessageSquare, FileText, Truck } from "lucide-react"; // Added new icons
+import { Trash2, MessageSquare, FileText, Truck, Minus, Plus, MapPin, Tag, Info } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatCurrency } from "@/lib/currency";
 import { toast } from "sonner";
-import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
+import { useSettings } from "@/contexts/SettingsContext";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 
 const ShoppingCartPage = () => {
   const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
-  const whatsAppNumber = "27768170495"; // Updated WhatsApp number
-  const { settings } = useSettings(); // Use the hook
-  const currencyCode = settings?.currency || "USD"; // Get currency code
+  const whatsAppNumber = "27768170495";
+  const { settings } = useSettings();
+  const currencyCode = settings?.currency || "USD";
 
   const generateWhatsAppMessage = (type: 'checkout' | 'quotation' | 'delivery') => {
     if (cartItems.length === 0) {
@@ -60,71 +62,154 @@ const ShoppingCartPage = () => {
   }
 
   return (
-    <div className="container mx-auto py-12 px-4 md:px-6">
-      <h1 className="text-4xl font-poppins font-bold tracking-tight mb-8 text-center text-magenta">Your Shopping Cart</h1>
+    <div className="container mx-auto py-8 px-4 md:px-6">
+      <div className="text-sm text-muted-foreground mb-6">
+        <Link to="/" className="hover:underline">Home</Link> / Cart
+      </div>
 
       <div className="grid md:grid-cols-3 gap-8">
+        {/* Left Column: Location, Delivery Info, Cart Items */}
         <div className="md:col-span-2 space-y-6">
-          {cartItems.map((item) => (
-            <div key={item.id} className="flex items-center border rounded-lg p-4 shadow-sm">
-              <Link to={`/products/${item.id}`} className="flex-shrink-0">
-                <img
-                  src={item.image_urls?.[0] || "https://placehold.co/100x100?text=No+Image"}
-                  alt={item.name}
-                  className="w-24 h-24 object-cover rounded-md mr-4"
-                />
-              </Link>
+          {/* Your Location Card */}
+          <Card className="p-4">
+            <CardContent className="p-0 flex items-start space-x-3">
+              <MapPin className="h-5 w-5 text-muted-foreground mt-1" />
               <div className="flex-grow">
-                <Link to={`/products/${item.id}`}>
-                  <h2 className="text-base md:text-xl font-semibold hover:underline">{item.name}</h2>
+                <h3 className="font-semibold text-lg">Your location</h3>
+                <p className="text-muted-foreground">c/o Gauteng, Midrand, 1682</p>
+                <p className="text-sm text-blue-500">We need your address to check item availability</p>
+              </div>
+              <Button variant="outline" size="sm" className="rounded-md">Add address</Button>
+            </CardContent>
+          </Card>
+
+          {/* Free Delivery Banner */}
+          <div className="flex items-center space-x-2 p-3 bg-blue-50 rounded-md border border-blue-200 text-blue-700">
+            <Truck className="h-5 w-5" />
+            <p className="text-sm font-medium">Get free delivery on orders above {formatCurrency(500, currencyCode)}</p>
+          </div>
+
+          {/* Cart Items */}
+          {cartItems.map((item) => (
+            <Card key={item.id} className="p-4 shadow-sm">
+              <CardContent className="p-0 flex items-center">
+                {/* Placeholder for discount badge */}
+                {/* <span className="absolute top-2 left-2 bg-secondary text-secondary-foreground text-xs px-2 py-1 rounded-md">Save R400.00</span> */}
+                
+                <Link to={`/products/${item.id}`} className="flex-shrink-0">
+                  <img
+                    src={item.image_urls?.[0] || "https://placehold.co/100x100?text=No+Image"}
+                    alt={item.name}
+                    className="w-24 h-24 object-cover rounded-md mr-4"
+                  />
                 </Link>
-                <p className="text-sm md:text-base text-muted-foreground">{formatCurrency(item.price, currencyCode)}</p>
-              </div>
-              <div className="flex items-center space-x-4">
-                <Input
-                  type="number"
-                  min="1"
-                  max={item.stock}
-                  value={item.quantity}
-                  onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 1)}
-                  className="w-20 text-center"
-                />
-                <Button variant="destructive" size="icon" onClick={() => removeFromCart(item.id)}>
-                  <Trash2 className="h-4 w-4" />
-                  <span className="sr-only">Remove item</span>
-                </Button>
-              </div>
-            </div>
+                <div className="flex-grow space-y-1">
+                  <Link to={`/products/${item.id}`}>
+                    <h2 className="text-base md:text-lg font-semibold hover:underline">{item.name}</h2>
+                  </Link>
+                  <p className="text-sm md:text-base text-magenta font-bold">{formatCurrency(item.price, currencyCode)}</p>
+                  <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                    <Button variant="link" size="sm" className="p-0 h-auto text-muted-foreground hover:text-primary">Remove</Button>
+                    {/* <span className="text-muted-foreground">|</span>
+                    <Button variant="link" size="sm" className="p-0 h-auto text-muted-foreground hover:text-primary">Move to wishlist</Button> */}
+                  </div>
+                </div>
+                <div className="flex items-center border rounded-md overflow-hidden">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8 rounded-none border-y-0 border-l-0"
+                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    disabled={item.quantity <= 1}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <Input
+                    type="number"
+                    min="1"
+                    max={item.stock}
+                    value={item.quantity}
+                    onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 1)}
+                    className="w-12 h-8 text-center border-y-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                  />
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8 rounded-none border-y-0 border-r-0"
+                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    disabled={item.quantity >= item.stock}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
-        <div className="md:col-span-1 bg-secondary p-6 rounded-lg shadow-md sticky top-20 text-secondary-foreground">
-          <h2 className="text-2xl font-poppins font-bold mb-4">Order Summary</h2>
-          <div className="flex justify-between text-lg font-medium mb-2">
-            <span>Subtotal:</span>
-            <span>{formatCurrency(cartTotal, currencyCode)}</span>
-          </div>
-          <div className="flex justify-between text-lg font-medium mb-4">
-            <span>Shipping:</span>
-            <span>Free</span> {/* For now, assuming free shipping */}
-          </div>
-          <div className="border-t pt-4 mt-4 flex justify-between text-xl font-poppins font-bold tracking-tight">
-            <span>Total:</span>
-            <span>{formatCurrency(cartTotal, currencyCode)}</span>
-          </div>
+        {/* Right Column: Coupon, Order Summary */}
+        <div className="md:col-span-1 space-y-6">
+          {/* Apply Coupon Card */}
+          <Card className="p-4">
+            <CardContent className="p-0 space-y-4">
+              <div className="flex items-center space-x-2 text-lg font-semibold">
+                <Tag className="h-5 w-5" />
+                <span>Apply coupon</span>
+              </div>
+              <div className="flex space-x-2">
+                <Input placeholder="Enter coupon code" className="flex-grow" />
+                <Button variant="outline" className="text-magenta hover:text-magenta/80">APPLY</Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Order Summary Card */}
+          <Card className="p-4 bg-secondary text-secondary-foreground shadow-md">
+            <CardHeader className="p-0 mb-4">
+              <CardTitle className="text-2xl font-poppins font-bold">Price details</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0 space-y-2">
+              <div className="flex justify-between text-base">
+                <span>Items ({cartItems.length})</span>
+                <span>{formatCurrency(cartTotal, currencyCode)}</span>
+              </div>
+              {/* <div className="flex justify-between text-base text-green-500">
+                <span>Promotional Savings</span>
+                <span>- {formatCurrency(400, currencyCode)}</span>
+              </div> */}
+              <div className="flex justify-between text-base font-medium border-t border-secondary-foreground/50 pt-2">
+                <span>Sub Total</span>
+                <span>{formatCurrency(cartTotal, currencyCode)}</span>
+              </div>
+              <div className="flex justify-between text-base">
+                <span>Delivery fee</span>
+                <span>Delivery fee may be added</span>
+              </div>
+              <div className="border-t border-secondary-foreground/50 pt-4 mt-4 flex justify-between text-xl font-poppins font-bold tracking-tight">
+                <span>Total amount:</span>
+                <span>{formatCurrency(cartTotal, currencyCode)}</span>
+              </div>
+              <div className="flex items-center space-x-2 text-sm mt-4 pt-4 border-t border-secondary-foreground/50">
+                <Info className="h-4 w-4" />
+                <p>Get free delivery on orders above {formatCurrency(500, currencyCode)}</p>
+              </div>
+            </CardContent>
+          </Card>
           
-          <div className="mt-6 space-y-3">
-            <Button className="w-full py-3 text-lg bg-primary hover:bg-primary/90" onClick={() => handleWhatsAppAction('checkout')}>
+          <div className="space-y-3">
+            <Button className="w-full py-3 text-lg bg-secondary hover:bg-secondary/80" onClick={() => handleWhatsAppAction('checkout')}>
               <MessageSquare className="mr-2 h-5 w-5" /> Proceed to Checkout
             </Button>
             <Button 
-              className="w-full py-3 text-lg bg-secondary text-secondary-foreground border border-white hover:bg-secondary/80" 
+              variant="outline" 
+              className="w-full py-3 text-lg border-secondary-foreground text-secondary-foreground hover:bg-secondary/80" 
               onClick={() => handleWhatsAppAction('quotation')}
             >
               <FileText className="mr-2 h-5 w-5" /> Request Quotation
             </Button>
             <Button 
-              className="w-full py-3 text-lg bg-secondary text-secondary-foreground border border-white hover:bg-secondary/80" 
+              variant="outline" 
+              className="w-full py-3 text-lg border-secondary-foreground text-secondary-foreground hover:bg-secondary/80" 
               onClick={() => handleWhatsAppAction('delivery')}
             >
               <Truck className="mr-2 h-5 w-5" /> Arrange Delivery
