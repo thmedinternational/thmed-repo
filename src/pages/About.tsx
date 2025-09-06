@@ -55,7 +55,7 @@ const About = () => {
             </p>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* What We Offer Section */}
       <section className="py-16 px-4 md:px-6">
