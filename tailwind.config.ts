@@ -68,10 +68,11 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
         "add-to-cart-button": {
-          DEFAULT: "hsl(var(--primary))", // Changed to primary
-          foreground: "hsl(var(--primary-foreground))", // Changed to primary-foreground
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         magenta: "hsl(var(--magenta))", // Custom magenta color
+        teal: "hsl(var(--teal))", // Custom teal color
       },
       borderRadius: {
         lg: "var(--radius)",

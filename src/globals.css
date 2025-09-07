@@ -7,36 +7,36 @@
 @layer base {
   :root {
     --background: 0 0% 100%; /* White */
-    --foreground: 215 16% 20%; /* Dark Gray (was Almost Black) */
+    --foreground: 215 16% 20%; /* Dark Gray */
 
     --card: 0 0% 100%; /* White */
-    --card-foreground: 222.2 84% 4.9%; /* Almost Black */
+    --card-foreground: 215 16% 20%; /* Dark Gray */
 
     --popover: 0 0% 100%; /* White */
-    --popover-foreground: 222.2 84% 4.9%; /* Almost Black */
+    --popover-foreground: 215 16% 20%; /* Dark Gray */
 
-    --primary: 0 84.2% 60.2%; /* Vibrant Red */
-    --primary-foreground: 210 40% 98%; /* Off-white for text on red */
+    --primary: 300 100% 50%; /* Vibrant Magenta (Pink) - Main brand color */
+    --primary-foreground: 210 40% 98%; /* Off-white for text on primary */
 
-    --secondary: 300 100% 50%; /* Vibrant Magenta (Pink) */
-    --secondary-foreground: 210 40% 98%; /* Off-white for text on pink */
+    --secondary: 174 72% 38%; /* Teal/Green - For top bar and secondary elements */
+    --secondary-foreground: 210 40% 98%; /* Off-white for text on secondary */
 
     --muted: 210 40% 96.1%; /* Light Gray */
     --muted-foreground: 215.4 16.3% 46.9%; /* Medium Gray */
 
     --accent: 210 40% 96.1%; /* Light Gray */
-    --accent-foreground: 222.2 84% 4.9%; /* Almost Black */
+    --accent-foreground: 215 16% 20%; /* Dark Gray */
 
     --destructive: 0 84.2% 60.2%; /* Red */
     --destructive-foreground: 210 40% 98%; /* Off-white */
 
     --border: 214.3 31.8% 91.4%; /* Light Gray */
     --input: 214.3 31.8% 91.4%; /* Light Gray */
-    --ring: 0 84.2% 60.2%; /* Red */
+    --ring: 300 100% 50%; /* Vibrant Magenta */
 
     --radius: 0.5rem;
 
-    /* Sidebar colors - consistently pink */
+    /* Sidebar colors - keeping existing magenta theme for admin */
     --sidebar-background: 300 100% 50%; /* Vibrant Magenta (Pink) */
     --sidebar-foreground: 210 40% 98%; /* Off-white */
     --sidebar-primary: 0 84.2% 60.2%; /* Red for active items */
@@ -47,11 +47,12 @@
     --sidebar-ring: 0 84.2% 60.2%; /* Red */
 
     /* Add to Cart Button Color */
-    --add-to-cart-button: var(--primary); /* Changed to primary */
-    --add-to-cart-button-foreground: var(--primary-foreground); /* Changed to primary-foreground */
+    --add-to-cart-button: var(--primary);
+    --add-to-cart-button-foreground: var(--primary-foreground);
 
     /* Custom Magenta Color */
     --magenta: 300 100% 50%; /* HSL for a vibrant magenta */
+    --teal: 174 72% 38%; /* HSL for a teal/green color */
   }
 
   .dark {
@@ -64,10 +65,10 @@
     --popover: 222.2 84% 4.9%; /* Almost Black */
     --popover-foreground: 210 40% 98%; /* Off-white */
 
-    --primary: 0 84.2% 60.2%; /* Vibrant Red */
-    --primary-foreground: 222.2 84% 4.9%; /* Almost Black for text on red */
+    --primary: 300 100% 50%; /* Vibrant Magenta (Pink) */
+    --primary-foreground: 222.2 84% 4.9%; /* Almost Black for text on primary */
 
-    --secondary: 300 100% 50%; /* Vibrant Magenta (Pink) */
+    --secondary: 174 72% 38%; /* Teal/Green */
     --secondary-foreground: 210 40% 98%; /* Off-white */
 
     --muted: 217.2 32.6% 17.5%; /* Dark Gray */
@@ -81,9 +82,9 @@
 
     --border: 217.2 32.6% 17.5%; /* Dark Gray */
     --input: 217.2 32.6% 17.5%; /* Dark Gray */
-    --ring: 0 84.2% 60.2%; /* Red */
+    --ring: 300 100% 50%; /* Vibrant Magenta */
 
-    /* Sidebar colors - consistently pink */
+    /* Sidebar colors - keeping existing magenta theme for admin */
     --sidebar-background: 300 100% 50%; /* Vibrant Magenta (Pink) */
     --sidebar-foreground: 210 40% 98%; /* Off-white */
     --sidebar-primary: 0 84.2% 60.2%; /* Red for active items */
@@ -94,11 +95,12 @@
     --sidebar-ring: 0 84.2% 60.2%; /* Red */
 
     /* Add to Cart Button Color */
-    --add-to-cart-button: var(--primary); /* Changed to primary */
-    --add-to-cart-button-foreground: var(--primary-foreground); /* Changed to primary-foreground */
+    --add-to-cart-button: var(--primary);
+    --add-to-cart-button-foreground: var(--primary-foreground);
 
     /* Custom Magenta Color */
     --magenta: 300 100% 50%; /* HSL for a vibrant magenta */
+    --teal: 174 72% 38%; /* HSL for a teal/green color */
   }
 }
 

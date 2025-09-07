@@ -45,9 +45,17 @@ const ProductCard = ({ product }: ProductCardProps) => {
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank");
   };
 
+  // Placeholder for a discount/save amount
+  const saveAmount = product.price > 100 ? Math.floor(product.price * 0.1) : 0; // Example logic
+
   return (
     <Card className="flex flex-col overflow-hidden rounded-lg shadow-md transition-shadow duration-300 hover:shadow-xl">
       <CardHeader className="p-0 relative">
+        {saveAmount > 0 && (
+          <div className="absolute top-2 left-2 bg-primary text-primary-foreground text-xs font-semibold px-2 py-1 rounded-md z-10">
+            Save {formatCurrency(saveAmount, currencyCode)}
+          </div>
+        )}
         <Link to={`/products/${product.id}`} className="block h-[180px] w-full overflow-hidden">
           <img
             src={imageUrl}
@@ -56,10 +64,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
           />
         </Link>
       </CardHeader>
-      <CardContent className="flex flex-col flex-grow p-2"> {/* Reduced padding */}
+      <CardContent className="flex flex-col flex-grow p-2">
         <div className="flex-grow">
           <Link to={`/products/${product.id}`}>
-            <CardTitle className="text-sm font-bold line-clamp-2 min-h-[40px]"> {/* Smaller font, bold, 2 lines */}
+            <CardTitle className="text-sm font-bold line-clamp-2 min-h-[40px]">
               {product.name}
             </CardTitle>
           </Link>
@@ -68,12 +76,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
               {product.description}
             </p>
           )}
-          <p className="mt-2 text-base font-bold text-primary tracking-tight"> {/* 16px, bold, red, tight tracking */}
+          <p className="mt-2 text-base font-bold text-primary tracking-tight">
             {formatCurrency(product.price, currencyCode)}
           </p>
         </div>
-        <div className="flex justify-end mt-2 space-x-2"> {/* Aligned to bottom right, added space-x-2 */}
-          {product.stock > 0 && (
+        <div className="flex justify-end mt-2 space-x-2">
+          {product.stock > 0 ? (
             <Button
               className="rounded-md px-2 py-1 text-xs bg-add-to-cart-button text-add-to-cart-button-foreground hover:bg-add-to-cart-button/90 shadow-md"
               onClick={handleAddToCart}
@@ -81,9 +89,17 @@ const ProductCard = ({ product }: ProductCardProps) => {
             >
               <Plus className="mr-1 h-3 w-3" /> Add
             </Button>
+          ) : (
+            <Button
+              className="rounded-md px-2 py-1 text-xs bg-muted text-muted-foreground cursor-not-allowed shadow-md"
+              disabled
+              size="sm"
+            >
+              Out of Stock
+            </Button>
           )}
           <Button
-            variant="outline" // Using outline variant for distinction
+            variant="outline"
             size="sm"
             className="rounded-md px-2 py-1 text-xs shadow-md"
             onClick={handleShareOnWhatsApp}

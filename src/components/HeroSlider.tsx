@@ -11,7 +11,8 @@ import Autoplay from "embla-carousel-autoplay";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "./ui/skeleton";
-import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
+import { Button } from "@/components/ui/button"; // Import Button
+import { Link } from "react-router-dom"; // Import Link
 
 type HeroSlide = {
   id: string;
@@ -21,13 +22,13 @@ type HeroSlide = {
   slide_order: number;
   show_text: boolean;
   text_position: "left" | "center" | "right";
-  overlay_opacity: number | null; // New field
+  overlay_opacity: number | null;
 };
 
 const fetchSlides = async (): Promise<HeroSlide[]> => {
   const { data, error } = await supabase
     .from("hero_slides")
-    .select("id, title, description, image_url, slide_order, show_text, text_position, overlay_opacity") // Select new field
+    .select("id, title, description, image_url, slide_order, show_text, text_position, overlay_opacity")
     .order("slide_order", { ascending: true });
 
   if (error) {
@@ -46,12 +47,10 @@ export function HeroSlider() {
     queryFn: fetchSlides,
   });
 
-  // Removed useSettings and overlayOpacity from here as it's now per slide
-
   if (isLoading) {
     return (
       <div className="w-full">
-        <Skeleton className="w-full aspect-[3/1]" />
+        <Skeleton className="w-full aspect-[16/7]" /> {/* Adjusted aspect ratio */}
       </div>
     );
   }
@@ -59,7 +58,7 @@ export function HeroSlider() {
   if (isError || !slides || slides.length === 0) {
     return (
         <div className="w-full">
-            <div className="flex aspect-[3/1] items-center justify-center bg-muted">
+            <div className="flex aspect-[16/7] items-center justify-center bg-muted"> {/* Adjusted aspect ratio */}
                 <p className="text-muted-foreground">Could not load slides. Please add slides in the admin dashboard.</p>
             </div>
         </div>
@@ -91,17 +90,22 @@ export function HeroSlider() {
             <CarouselItem key={item.id}>
               <Card className="border-none rounded-none shadow-none">
                 <CardContent 
-                  className="flex aspect-[3/1] items-center justify-start p-6 bg-cover bg-center relative"
+                  className="flex aspect-[16/7] items-center justify-start p-6 bg-cover bg-center relative" // Adjusted aspect ratio
                   style={{ backgroundImage: `url(${item.image_url})` }}
                 >
                   <div 
                     className="absolute inset-0 rounded-lg" 
-                    style={{ backgroundColor: `rgba(0, 0, 0, ${item.overlay_opacity ?? 0.5})` }} // Apply slide-specific opacity
+                    style={{ backgroundColor: `rgba(0, 0, 0, ${item.overlay_opacity ?? 0.5})` }}
                   />
                   {item.show_text && (
                     <div className={`relative z-10 text-white space-y-4 px-4 max-w-3xl flex flex-col ${getTextAlignmentClass(item.text_position)}`}>
-                      <h2 className="text-3xl md:text-5xl font-bold tracking-tight">{item.title}</h2>
-                      <p className="text-md md:text-lg">{item.description}</p>
+                      <h2 className="text-3xl md:text-5xl font-poppins font-extrabold tracking-tight">{item.title}</h2> {/* Added font-poppins and font-extrabold */}
+                      <p className="text-md md:text-lg font-montserrat font-light">{item.description}</p> {/* Added font-montserrat and font-light */}
+                      <Link to="/products"> {/* Example link, adjust as needed */}
+                        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg rounded-full"> {/* Styled button */}
+                          Buy now
+                        </Button>
+                      </Link>
                     </div>
                   )}
                 </CardContent>
