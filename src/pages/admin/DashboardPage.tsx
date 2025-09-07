@@ -11,12 +11,12 @@ const fetchProductsCount = async () => {
   return count;
 };
 
-// Function to fetch the count of users (temporarily disabled for diagnosis)
-// const fetchUsersCount = async () => {
-//   const { count, error } = await supabase.from("auth.users").select("*", { count: "exact" });
-//   if (error) throw new Error(error.message);
-//   return count;
-// };
+// Function to fetch the count of users
+const fetchUsersCount = async () => {
+  const { count, error } = await supabase.from("auth.users").select("*", { count: "exact" });
+  if (error) throw new Error(error.message);
+  return count;
+};
 
 const DashboardPage = () => {
   const { data: productsCount, isLoading: isLoadingProducts } = useQuery<number>({
@@ -24,13 +24,10 @@ const DashboardPage = () => {
     queryFn: fetchProductsCount,
   });
 
-  // Temporarily disabled user count query
-  // const { data: usersCount, isLoading: isLoadingUsers } = useQuery<number>({
-  //   queryKey: ["usersCount"],
-  //   queryFn: fetchUsersCount,
-  // });
-  const usersCount = 0; // Placeholder
-  const isLoadingUsers = false; // Placeholder
+  const { data: usersCount, isLoading: isLoadingUsers } = useQuery<number>({
+    queryKey: ["usersCount"],
+    queryFn: fetchUsersCount,
+  });
 
   return (
     <div>

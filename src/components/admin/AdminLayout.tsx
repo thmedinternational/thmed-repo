@@ -12,7 +12,7 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag, FileText, Settings, LogOut, Image as ImageIcon } from "lucide-react"; // Added ImageIcon
+import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag, FileText, Settings, GalleryHorizontal, LogOut } from "lucide-react";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Skeleton } from "../ui/skeleton";
 import { supabase } from "@/integrations/supabase/client"; // Import supabase client
@@ -50,100 +50,72 @@ const AdminLayout = () => {
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={location.pathname === "/admin"}>
                 <Link to="/admin">
-                  <span> {/* Wrapper added */}
-                    <Home />
-                    <span>Dashboard</span>
-                  </span> {/* Wrapper added */}
+                  <Home />
+                  <span>Dashboard</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={isActive("/admin/products")}>
                 <Link to="/admin/products">
-                  <span> {/* Wrapper added */}
-                    <Package />
-                    <span>Products</span>
-                  </span> {/* Wrapper added */}
+                  <Package />
+                  <span>Products</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={isActive("/admin/purchases")}>
                 <Link to="/admin/purchases">
-                  <span> {/* Wrapper added */}
-                    <ShoppingBag />
-                    <span>Purchases</span>
-                  </span> {/* Wrapper added */}
+                  <ShoppingBag />
+                  <span>Purchases</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={isActive("/admin/customers")}>
                 <Link to="/admin/customers">
-                  <span> {/* Wrapper added */}
-                    <Users />
-                    <span>Customers</span>
-                  </span> {/* Wrapper added */}
+                  <Users />
+                  <span>Customers</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={isActive("/admin/orders")}>
                 <Link to="/admin/orders">
-                  <span> {/* Wrapper added */}
-                    <ShoppingCart />
-                    <span>Orders</span>
-                  </span> {/* Wrapper added */}
+                  <ShoppingCart />
+                  <span>Orders</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
              <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={isActive("/admin/quotations")}>
                 <Link to="/admin/quotations">
-                  <span> {/* Wrapper added */}
-                    <FileText />
-                    <span>Quotations</span>
-                  </span> {/* Wrapper added */}
+                  <FileText />
+                  <span>Quotations</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={isActive("/admin/receipts")}>
                 <Link to="/admin/receipts">
-                  <span> {/* Wrapper added */}
-                    <Receipt />
-                    <span>Receipts</span>
-                  </span> {/* Wrapper added */}
+                  <Receipt />
+                  <span>Receipts</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={isActive("/admin/profit-loss")}>
                 <Link to="/admin/profit-loss">
-                  <span> {/* Wrapper added */}
-                    <TrendingUp />
-                    <span>Profit & Loss</span>
-                  </span> {/* Wrapper added */}
+                  <TrendingUp />
+                  <span>Profit & Loss</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={isActive("/admin/analytics")}>
                 <Link to="/admin/analytics">
-                  <span> {/* Wrapper added */}
-                    <BarChart />
-                    <span>Analytics</span>
-                  </span> {/* Wrapper added */}
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={isActive("/admin/banner-settings")}> {/* New navigation item */}
-                <Link to="/admin/banner-settings">
-                  <span> {/* Wrapper added */}
-                    <ImageIcon />
-                    <span>Banner Settings</span>
-                  </span> {/* Wrapper added */}
+                  <BarChart />
+                  <span>Analytics</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -152,12 +124,18 @@ const AdminLayout = () => {
         <SidebarFooter>
            <SidebarMenu>
              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive("/admin/hero-settings")}>
+                  <Link to="/admin/hero-settings">
+                    <GalleryHorizontal />
+                    <span>Hero Section</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+             <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={isActive("/admin/settings")}>
                   <Link to="/admin/settings">
-                    <span> {/* Wrapper added */}
-                      <Settings />
-                      <span>Settings</span>
-                    </span> {/* Wrapper added */}
+                    <Settings />
+                    <span>Settings</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

@@ -1,11 +1,12 @@
 import ProductList from "@/components/ProductList";
-import BannerSection from "@/components/BannerSection"; // Re-enabled
+import { HeroSlider } from "@/components/HeroSlider";
+import BannerSection from "@/components/BannerSection"; // Import the new banner component
 
 const Index = () => {
   return (
     <div>
-      {/* <HeroSlider /> */}
-      <BannerSection /> {/* Re-enabled the banner section */}
+      <HeroSlider />
+      <BannerSection /> {/* Add the banner section here */}
       <div className="container mx-auto py-12 px-4 md:px-6">
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-poppins font-extrabold tracking-tight text-magenta">Welcome to TH-MED International</h1>

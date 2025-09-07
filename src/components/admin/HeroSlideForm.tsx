@@ -14,39 +14,36 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
-import { BannerCard } from "@/pages/admin/BannerSettingsPage";
+import { HeroSlide } from "@/pages/admin/HeroSettingsPage";
 
-const bannerCardFormSchema = z.object({
+const heroSlideFormSchema = z.object({
   title: z.string().min(2, {
     message: "Title must be at least 2 characters.",
   }),
   description: z.string().optional(),
   image: z.custom<FileList>().optional(),
-  link_url: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
-  order_index: z.coerce.number().int().min(0, "Order must be a non-negative integer.").optional(),
+  slide_order: z.coerce.number().int().optional(),
 });
 
-export type BannerCardFormValues = z.infer<typeof bannerCardFormSchema>;
+export type HeroSlideFormValues = z.infer<typeof heroSlideFormSchema>;
 
-interface BannerCardFormProps {
-  onSubmit: (values: BannerCardFormValues) => void;
-  defaultValues?: BannerCard;
-  isSubmitting: boolean;
+interface HeroSlideFormProps {
+  onSubmit: (values: HeroSlideFormValues) => void;
+  slide?: HeroSlide;
+  isSubmitting?: boolean;
 }
 
-export function BannerCardForm({ onSubmit, defaultValues, isSubmitting }: BannerCardFormProps) {
-  const form = useForm<BannerCardFormValues>({
-    resolver: zodResolver(bannerCardFormSchema),
+export function HeroSlideForm({ onSubmit, slide, isSubmitting }: HeroSlideFormProps) {
+  const form = useForm<HeroSlideFormValues>({
+    resolver: zodResolver(heroSlideFormSchema),
     defaultValues: {
-      title: defaultValues?.title ?? "",
-      description: defaultValues?.description ?? "",
-      link_url: defaultValues?.link_url ?? "",
-      order_index: defaultValues?.order_index ?? 0,
+      title: slide?.title ?? "",
+      description: slide?.description ?? "",
+      slide_order: slide?.slide_order ?? 0,
     },
   });
 
-  const [imagePreview, setImagePreview] = useState<string | null>(defaultValues?.image_url ?? null);
+  const [imagePreview, setImagePreview] = useState<string | null>(slide?.image_url ?? null);
   const watchedImage = form.watch("image");
 
   useEffect(() => {
@@ -58,9 +55,9 @@ export function BannerCardForm({ onSubmit, defaultValues, isSubmitting }: Banner
         URL.revokeObjectURL(newPreview);
       };
     } else {
-      setImagePreview(defaultValues?.image_url ?? null);
+      setImagePreview(slide?.image_url ?? null);
     }
-  }, [watchedImage, defaultValues?.image_url]);
+  }, [watchedImage, slide]);
 
   return (
     <Form {...form}>
@@ -72,7 +69,7 @@ export function BannerCardForm({ onSubmit, defaultValues, isSubmitting }: Banner
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
-                <Input placeholder="e.g. More Ways to Pay" {...field} />
+                <Input placeholder="e.g. Summer Sale" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -85,7 +82,7 @@ export function BannerCardForm({ onSubmit, defaultValues, isSubmitting }: Banner
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea placeholder="A brief description for the banner card." {...field} />
+                <Textarea placeholder="A brief description for the slide." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -96,7 +93,7 @@ export function BannerCardForm({ onSubmit, defaultValues, isSubmitting }: Banner
           name="image"
           render={({ field: { onChange, value, ...restField } }) => (
             <FormItem>
-              <FormLabel>Background Image</FormLabel>
+              <FormLabel>Slide Image</FormLabel>
               <FormControl>
                 <Input 
                   type="file" 
@@ -106,7 +103,7 @@ export function BannerCardForm({ onSubmit, defaultValues, isSubmitting }: Banner
                 />
               </FormControl>
               <FormDescription>
-                Upload an image for the banner card background.
+                Upload an image for the slide. Recommended aspect ratio 16:7.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -124,32 +121,15 @@ export function BannerCardForm({ onSubmit, defaultValues, isSubmitting }: Banner
         
         <FormField
           control={form.control}
-          name="link_url"
+          name="slide_order"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Link URL (Optional)</FormLabel>
-              <FormControl>
-                <Input placeholder="e.g. /contact" {...field} />
-              </FormControl>
-              <FormDescription>
-                The URL this banner card will link to when clicked.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="order_index"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Order Index</FormLabel>
+              <FormLabel>Slide Order</FormLabel>
               <FormControl>
                 <Input type="number" placeholder="0" {...field} />
               </FormControl>
               <FormDescription>
-                Cards will be ordered from low to high.
+                Slides will be ordered from low to high.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -157,8 +137,7 @@ export function BannerCardForm({ onSubmit, defaultValues, isSubmitting }: Banner
         />
 
         <Button type="submit" disabled={isSubmitting} className="w-full">
-          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {defaultValues ? "Update Banner Card" : "Create Banner Card"}
+          {isSubmitting ? "Saving..." : "Save Slide"}
         </Button>
       </form>
     </Form>
