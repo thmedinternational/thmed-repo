@@ -1,6 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Menu, Search, User } from "lucide-react";
+import { ShoppingCart, Menu, Search, User, ChevronDown } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import React from "react";
 import { useSettings } from "@/contexts/SettingsContext";
