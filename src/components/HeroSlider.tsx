@@ -49,7 +49,7 @@ export function HeroSlider() {
 
   if (isLoading) {
     return (
-      <div className="w-full">
+      <div className="w-full max-w-5xl mx-auto rounded-lg overflow-hidden">
         <Skeleton className="w-full h-[300px]" />
       </div>
     );
@@ -57,7 +57,7 @@ export function HeroSlider() {
 
   if (isError || !slides || slides.length === 0) {
     return (
-        <div className="w-full">
+        <div className="w-full max-w-5xl mx-auto rounded-lg overflow-hidden">
             <div className="flex h-[300px] items-center justify-center bg-muted">
                 <p className="text-muted-foreground">Could not load slides. Please add slides in the admin dashboard.</p>
             </div>
@@ -78,7 +78,7 @@ export function HeroSlider() {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-5xl mx-auto rounded-lg overflow-hidden">
       <Carousel
         plugins={[plugin.current]}
         className="w-full"
@@ -90,7 +90,7 @@ export function HeroSlider() {
             <CarouselItem key={item.id}>
               <Card className="border-none rounded-none shadow-none">
                 <CardContent 
-                  className="flex h-[300px] items-center justify-start p-6 bg-cover bg-center relative"
+                  className="flex h-[300px] items-center justify-start p-6 bg-cover bg-center relative rounded-lg overflow-hidden"
                   style={{ backgroundImage: `url(${item.image_url})` }}
                 >
                   <div 
