@@ -240,7 +240,7 @@ const HeroSettingsPage = () => {
               Add Slide
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-[425px] overflow-y-auto max-h-[90vh]">
             <DialogHeader>
               <DialogTitle>{editingSlide ? "Edit Slide" : "Add New Slide"}</DialogTitle>
               <DialogDescription>
