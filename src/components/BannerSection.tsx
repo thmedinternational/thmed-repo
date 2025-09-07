@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card'; // Import Card compone
 const BannerSection: React.FC = () => {
   return (
     <section className="bg-background text-foreground px-4 md:px-6 text-center py-8">
-      <div className="container mx-auto max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Card 1: More Ways to Pay */}
         <Card className="relative overflow-hidden rounded-lg shadow-lg flex items-center justify-center min-h-[50px]">
           <div 
