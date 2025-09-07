@@ -8,7 +8,7 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { Link } from 'react-router-dom';
-import { Syringe, Stethoscope, Pill, Soap, Baby, Sparkles, Microscope, Gift } from 'lucide-react'; // Updated icons
+import { Syringe, Stethoscope, Pill, Bath, Baby, Sparkles, Microscope, Gift } from 'lucide-react'; // Updated icons
 
 interface Category {
   id: string;
@@ -21,7 +21,7 @@ const categories: Category[] = [
   { id: '1', name: 'Medical Consumables & Supplies', icon: Syringe, link: '#' },
   { id: '2', name: 'Medical Equipment', icon: Stethoscope, link: '#' },
   { id: '3', name: 'Supplements & Nutrition', icon: Pill, link: '#' },
-  { id: '4', name: 'Personal Care & Hygiene', icon: Soap, link: '#' },
+  { id: '4', name: 'Personal Care & Hygiene', icon: Bath, link: '#' },
   { id: '5', name: 'Mom & Baby', icon: Baby, link: '#' },
   { id: '6', name: 'Cosmetics & Beauty', icon: Sparkles, link: '#' },
   { id: '7', name: 'Testing & Diagnostics', icon: Microscope, link: '#' },
