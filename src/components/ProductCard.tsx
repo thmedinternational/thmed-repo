@@ -45,17 +45,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank");
   };
 
-  // Placeholder for a discount/save amount
-  const saveAmount = product.price > 100 ? Math.floor(product.price * 0.1) : 0; // Example logic
-
   return (
     <Card className="flex flex-col overflow-hidden rounded-lg shadow-md transition-shadow duration-300 hover:shadow-xl">
       <CardHeader className="p-0 relative">
-        {saveAmount > 0 && (
-          <div className="absolute top-2 left-2 bg-primary text-primary-foreground text-xs font-semibold px-2 py-1 rounded-md z-10">
-            Save {formatCurrency(saveAmount, currencyCode)}
-          </div>
-        )}
         <Link to={`/products/${product.id}`} className="block h-[180px] w-full overflow-hidden">
           <img
             src={imageUrl}
