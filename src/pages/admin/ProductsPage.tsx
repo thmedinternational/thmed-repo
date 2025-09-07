@@ -48,10 +48,12 @@ export type Product = {
   stock: number;
   image_urls: string[] | null;
   created_at: string;
+  category_id: string | null; // Added category_id
+  categories: { name: string } | null; // For displaying category name
 };
 
 const fetchProducts = async () => {
-  const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false });
+  const { data, error } = await supabase.from("products").select("*, categories(name)").order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
   return data as Product[];
 };
@@ -108,6 +110,7 @@ const ProductsPage = () => {
           cost: newProduct.cost,
           stock: newProduct.stock,
           image_urls: imageUrls,
+          category_id: newProduct.category_id, // Added category_id
         },
       ]);
 
@@ -166,6 +169,7 @@ const ProductsPage = () => {
           cost: updatedValues.cost,
           stock: updatedValues.stock,
           image_urls: imageUrlsToSave,
+          category_id: updatedValues.category_id, // Updated category_id
         })
         .eq("id", editingProduct.id);
 
@@ -245,6 +249,7 @@ const ProductsPage = () => {
               <TableRow>
                 <TableHead className="w-[64px]">Image</TableHead>
                 <TableHead>Name</TableHead>
+                <TableHead>Category</TableHead> {/* New TableHead for Category */}
                 <TableHead>Stock</TableHead>
                 <TableHead>Price</TableHead>
                 <TableHead>Cost</TableHead>
@@ -257,13 +262,13 @@ const ProductsPage = () => {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="h-24 text-center">
+                  <TableCell colSpan={8} className="h-24 text-center"> {/* Updated colspan */}
                     Loading products...
                   </TableCell>
                 </TableRow>
               ) : error ? (
                  <TableRow>
-                  <TableCell colSpan={7} className="h-24 text-center text-red-500">
+                  <TableCell colSpan={8} className="h-24 text-center text-red-500"> {/* Updated colspan */}
                     Error loading products: {error.message}
                   </TableCell>
                 </TableRow>
@@ -284,6 +289,7 @@ const ProductsPage = () => {
                       )}
                     </TableCell>
                     <TableCell className="font-medium">{product.name}</TableCell>
+                    <TableCell>{product.categories?.name || 'N/A'}</TableCell> {/* Display category name */}
                     <TableCell>{product.stock}</TableCell>
                     <TableCell>{formatCurrency(product.price, currencyCode)}</TableCell>
                     <TableCell>{formatCurrency(product.cost, currencyCode)}</TableCell>
@@ -309,7 +315,7 @@ const ProductsPage = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={7} className="h-24 text-center">
+                  <TableCell colSpan={8} className="h-24 text-center"> {/* Updated colspan */}
                     No products found.
                   </TableCell>
                 </TableRow>
