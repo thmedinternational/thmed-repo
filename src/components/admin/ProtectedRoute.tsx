@@ -5,7 +5,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 const ProtectedRoute = () => {
   const { session, loading } = useAuth();
 
+  console.log("ProtectedRoute: Rendered with session:", session, "loading:", loading);
+
   if (loading) {
+    console.log("ProtectedRoute: Showing loading skeleton.");
     return (
        <div className="flex items-center justify-center h-screen">
         <div className="flex flex-col space-y-3">
@@ -20,9 +23,11 @@ const ProtectedRoute = () => {
   }
 
   if (!session) {
+    console.log("ProtectedRoute: No session found, navigating to /login.");
     return <Navigate to="/login" replace />;
   }
 
+  console.log("ProtectedRoute: Session found, rendering Outlet.");
   return <Outlet />;
 };
 
