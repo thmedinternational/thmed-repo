@@ -36,14 +36,14 @@
 
     --radius: 0.5rem;
 
-    /* Sidebar colors - consistently pink */
-    --sidebar-background: 300 100% 50%; /* Vibrant Magenta (Pink) */
-    --sidebar-foreground: 210 40% 98%; /* Off-white */
+    /* Sidebar colors - changed to white background, black text */
+    --sidebar-background: 0 0% 100%; /* White */
+    --sidebar-foreground: 222.2 84% 4.9%; /* Almost Black */
     --sidebar-primary: 0 84.2% 60.2%; /* Red for active items */
     --sidebar-primary-foreground: 210 40% 98%; /* Off-white */
-    --sidebar-accent: 300 80% 40%; /* Darker Magenta for hover/selected background */
-    --sidebar-accent-foreground: 210 40% 98%; /* Off-white */
-    --sidebar-border: 300 80% 40%; /* Darker Magenta */
+    --sidebar-accent: 210 40% 96.1%; /* Light Gray for hover/selected background */
+    --sidebar-accent-foreground: 215.4 16.3% 46.9%; /* Medium Gray */
+    --sidebar-border: 214.3 31.8% 91.4%; /* Light Gray */
     --sidebar-ring: 0 84.2% 60.2%; /* Red */
 
     /* Add to Cart Button Color */
@@ -83,14 +83,14 @@
     --input: 217.2 32.6% 17.5%; /* Dark Gray */
     --ring: 0 84.2% 60.2%; /* Red */
 
-    /* Sidebar colors - consistently pink */
-    --sidebar-background: 300 100% 50%; /* Vibrant Magenta (Pink) */
-    --sidebar-foreground: 210 40% 98%; /* Off-white */
+    /* Sidebar colors - changed to white background, black text */
+    --sidebar-background: 0 0% 100%; /* White */
+    --sidebar-foreground: 222.2 84% 4.9%; /* Almost Black */
     --sidebar-primary: 0 84.2% 60.2%; /* Red for active items */
     --sidebar-primary-foreground: 210 40% 98%; /* Off-white */
-    --sidebar-accent: 300 80% 40%; /* Darker Magenta for hover/selected background */
-    --sidebar-accent-foreground: 210 40% 98%; /* Off-white */
-    --sidebar-border: 300 80% 40%; /* Darker Magenta */
+    --sidebar-accent: 210 40% 96.1%; /* Light Gray for hover/selected background */
+    --sidebar-accent-foreground: 215.4 16.3% 46.9%; /* Medium Gray */
+    --sidebar-border: 214.3 31.8% 91.4%; /* Light Gray */
     --sidebar-ring: 0 84.2% 60.2%; /* Red */
 
     /* Add to Cart Button Color */
