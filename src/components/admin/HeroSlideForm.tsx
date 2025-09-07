@@ -112,7 +112,7 @@ export function HeroSlideForm({ onSubmit, slide, isSubmitting }: HeroSlideFormPr
                 />
               </FormControl>
               <FormDescription>
-                Upload an image for the slide. Recommended aspect ratio 16:7.
+                Upload an image for the slide. Recommended aspect ratio 16:7. Images with different aspect ratios will be cropped to fit.
               </FormDescription>
               <FormMessage />
             </FormItem>

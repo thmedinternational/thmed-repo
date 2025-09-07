@@ -91,7 +91,11 @@ export function HeroSlider() {
               <Card className="border-none rounded-none shadow-none">
                 <CardContent 
                   className="flex h-[300px] items-center justify-start p-6 bg-cover bg-center relative rounded-lg overflow-hidden"
-                  style={{ backgroundImage: `url(${item.image_url})` }}
+                  style={{ 
+                    backgroundImage: item.image_url 
+                      ? `url(${item.image_url})` 
+                      : `url('https://placehold.co/1600x700?text=No+Image')`, // Fallback image
+                  }}
                 >
                   <div 
                     className="absolute inset-0 rounded-lg" 
