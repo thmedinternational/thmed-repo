@@ -50,7 +50,7 @@ export function HeroSlider() {
   if (isLoading) {
     return (
       <div className="w-full">
-        <Skeleton className="w-full h-[150px]" />
+        <Skeleton className="w-full h-[300px]" />
       </div>
     );
   }
@@ -58,7 +58,7 @@ export function HeroSlider() {
   if (isError || !slides || slides.length === 0) {
     return (
         <div className="w-full">
-            <div className="flex h-[150px] items-center justify-center bg-muted">
+            <div className="flex h-[300px] items-center justify-center bg-muted">
                 <p className="text-muted-foreground">Could not load slides. Please add slides in the admin dashboard.</p>
             </div>
         </div>
@@ -90,7 +90,7 @@ export function HeroSlider() {
             <CarouselItem key={item.id}>
               <Card className="border-none rounded-none shadow-none">
                 <CardContent 
-                  className="flex h-[150px] items-center justify-start p-6 bg-cover bg-center relative"
+                  className="flex h-[300px] items-center justify-start p-6 bg-cover bg-center relative"
                   style={{ backgroundImage: `url(${item.image_url})` }}
                 >
                   <div 
@@ -98,11 +98,11 @@ export function HeroSlider() {
                     style={{ backgroundColor: `rgba(0, 0, 0, ${item.overlay_opacity ?? 0.5})` }}
                   />
                   {item.show_text && (
-                    <div className={`relative z-10 text-white space-y-1 px-4 max-w-3xl flex flex-col ${getTextAlignmentClass(item.text_position)}`}>
-                      <h2 className="text-xl md:text-2xl font-poppins font-extrabold tracking-tight">{item.title}</h2>
-                      <p className="text-xs md:text-sm font-montserrat font-light line-clamp-2">{item.description}</p>
+                    <div className={`relative z-10 text-white space-y-4 px-4 max-w-3xl flex flex-col ${getTextAlignmentClass(item.text_position)}`}>
+                      <h2 className="text-3xl md:text-5xl font-poppins font-extrabold tracking-tight">{item.title}</h2>
+                      <p className="text-md md:text-lg font-montserrat font-light line-clamp-2">{item.description}</p>
                       <Link to="/products">
-                        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 text-sm rounded-full mt-2">
+                        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg rounded-full">
                           Buy now
                         </Button>
                       </Link>
