@@ -26,6 +26,7 @@ import Login from "./pages/Login";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 import ShoppingCartPage from "./pages/ShoppingCartPage";
 import ProductDetail from "./pages/ProductDetail";
+import CategoryProductsPage from "./pages/CategoryProductsPage"; // Import the new page
 import { CartProvider } from "./contexts/CartContext";
 
 const queryClient = new QueryClient();
@@ -46,6 +47,7 @@ const App = () => (
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/products/:id" element={<ProductDetail />} />
+                  <Route path="/categories/:categoryId" element={<CategoryProductsPage />} /> {/* New route */}
                   <Route path="/cart" element={<ShoppingCartPage />} />
                 </Route>
 

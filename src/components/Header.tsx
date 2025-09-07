@@ -7,11 +7,34 @@ import { useSettings } from "@/contexts/SettingsContext";
 import { Skeleton } from "./ui/skeleton";
 import { useCart } from "@/contexts/CartContext";
 import { Input } from "./ui/input"; // Import Input for the search bar
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"; // Import DropdownMenu components
+import { useQuery } from "@tanstack/react-query"; // Import useQuery
+import { supabase } from "@/integrations/supabase/client"; // Import supabase
+
+// Define Category type
+type Category = {
+  id: string;
+  name: string;
+};
+
+// Fetch categories from Supabase
+const fetchCategories = async (): Promise<Category[]> => {
+  const { data, error } = await supabase.from("categories").select("id, name").order("name");
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+};
 
 const Header = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const { settings, loading } = useSettings();
   const { cartItemCount } = useCart();
+
+  const { data: categories, isLoading: isLoadingCategories } = useQuery<Category[]>({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+  });
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `transition-colors hover:text-primary/80 ${isActive ? 'text-primary font-semibold' : 'text-foreground/60'}`;
@@ -42,7 +65,7 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center justify-between">
-        {/* Left section: Logo and Browse Departments (mobile toggle) */}
+        {/* Left section: Logo and Browse Categories (mobile toggle) */}
         <div className="flex items-center">
           <div className="md:hidden">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -67,6 +90,26 @@ const Header = () => {
                     <NavLink to="/contact" className={mobileNavLinkClass} onClick={() => setIsOpen(false)}>
                       Talk to Us
                     </NavLink>
+                    <div className="border-t pt-4 mt-4">
+                      <h3 className="text-sm font-semibold text-muted-foreground mb-2">Categories</h3>
+                      {isLoadingCategories ? (
+                        <Skeleton className="h-24 w-full" />
+                      ) : (
+                        <ul className="space-y-2">
+                          {categories?.map((category) => (
+                            <li key={category.id}>
+                              <NavLink
+                                to={`/categories/${category.id}`}
+                                className={mobileNavLinkClass}
+                                onClick={() => setIsOpen(false)}
+                              >
+                                {category.name}
+                              </NavLink>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
                   </nav>
                 </div>
               </SheetContent>
@@ -75,13 +118,30 @@ const Header = () => {
           <Link to="/" className="flex items-center space-x-2 mr-4">
             <StoreLogoAndName />
           </Link>
-          {/* Placeholder for "Browse Departments" dropdown on desktop */}
-          <div className="hidden md:flex items-center space-x-2 text-sm font-medium text-foreground/60 hover:text-foreground">
-            <Button variant="ghost" className="flex items-center space-x-1">
-              <Menu className="h-5 w-5" />
-              <span>Browse Departments</span>
-              <ChevronDown className="h-4 w-4" />
-            </Button>
+          {/* "Browse Categories" dropdown on desktop */}
+          <div className="hidden md:flex items-center">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center space-x-1 text-sm font-medium text-foreground/60 hover:text-foreground">
+                  <Menu className="h-5 w-5" />
+                  <span>Browse Categories</span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                {isLoadingCategories ? (
+                  <DropdownMenuItem disabled>Loading categories...</DropdownMenuItem>
+                ) : (
+                  categories?.map((category) => (
+                    <DropdownMenuItem key={category.id} asChild>
+                      <Link to={`/categories/${category.id}`}>
+                        {category.name}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
