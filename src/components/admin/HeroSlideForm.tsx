@@ -15,6 +15,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import { HeroSlide } from "@/pages/admin/HeroSettingsPage";
+import { Switch } from "@/components/ui/switch"; // Import Switch
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"; // Import Select
 
 const heroSlideFormSchema = z.object({
   title: z.string().min(2, {
@@ -23,6 +25,8 @@ const heroSlideFormSchema = z.object({
   description: z.string().optional(),
   image: z.custom<FileList>().optional(),
   slide_order: z.coerce.number().int().optional(),
+  show_text: z.boolean().default(true), // New field
+  text_position: z.enum(["left", "center", "right"]).default("left"), // New field
 });
 
 export type HeroSlideFormValues = z.infer<typeof heroSlideFormSchema>;
@@ -40,6 +44,8 @@ export function HeroSlideForm({ onSubmit, slide, isSubmitting }: HeroSlideFormPr
       title: slide?.title ?? "",
       description: slide?.description ?? "",
       slide_order: slide?.slide_order ?? 0,
+      show_text: slide?.show_text ?? true, // Set default from slide or true
+      text_position: slide?.text_position ?? "left", // Set default from slide or 'left'
     },
   });
 
@@ -130,6 +136,53 @@ export function HeroSlideForm({ onSubmit, slide, isSubmitting }: HeroSlideFormPr
               </FormControl>
               <FormDescription>
                 Slides will be ordered from low to high.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="show_text"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+              <div className="space-y-0.5">
+                <FormLabel>Show Text Overlay</FormLabel>
+                <FormDescription>
+                  Toggle to display the title and description on the slide.
+                </FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="text_position"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Text Position</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select text alignment" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="left">Left</SelectItem>
+                  <SelectItem value="center">Center</SelectItem>
+                  <SelectItem value="right">Right</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                Align the text content (title and description) on the slide.
               </FormDescription>
               <FormMessage />
             </FormItem>

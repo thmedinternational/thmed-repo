@@ -15,6 +15,7 @@ import { Slider } from "@/components/ui/slider";
 import { Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch"; // Import Switch component
 
 const settingsFormSchema = z.object({
   store_name: z.string().min(2, "Store name must be at least 2 characters."),
@@ -22,7 +23,8 @@ const settingsFormSchema = z.object({
   logo: z.custom<FileList>().optional(),
   logo_width: z.number().min(20).max(300),
   banking_details: z.string().optional(),
-  currency: z.string().min(3, "Currency code must be 3 characters (e.g., USD, ZAR)."), // Added currency field
+  currency: z.string().min(3, "Currency code must be 3 characters (e.g., USD, ZAR)."),
+  hero_overlay_opacity: z.number().min(0).max(1).default(0.5), // New field for overlay opacity
 });
 
 type SettingsFormValues = z.infer<typeof settingsFormSchema>;
@@ -50,7 +52,8 @@ const SettingsPage = () => {
       company_name: "",
       logo_width: 120,
       banking_details: "",
-      currency: "USD", // Default currency
+      currency: "USD",
+      hero_overlay_opacity: 0.5, // Default value
     },
   });
 
@@ -61,7 +64,8 @@ const SettingsPage = () => {
         company_name: settings.company_name || "",
         logo_width: settings.logo_width || 120,
         banking_details: settings.banking_details || "",
-        currency: settings.currency || "USD", // Set default from fetched settings
+        currency: settings.currency || "USD",
+        hero_overlay_opacity: settings.hero_overlay_opacity ?? 0.5, // Set from fetched settings
       });
     }
   }, [settings, form]);
@@ -97,7 +101,8 @@ const SettingsPage = () => {
         logo_url: logoUrl,
         logo_width: values.logo_width,
         banking_details: values.banking_details,
-        currency: values.currency, // Save currency
+        currency: values.currency,
+        hero_overlay_opacity: values.hero_overlay_opacity, // Save new field
         updated_at: new Date().toISOString(),
       }, { onConflict: 'user_id' });
 
@@ -106,7 +111,6 @@ const SettingsPage = () => {
     onSuccess: () => {
       toast.success("Settings updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["settings", session?.user.id] });
-      // Removed window.location.reload();
     },
     onError: (error: Error) => {
       toast.error(`Failed to update settings: ${error.message}`);
@@ -132,7 +136,7 @@ const SettingsPage = () => {
             <FormField control={form.control} name="company_name" render={({ field }) => (
               <FormItem><FormLabel>Company Name (Optional)</FormLabel><FormControl><Input placeholder="Awesome Inc." {...field} /></FormControl><FormMessage /></FormItem>
             )} />
-            <FormField control={form.control} name="logo" render={({ field: { onChange, value, ...restField } }) => ( // Destructure 'value'
+            <FormField control={form.control} name="logo" render={({ field: { onChange, value, ...restField } }) => (
               <FormItem>
                 <FormLabel>Store Logo</FormLabel>
                 {settings?.logo_url && <img src={settings.logo_url} alt="Current logo" className="my-2 rounded-md" style={{ width: settings.logo_width || 120, height: 'auto' }} />}
@@ -180,6 +184,25 @@ const SettingsPage = () => {
                 </FormItem>
               )}
             />
+            <FormField control={form.control} name="hero_overlay_opacity" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Hero Overlay Opacity: {field.value?.toFixed(1)}</FormLabel>
+                <FormControl>
+                  <Slider 
+                    defaultValue={[0.5]} 
+                    value={[field.value ?? 0.5]} 
+                    onValueChange={v => field.onChange(v[0])} 
+                    min={0} 
+                    max={1} 
+                    step={0.1} 
+                  />
+                </FormControl>
+                <FormDescription>
+                  Adjust the darkness of the overlay on hero banner images (0.0 = transparent, 1.0 = opaque).
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )} />
             <FormField control={form.control} name="banking_details" render={({ field }) => (
               <FormItem>
                 <FormLabel>Banking Details</FormLabel>

@@ -11,18 +11,22 @@ import Autoplay from "embla-carousel-autoplay";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "./ui/skeleton";
+import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
 
 type HeroSlide = {
   id: string;
   title: string;
   description: string | null;
   image_url: string;
+  slide_order: number;
+  show_text: boolean; // New field
+  text_position: "left" | "center" | "right"; // New field
 };
 
 const fetchSlides = async (): Promise<HeroSlide[]> => {
   const { data, error } = await supabase
     .from("hero_slides")
-    .select("id, title, description, image_url")
+    .select("id, title, description, image_url, slide_order, show_text, text_position") // Select new fields
     .order("slide_order", { ascending: true });
 
   if (error) {
@@ -40,6 +44,9 @@ export function HeroSlider() {
     queryKey: ["hero_slides_public"],
     queryFn: fetchSlides,
   });
+
+  const { settings } = useSettings(); // Get settings from context
+  const overlayOpacity = settings?.hero_overlay_opacity ?? 0.5; // Use global setting or default
 
   if (isLoading) {
     return (
@@ -59,6 +66,18 @@ export function HeroSlider() {
     );
   }
 
+  const getTextAlignmentClass = (position: "left" | "center" | "right") => {
+    switch (position) {
+      case "center":
+        return "text-center items-center";
+      case "right":
+        return "text-right items-end";
+      case "left":
+      default:
+        return "text-left items-start";
+    }
+  };
+
   return (
     <div className="w-full">
       <Carousel
@@ -75,11 +94,16 @@ export function HeroSlider() {
                   className="flex aspect-[3/1] items-center justify-start p-6 bg-cover bg-center relative"
                   style={{ backgroundImage: `url(${item.image_url})` }}
                 >
-                  <div className="absolute inset-0 bg-black/50" />
-                  <div className="relative z-10 text-left text-white space-y-4 px-4 max-w-3xl">
-                    <h2 className="text-3xl md:text-5xl font-bold tracking-tight">{item.title}</h2>
-                    <p className="text-md md:text-lg">{item.description}</p>
-                  </div>
+                  <div 
+                    className="absolute inset-0 rounded-lg" 
+                    style={{ backgroundColor: `rgba(0, 0, 0, ${overlayOpacity})` }} // Apply dynamic opacity
+                  />
+                  {item.show_text && ( // Conditionally render text
+                    <div className={`relative z-10 text-white space-y-4 px-4 max-w-3xl flex flex-col ${getTextAlignmentClass(item.text_position)}`}>
+                      <h2 className="text-3xl md:text-5xl font-bold tracking-tight">{item.title}</h2>
+                      <p className="text-md md:text-lg">{item.description}</p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </CarouselItem>
