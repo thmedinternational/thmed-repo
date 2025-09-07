@@ -50,7 +50,7 @@ export function HeroSlider() {
   if (isLoading) {
     return (
       <div className="w-full">
-        <Skeleton className="w-full aspect-[16/7]" /> {/* Adjusted aspect ratio */}
+        <Skeleton className="w-full aspect-[16/9]" /> {/* Adjusted aspect ratio */}
       </div>
     );
   }
@@ -58,7 +58,7 @@ export function HeroSlider() {
   if (isError || !slides || slides.length === 0) {
     return (
         <div className="w-full">
-            <div className="flex aspect-[16/7] items-center justify-center bg-muted"> {/* Adjusted aspect ratio */}
+            <div className="flex aspect-[16/9] items-center justify-center bg-muted"> {/* Adjusted aspect ratio */}
                 <p className="text-muted-foreground">Could not load slides. Please add slides in the admin dashboard.</p>
             </div>
         </div>
@@ -90,7 +90,7 @@ export function HeroSlider() {
             <CarouselItem key={item.id}>
               <Card className="border-none rounded-none shadow-none">
                 <CardContent 
-                  className="flex aspect-[16/7] items-center justify-start p-6 bg-cover bg-center relative" // Adjusted aspect ratio
+                  className="flex aspect-[16/9] items-center justify-start p-6 bg-cover bg-center relative" // Adjusted aspect ratio
                   style={{ backgroundImage: `url(${item.image_url})` }}
                 >
                   <div 
