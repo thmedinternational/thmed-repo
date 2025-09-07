@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { HeroSlide } from "@/pages/admin/HeroSettingsPage";
 import { Switch } from "@/components/ui/switch"; // Import Switch
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"; // Import Select
+import { Slider } from "@/components/ui/slider"; // Import Slider
 
 const heroSlideFormSchema = z.object({
   title: z.string().min(2, {
@@ -25,8 +26,9 @@ const heroSlideFormSchema = z.object({
   description: z.string().optional(),
   image: z.custom<FileList>().optional(),
   slide_order: z.coerce.number().int().optional(),
-  show_text: z.boolean().default(true), // New field
-  text_position: z.enum(["left", "center", "right"]).default("left"), // New field
+  show_text: z.boolean().default(true),
+  text_position: z.enum(["left", "center", "right"]).default("left"),
+  overlay_opacity: z.number().min(0).max(1).default(0.5), // New field for overlay opacity
 });
 
 export type HeroSlideFormValues = z.infer<typeof heroSlideFormSchema>;
@@ -44,8 +46,9 @@ export function HeroSlideForm({ onSubmit, slide, isSubmitting }: HeroSlideFormPr
       title: slide?.title ?? "",
       description: slide?.description ?? "",
       slide_order: slide?.slide_order ?? 0,
-      show_text: slide?.show_text ?? true, // Set default from slide or true
-      text_position: slide?.text_position ?? "left", // Set default from slide or 'left'
+      show_text: slide?.show_text ?? true,
+      text_position: slide?.text_position ?? "left",
+      overlay_opacity: slide?.overlay_opacity ?? 0.5, // Set default from slide or 0.5
     },
   });
 
@@ -188,6 +191,26 @@ export function HeroSlideForm({ onSubmit, slide, isSubmitting }: HeroSlideFormPr
             </FormItem>
           )}
         />
+
+        <FormField control={form.control} name="overlay_opacity" render={({ field }) => (
+          <FormItem>
+            <FormLabel>Image Overlay Opacity: {field.value?.toFixed(1)}</FormLabel>
+            <FormControl>
+              <Slider 
+                defaultValue={[0.5]} 
+                value={[field.value ?? 0.5]} 
+                onValueChange={v => field.onChange(v[0])} 
+                min={0} 
+                max={1} 
+                step={0.1} 
+              />
+            </FormControl>
+            <FormDescription>
+              Adjust the darkness of the overlay on this slide's image (0.0 = transparent, 1.0 = opaque).
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )} />
 
         <Button type="submit" disabled={isSubmitting} className="w-full">
           {isSubmitting ? "Saving..." : "Save Slide"}

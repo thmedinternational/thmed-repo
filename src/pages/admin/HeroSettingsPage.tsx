@@ -45,8 +45,9 @@ export type HeroSlide = {
   slide_order: number;
   created_at: string;
   user_id: string;
-  show_text: boolean; // New field
-  text_position: "left" | "center" | "right"; // New field
+  show_text: boolean;
+  text_position: "left" | "center" | "right";
+  overlay_opacity: number | null; // New field
 };
 
 const fetchSlides = async () => {
@@ -62,6 +63,7 @@ const initialSlidesData = [
     imageUrl: "/images/slide1.jpg",
     showText: true,
     textPosition: "left",
+    overlayOpacity: 0.5, // Default value for initial slides
   },
   {
     title: "Risk Management Solutions",
@@ -69,6 +71,7 @@ const initialSlidesData = [
     imageUrl: "/images/slide2.jpg",
     showText: true,
     textPosition: "left",
+    overlayOpacity: 0.5, // Default value for initial slides
   },
   {
     title: "Workplace Safety Training",
@@ -76,6 +79,7 @@ const initialSlidesData = [
     imageUrl: "/images/slide3.jpg",
     showText: true,
     textPosition: "left",
+    overlayOpacity: 0.5, // Default value for initial slides
   },
   {
     title: "PPE & Safety Equipment Supply",
@@ -83,6 +87,7 @@ const initialSlidesData = [
     imageUrl: "/images/slide4.jpg",
     showText: true,
     textPosition: "left",
+    overlayOpacity: 0.5, // Default value for initial slides
   },
 ];
 
@@ -132,8 +137,9 @@ const HeroSettingsPage = () => {
         slide_order: newSlide.slide_order,
         image_url: imageUrl,
         user_id: session.user.id,
-        show_text: newSlide.show_text, // Save new field
-        text_position: newSlide.text_position, // Save new field
+        show_text: newSlide.show_text,
+        text_position: newSlide.text_position,
+        overlay_opacity: newSlide.overlay_opacity, // Save new field
       }]);
       if (error) throw error;
     },
@@ -163,8 +169,9 @@ const HeroSettingsPage = () => {
         description: updatedValues.description,
         slide_order: updatedValues.slide_order,
         image_url: imageUrl,
-        show_text: updatedValues.show_text, // Update new field
-        text_position: updatedValues.text_position, // Update new field
+        show_text: updatedValues.show_text,
+        text_position: updatedValues.text_position,
+        overlay_opacity: updatedValues.overlay_opacity, // Update new field
       }).eq("id", editingSlide.id);
       if (error) throw error;
     },
@@ -198,6 +205,7 @@ const HeroSettingsPage = () => {
             user_id: session.user.id,
             show_text: slide.showText,
             text_position: slide.textPosition,
+            overlay_opacity: slide.overlayOpacity, // Include new field
         }));
 
         const { error } = await supabase.from("hero_slides").insert(slidesToInsert);
@@ -270,8 +278,9 @@ const HeroSettingsPage = () => {
                 <TableHead>Order</TableHead>
                 <TableHead>Image</TableHead>
                 <TableHead>Title</TableHead>
-                <TableHead>Text Visible</TableHead> {/* New column */}
-                <TableHead>Text Position</TableHead> {/* New column */}
+                <TableHead>Text Visible</TableHead>
+                <TableHead>Text Position</TableHead>
+                <TableHead>Overlay Opacity</TableHead> {/* New column */}
                 <TableHead>
                   <span className="sr-only">Actions</span>
                 </TableHead>
@@ -279,9 +288,9 @@ const HeroSettingsPage = () => {
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow><TableCell colSpan={6} className="h-24 text-center">Loading slides...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={7} className="h-24 text-center">Loading slides...</TableCell></TableRow>
               ) : error ? (
-                <TableRow><TableCell colSpan={6} className="h-24 text-center text-red-500">{error.message}</TableCell></TableRow>
+                <TableRow><TableCell colSpan={7} className="h-24 text-center text-red-500">{error.message}</TableCell></TableRow>
               ) : slides?.length ? (
                 slides.map((slide) => (
                   <TableRow key={slide.id}>
@@ -290,8 +299,9 @@ const HeroSettingsPage = () => {
                       <img src={slide.image_url} alt={slide.title} className="h-10 w-16 rounded-md object-cover" />
                     </TableCell>
                     <TableCell className="font-medium">{slide.title}</TableCell>
-                    <TableCell>{slide.show_text ? "Yes" : "No"}</TableCell> {/* Display new field */}
-                    <TableCell className="capitalize">{slide.text_position}</TableCell> {/* Display new field */}
+                    <TableCell>{slide.show_text ? "Yes" : "No"}</TableCell>
+                    <TableCell className="capitalize">{slide.text_position}</TableCell>
+                    <TableCell>{slide.overlay_opacity?.toFixed(1)}</TableCell> {/* Display new field */}
                     <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -311,7 +321,7 @@ const HeroSettingsPage = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center">
+                  <TableCell colSpan={7} className="h-24 text-center">
                     <p className="mb-4">No slides found.</p>
                     <Button onClick={() => importSlidesMutation.mutate()} disabled={importSlidesMutation.isPending}>
                         Import Default Slides

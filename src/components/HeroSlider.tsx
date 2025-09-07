@@ -19,14 +19,15 @@ type HeroSlide = {
   description: string | null;
   image_url: string;
   slide_order: number;
-  show_text: boolean; // New field
-  text_position: "left" | "center" | "right"; // New field
+  show_text: boolean;
+  text_position: "left" | "center" | "right";
+  overlay_opacity: number | null; // New field
 };
 
 const fetchSlides = async (): Promise<HeroSlide[]> => {
   const { data, error } = await supabase
     .from("hero_slides")
-    .select("id, title, description, image_url, slide_order, show_text, text_position") // Select new fields
+    .select("id, title, description, image_url, slide_order, show_text, text_position, overlay_opacity") // Select new field
     .order("slide_order", { ascending: true });
 
   if (error) {
@@ -45,8 +46,7 @@ export function HeroSlider() {
     queryFn: fetchSlides,
   });
 
-  const { settings } = useSettings(); // Get settings from context
-  const overlayOpacity = settings?.hero_overlay_opacity ?? 0.5; // Use global setting or default
+  // Removed useSettings and overlayOpacity from here as it's now per slide
 
   if (isLoading) {
     return (
@@ -96,9 +96,9 @@ export function HeroSlider() {
                 >
                   <div 
                     className="absolute inset-0 rounded-lg" 
-                    style={{ backgroundColor: `rgba(0, 0, 0, ${overlayOpacity})` }} // Apply dynamic opacity
+                    style={{ backgroundColor: `rgba(0, 0, 0, ${item.overlay_opacity ?? 0.5})` }} // Apply slide-specific opacity
                   />
-                  {item.show_text && ( // Conditionally render text
+                  {item.show_text && (
                     <div className={`relative z-10 text-white space-y-4 px-4 max-w-3xl flex flex-col ${getTextAlignmentClass(item.text_position)}`}>
                       <h2 className="text-3xl md:text-5xl font-bold tracking-tight">{item.title}</h2>
                       <p className="text-md md:text-lg">{item.description}</p>

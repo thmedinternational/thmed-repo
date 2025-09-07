@@ -24,7 +24,6 @@ const settingsFormSchema = z.object({
   logo_width: z.number().min(20).max(300),
   banking_details: z.string().optional(),
   currency: z.string().min(3, "Currency code must be 3 characters (e.g., USD, ZAR)."),
-  hero_overlay_opacity: z.number().min(0).max(1).default(0.5), // New field for overlay opacity
 });
 
 type SettingsFormValues = z.infer<typeof settingsFormSchema>;
@@ -53,7 +52,6 @@ const SettingsPage = () => {
       logo_width: 120,
       banking_details: "",
       currency: "USD",
-      hero_overlay_opacity: 0.5, // Default value
     },
   });
 
@@ -65,7 +63,6 @@ const SettingsPage = () => {
         logo_width: settings.logo_width || 120,
         banking_details: settings.banking_details || "",
         currency: settings.currency || "USD",
-        hero_overlay_opacity: settings.hero_overlay_opacity ?? 0.5, // Set from fetched settings
       });
     }
   }, [settings, form]);
@@ -102,7 +99,6 @@ const SettingsPage = () => {
         logo_width: values.logo_width,
         banking_details: values.banking_details,
         currency: values.currency,
-        hero_overlay_opacity: values.hero_overlay_opacity, // Save new field
         updated_at: new Date().toISOString(),
       }, { onConflict: 'user_id' });
 
@@ -184,25 +180,6 @@ const SettingsPage = () => {
                 </FormItem>
               )}
             />
-            <FormField control={form.control} name="hero_overlay_opacity" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Hero Overlay Opacity: {field.value?.toFixed(1)}</FormLabel>
-                <FormControl>
-                  <Slider 
-                    defaultValue={[0.5]} 
-                    value={[field.value ?? 0.5]} 
-                    onValueChange={v => field.onChange(v[0])} 
-                    min={0} 
-                    max={1} 
-                    step={0.1} 
-                  />
-                </FormControl>
-                <FormDescription>
-                  Adjust the darkness of the overlay on hero banner images (0.0 = transparent, 1.0 = opaque).
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )} />
             <FormField control={form.control} name="banking_details" render={({ field }) => (
               <FormItem>
                 <FormLabel>Banking Details</FormLabel>

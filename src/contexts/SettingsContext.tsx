@@ -9,7 +9,6 @@ export type StoreSettings = {
   logo_width: number | null;
   banking_details: string | null;
   currency: string | null;
-  hero_overlay_opacity: number | null; // Added hero_overlay_opacity
 };
 
 interface SettingsContextType {
@@ -34,7 +33,7 @@ export const SettingsProvider = ({ children }: { ReactNode }) => {
         // If a user is logged in, fetch their specific settings
         const { data: userData, error: userError } = await supabase
           .from('settings')
-          .select('store_name, company_name, logo_url, logo_width, banking_details, currency, hero_overlay_opacity') // Select new field
+          .select('store_name, company_name, logo_url, logo_width, banking_details, currency')
           .eq('user_id', session.user.id)
           .single();
         data = userData;
@@ -44,7 +43,7 @@ export const SettingsProvider = ({ children }: { ReactNode }) => {
         // This assumes there's one primary set of store settings for the public site
         const { data: publicData, error: publicError } = await supabase
           .from('settings')
-          .select('store_name, company_name, logo_url, logo_width, banking_details, currency, hero_overlay_opacity') // Select new field
+          .select('store_name, company_name, logo_url, logo_width, banking_details, currency')
           .limit(1)
           .single();
         data = publicData;
