@@ -8,7 +8,7 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { Link } from 'react-router-dom';
-import { Shirt, Monitor, Smartphone, Home, Utensils, Sparkles } from 'lucide-react'; // Example icons
+import { Syringe, Stethoscope, Pill, Soap, Baby, Sparkles, Microscope, Gift } from 'lucide-react'; // Updated icons
 
 interface Category {
   id: string;
@@ -18,14 +18,14 @@ interface Category {
 }
 
 const categories: Category[] = [
-  { id: '1', name: 'Electronics Clearance', icon: Sparkles, link: '#' },
-  { id: '2', name: 'Shop Spring Deals', icon: Shirt, link: '#' },
-  { id: '3', name: 'Get more, Spend less', icon: Utensils, link: '#' },
-  { id: '4', name: 'Brands By Us', icon: Home, link: '#' },
-  { id: '5', name: 'Groceries', icon: Utensils, link: '#' },
-  { id: '6', name: 'Electronics & Entertainment', icon: Monitor, link: '#' },
-  { id: '7', name: 'Cellphones', icon: Smartphone, link: '#' },
-  { id: '8', name: 'Home Appliances', icon: Home, link: '#' },
+  { id: '1', name: 'Medical Consumables & Supplies', icon: Syringe, link: '#' },
+  { id: '2', name: 'Medical Equipment', icon: Stethoscope, link: '#' },
+  { id: '3', name: 'Supplements & Nutrition', icon: Pill, link: '#' },
+  { id: '4', name: 'Personal Care & Hygiene', icon: Soap, link: '#' },
+  { id: '5', name: 'Mom & Baby', icon: Baby, link: '#' },
+  { id: '6', name: 'Cosmetics & Beauty', icon: Sparkles, link: '#' },
+  { id: '7', name: 'Testing & Diagnostics', icon: Microscope, link: '#' },
+  { id: '8', name: 'Gifts & Hampers', icon: Gift, link: '#' },
 ];
 
 const CategoryCarousel: React.FC = () => {
