@@ -20,14 +20,13 @@ import PurchasesPage from "./pages/admin/PurchasesPage";
 import QuotationsPage from "./pages/admin/QuotationsPage";
 import SettingsPage from "./pages/admin/SettingsPage";
 import HeroSettingsPage from "./pages/admin/HeroSettingsPage";
-import BannerCardsPage from "./pages/admin/BannerCardsPage"; // Import new page
 import { AuthProvider } from "./contexts/AuthContext";
 import { SettingsProvider } from "./contexts/SettingsContext";
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 import ShoppingCartPage from "./pages/ShoppingCartPage";
 import ProductDetail from "./pages/ProductDetail";
-import CategoryProductsPage from "./pages/CategoryProductsPage";
+import CategoryProductsPage from "./pages/CategoryProductsPage"; // Import the new page
 import { CartProvider } from "./contexts/CartContext";
 
 const queryClient = new QueryClient();
@@ -48,7 +47,7 @@ const App = () => (
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/products/:id" element={<ProductDetail />} />
-                  <Route path="/categories/:categoryId" element={<CategoryProductsPage />} />
+                  <Route path="/categories/:categoryId" element={<CategoryProductsPage />} /> {/* New route */}
                   <Route path="/cart" element={<ShoppingCartPage />} />
                 </Route>
 
@@ -68,7 +67,6 @@ const App = () => (
                     <Route path="profit-loss" element={<ProfitLossPage />} />
                     <Route path="analytics" element={<AnalyticsPage />} />
                     <Route path="hero-settings" element={<HeroSettingsPage />} />
-                    <Route path="banner-cards" element={<BannerCardsPage />} /> {/* New route */}
                     <Route path="settings" element={<SettingsPage />} />
                   </Route>
                 </Route>
