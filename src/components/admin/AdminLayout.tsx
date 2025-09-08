@@ -12,7 +12,7 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag, FileText, Settings, GalleryHorizontal, LogOut, Image as ImageIcon, Menu } from "lucide-react"; // Added Menu icon
+import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag, FileText, Settings, GalleryHorizontal, LogOut, Image as ImageIcon, Menu } from "lucide-react";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Skeleton } from "../ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
@@ -39,7 +39,6 @@ const AdminLayout = () => {
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-2 p-2">
-            {/* Fixed: Ensure SidebarTrigger always has a single child when using asChild */}
             <SidebarTrigger className="md:hidden" asChild>
               <Button variant="ghost" size="icon">
                 <Menu className="h-6 w-6" />
@@ -168,7 +167,13 @@ const AdminLayout = () => {
       <SidebarInset>
         <header className="flex h-14 items-center border-b bg-background px-4 lg:px-6">
           <div className="flex items-center gap-2">
-            <SidebarTrigger className="md:hidden" />
+            {/* Fixed: Ensure SidebarTrigger always has a single child when using asChild */}
+            <SidebarTrigger className="md:hidden" asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Toggle Sidebar</span>
+              </Button>
+            </SidebarTrigger>
             <h1 className="text-xl font-semibold">Dashboard</h1>
           </div>
           <div className="ml-auto flex items-center gap-2">
