@@ -68,7 +68,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
               {product.description}
             </p>
           )}
-          <p className="mt-2 text-base font-bold text-primary tracking-tight">
+          <p className="mt-2 text-xl font-bold text-primary tracking-tight">
             {formatCurrency(product.price, currencyCode)}
           </p>
         </div>

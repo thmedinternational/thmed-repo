@@ -92,7 +92,7 @@ const ProductDetail = () => {
         </div>
         <div className="space-y-6 text-left">
           <h1 className="text-4xl font-bold tracking-tight">{product.name}</h1>
-          <p className="text-2xl md:text-3xl font-bold text-primary tracking-tight">{formatCurrency(product.price, currencyCode)}</p>
+          <p className="text-3xl md:text-4xl font-bold text-primary tracking-tight">{formatCurrency(product.price, currencyCode)}</p>
           <p className="text-lg text-muted-foreground">{product.description}</p>
           <div className="text-md text-muted-foreground">
             Stock: <span className="font-semibold">{product.stock} available</span>

@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Download } from 'lucide-react';
 import jsPDF from 'jspdf';
@@ -101,8 +101,8 @@ export const Invoice = ({ order }: InvoiceProps) => {
         <div className="flex justify-end mt-8">
           <div className="w-full max-w-xs">
             <div className="flex justify-between py-4 border-t-2 border-gray-300">
-              <span className="text-xl font-bold">Total:</span>
-              <span className="text-xl font-bold">{formatCurrency(order.total, currencyCode)}</span>
+              <span className="text-2xl font-bold">Total:</span>
+              <span className="text-2xl font-bold">{formatCurrency(order.total, currencyCode)}</span>
             </div>
           </div>
         </div>

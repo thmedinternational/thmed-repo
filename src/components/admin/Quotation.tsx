@@ -102,8 +102,8 @@ export const Quotation = ({ quotation }: QuotationProps) => {
         <div className="flex justify-end mt-8">
           <div className="w-full max-w-xs">
             <div className="flex justify-between py-4 border-t-2 border-gray-300">
-              <span className="text-xl font-bold">Total:</span>
-              <span className="text-xl font-bold">{formatCurrency(quotation.total, currencyCode)}</span>
+              <span className="text-2xl font-bold">Total:</span>
+              <span className="text-2xl font-bold">{formatCurrency(quotation.total, currencyCode)}</span>
             </div>
           </div>
         </div>

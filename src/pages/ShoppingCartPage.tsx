@@ -159,7 +159,7 @@ const ShoppingCartPage = () => {
                   <Link to={`/products/${item.id}`}>
                     <h2 className="text-base md:text-lg font-semibold hover:underline">{item.name}</h2>
                   </Link>
-                  <p className="text-sm md:text-base text-magenta font-bold">{formatCurrency(item.price, currencyCode)}</p>
+                  <p className="text-base md:text-lg text-magenta font-bold">{formatCurrency(item.price, currencyCode)}</p>
                   <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                     <Button variant="link" size="sm" className="p-0 h-auto text-muted-foreground hover:text-primary">Remove</Button>
                     {/* <span className="text-muted-foreground">|</span>
@@ -237,7 +237,7 @@ const ShoppingCartPage = () => {
                 <span>Delivery fee</span>
                 <span>Delivery fee may be added</span>
               </div>
-              <div className="border-t border-gray-200 pt-4 mt-4 flex justify-between text-xl font-poppins font-bold tracking-tight">
+              <div className="border-t border-gray-200 pt-4 mt-4 flex justify-between text-2xl font-poppins font-bold tracking-tight">
                 <span>Total amount:</span>
                 <span>{formatCurrency(cartTotal, currencyCode)}</span>
               </div>
