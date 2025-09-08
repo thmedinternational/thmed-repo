@@ -11,7 +11,7 @@ const TopBar: React.FC = () => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="text-white hover:bg-primary/80 focus:ring-0 focus:ring-offset-0">
-              Services <ChevronDown className="ml-1 h-4 w-4" />
+              Learn more <ChevronDown className="ml-1 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
