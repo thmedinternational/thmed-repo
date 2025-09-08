@@ -36,15 +36,15 @@
 
     --radius: 0.5rem;
 
-    /* Sidebar colors - keeping existing magenta theme for admin */
-    --sidebar-background: 300 100% 50%; /* Vibrant Magenta (Pink) */
-    --sidebar-foreground: 210 40% 98%; /* Off-white */
-    --sidebar-primary: 0 84.2% 60.2%; /* Red for active items */
+    /* Sidebar colors - now white with light grey text/icons */
+    --sidebar-background: 0 0% 100%; /* White */
+    --sidebar-foreground: 215.4 16.3% 46.9%; /* Light Grey */
+    --sidebar-primary: 300 100% 50%; /* Magenta for active items */
     --sidebar-primary-foreground: 210 40% 98%; /* Off-white */
-    --sidebar-accent: 300 80% 40%; /* Darker Magenta for hover/selected background */
-    --sidebar-accent-foreground: 210 40% 98%; /* Off-white */
-    --sidebar-border: 300 80% 40%; /* Darker Magenta */
-    --sidebar-ring: 0 84.2% 60.2%; /* Red */
+    --sidebar-accent: 210 40% 96.1%; /* Light Grey for hover/selected background */
+    --sidebar-accent-foreground: 215 16% 20%; /* Dark Grey for text on hover/selected */
+    --sidebar-border: 214.3 31.8% 91.4%; /* Light Grey */
+    --sidebar-ring: 214.3 31.8% 91.4%; /* Light Grey */
 
     /* Add to Cart Button Color */
     --add-to-cart-button: var(--primary);
@@ -84,15 +84,15 @@
     --input: 217.2 32.6% 17.5%; /* Dark Gray */
     --ring: 300 100% 50%; /* Vibrant Magenta */
 
-    /* Sidebar colors - keeping existing magenta theme for admin */
-    --sidebar-background: 300 100% 50%; /* Vibrant Magenta (Pink) */
-    --sidebar-foreground: 210 40% 98%; /* Off-white */
-    --sidebar-primary: 0 84.2% 60.2%; /* Red for active items */
+    /* Sidebar colors - now white with light grey text/icons */
+    --sidebar-background: 0 0% 100%; /* White */
+    --sidebar-foreground: 215.4 16.3% 46.9%; /* Light Grey */
+    --sidebar-primary: 300 100% 50%; /* Magenta for active items */
     --sidebar-primary-foreground: 210 40% 98%; /* Off-white */
-    --sidebar-accent: 300 80% 40%; /* Darker Magenta for hover/selected background */
-    --sidebar-accent-foreground: 210 40% 98%; /* Off-white */
-    --sidebar-border: 300 80% 40%; /* Darker Magenta */
-    --sidebar-ring: 0 84.2% 60.2%; /* Red */
+    --sidebar-accent: 210 40% 96.1%; /* Light Grey for hover/selected background */
+    --sidebar-accent-foreground: 215 16% 20%; /* Dark Grey for text on hover/selected */
+    --sidebar-border: 214.3 31.8% 91.4%; /* Light Grey */
+    --sidebar-ring: 214.3 31.8% 91.4%; /* Light Grey */
 
     /* Add to Cart Button Color */
     --add-to-cart-button: var(--primary);
