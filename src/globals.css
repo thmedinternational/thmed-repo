@@ -15,7 +15,7 @@
     --popover: 0 0% 100%; /* White */
     --popover-foreground: 215 16% 20%; /* Dark Gray */
 
-    --primary: 300 100% 50%; /* Vibrant Magenta (Pink) - Main brand color */
+    --primary: 320 100% 55%; /* Vibrant Magenta (#ff1fa9) - Main brand color */
     --primary-foreground: 210 40% 98%; /* Off-white for text on primary */
 
     --secondary: 174 72% 38%; /* Teal/Green - For top bar and secondary elements */
@@ -32,14 +32,14 @@
 
     --border: 214.3 31.8% 91.4%; /* Light Gray */
     --input: 214.3 31.8% 91.4%; /* Light Gray */
-    --ring: 300 100% 50%; /* Vibrant Magenta */
+    --ring: 320 100% 55%; /* Vibrant Magenta */
 
     --radius: 0.5rem;
 
     /* Sidebar colors - now white with light grey text/icons */
     --sidebar-background: 0 0% 100%; /* White */
     --sidebar-foreground: 215.4 16.3% 46.9%; /* Light Grey */
-    --sidebar-primary: 300 100% 50%; /* Magenta for active items */
+    --sidebar-primary: 320 100% 55%; /* Magenta for active items */
     --sidebar-primary-foreground: 210 40% 98%; /* Off-white */
     --sidebar-accent: 210 40% 96.1%; /* Light Grey for hover/selected background */
     --sidebar-accent-foreground: 215 16% 20%; /* Dark Grey for text on hover/selected */
@@ -51,7 +51,7 @@
     --add-to-cart-button-foreground: var(--primary-foreground);
 
     /* Custom Magenta Color */
-    --magenta: 300 100% 50%; /* HSL for a vibrant magenta */
+    --magenta: 320 100% 55%; /* HSL for a vibrant magenta */
     --teal: 174 72% 38%; /* HSL for a teal/green color */
   }
 
@@ -65,7 +65,7 @@
     --popover: 222.2 84% 4.9%; /* Almost Black */
     --popover-foreground: 210 40% 98%; /* Off-white */
 
-    --primary: 300 100% 50%; /* Vibrant Magenta (Pink) */
+    --primary: 320 100% 55%; /* Vibrant Magenta (#ff1fa9) */
     --primary-foreground: 222.2 84% 4.9%; /* Almost Black for text on primary */
 
     --secondary: 174 72% 38%; /* Teal/Green */
@@ -82,12 +82,14 @@
 
     --border: 217.2 32.6% 17.5%; /* Dark Gray */
     --input: 217.2 32.6% 17.5%; /* Dark Gray */
-    --ring: 300 100% 50%; /* Vibrant Magenta */
+    --ring: 320 100% 55%; /* Vibrant Magenta */
+
+    --radius: 0.5rem;
 
     /* Sidebar colors - now white with light grey text/icons */
     --sidebar-background: 0 0% 100%; /* White */
     --sidebar-foreground: 215.4 16.3% 46.9%; /* Light Grey */
-    --sidebar-primary: 300 100% 50%; /* Magenta for active items */
+    --sidebar-primary: 320 100% 55%; /* Magenta for active items */
     --sidebar-primary-foreground: 210 40% 98%; /* Off-white */
     --sidebar-accent: 210 40% 96.1%; /* Light Grey for hover/selected background */
     --sidebar-accent-foreground: 215 16% 20%; /* Dark Grey for text on hover/selected */
@@ -99,7 +101,7 @@
     --add-to-cart-button-foreground: var(--primary-foreground);
 
     /* Custom Magenta Color */
-    --magenta: 300 100% 50%; /* HSL for a vibrant magenta */
+    --magenta: 320 100% 55%; /* HSL for a vibrant magenta */
     --teal: 174 72% 38%; /* HSL for a teal/green color */
   }
 }
