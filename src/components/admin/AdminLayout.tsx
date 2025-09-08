@@ -12,15 +12,15 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag, FileText, Settings, GalleryHorizontal, LogOut } from "lucide-react";
+import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag, FileText, Settings, GalleryHorizontal, LogOut, Image as ImageIcon } from "lucide-react"; // Added ImageIcon
 import { useSettings } from "@/contexts/SettingsContext";
 import { Skeleton } from "../ui/skeleton";
-import { supabase } from "@/integrations/supabase/client"; // Import supabase client
-import { toast } from "sonner"; // Import toast for notifications
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const AdminLayout = () => {
   const location = useLocation();
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
   const { settings, loading } = useSettings();
   const isActive = (path: string) => location.pathname === path || (path !== "/admin" && location.pathname.startsWith(path));
 
@@ -30,7 +30,7 @@ const AdminLayout = () => {
       toast.error("Failed to log out: " + error.message);
     } else {
       toast.info("You have been logged out.");
-      navigate("/login"); // Redirect to login page after logout
+      navigate("/login");
     }
   };
 
@@ -39,8 +39,8 @@ const AdminLayout = () => {
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-2 p-2">
-            <SidebarTrigger className="md:hidden" /> {/* Only show trigger on mobile */}
-            <span className="text-lg font-semibold hidden md:block"> {/* Show generic title on desktop sidebar */}
+            <SidebarTrigger className="md:hidden" />
+            <span className="text-lg font-semibold hidden md:block">
               {loading ? <Skeleton className="h-5 w-32" /> : 'Admin Panel'}
             </span>
           </div>
@@ -131,6 +131,14 @@ const AdminLayout = () => {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive("/admin/banner-cards")}> {/* New menu item */}
+                  <Link to="/admin/banner-cards">
+                    <ImageIcon />
+                    <span>Promo Banners</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
              <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={isActive("/admin/settings")}>
                   <Link to="/admin/settings">
@@ -155,9 +163,9 @@ const AdminLayout = () => {
         <header className="flex h-14 items-center border-b bg-background px-4 lg:px-6">
           <div className="flex items-center gap-2">
             <SidebarTrigger className="md:hidden" />
-            <h1 className="text-xl font-semibold">Dashboard</h1> {/* Generic Dashboard title */}
+            <h1 className="text-xl font-semibold">Dashboard</h1>
           </div>
-          <div className="ml-auto flex items-center gap-2"> {/* Logo on the far right */}
+          <div className="ml-auto flex items-center gap-2">
             {loading ? (
               <Skeleton className="h-8 w-8 rounded-md" />
             ) : settings?.logo_url ? (
@@ -170,7 +178,7 @@ const AdminLayout = () => {
             ) : (
               <Store className="size-6" />
             )}
-            <span className="text-lg font-semibold hidden md:block"> {/* Store name next to logo on larger screens */}
+            <span className="text-lg font-semibold hidden md:block">
               {loading ? <Skeleton className="h-5 w-32" /> : settings?.store_name || 'TH-MED International'}
             </span>
           </div>
