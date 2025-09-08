@@ -6,11 +6,11 @@ import { Button } from '@/components/ui/button';
 
 const TopBar: React.FC = () => {
   return (
-    <div className="bg-teal text-white py-2 text-sm">
+    <div className="bg-primary text-white py-2 text-sm">
       <div className="container mx-auto flex justify-end items-center space-x-6">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="text-white hover:bg-teal/80 focus:ring-0 focus:ring-offset-0">
+            <Button variant="ghost" className="text-white hover:bg-primary/80 focus:ring-0 focus:ring-offset-0">
               Services <ChevronDown className="ml-1 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
