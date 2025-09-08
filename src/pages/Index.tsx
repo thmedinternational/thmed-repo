@@ -1,6 +1,5 @@
 import ProductList from "@/components/ProductList";
 import { HeroSlider } from "@/components/HeroSlider";
-import BannerSection from "@/components/BannerSection";
 import CategoryCarousel from "@/components/CategoryCarousel"; // Import the new category carousel
 
 const Index = () => {
@@ -8,7 +7,6 @@ const Index = () => {
     <div>
       <CategoryCarousel /> {/* Add the category carousel here */}
       <HeroSlider />
-      <BannerSection />
       <div className="container mx-auto py-12 px-4 md:px-6">
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-poppins font-extrabold tracking-tight text-magenta">Welcome to TH-MED International</h1>
