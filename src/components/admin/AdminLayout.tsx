@@ -17,6 +17,7 @@ import { useSettings } from "@/contexts/SettingsContext";
 import { Skeleton } from "../ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import React from "react"; // Import React for Fragment
 
 const AdminLayout = () => {
   const location = useLocation();
@@ -165,38 +166,39 @@ const AdminLayout = () => {
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <header className="flex h-14 items-center border-b bg-background px-4 lg:px-6">
-          <div className="flex items-center gap-2">
-            {/* Fixed: Ensure SidebarTrigger always has a single child when using asChild */}
-            <SidebarTrigger className="md:hidden" asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="h-6 w-6" />
-                <span className="sr-only">Toggle Sidebar</span>
-              </Button>
-            </SidebarTrigger>
-            <h1 className="text-xl font-semibold">Dashboard</h1>
-          </div>
-          <div className="ml-auto flex items-center gap-2">
-            {loading ? (
-              <Skeleton className="h-8 w-8 rounded-md" />
-            ) : settings?.logo_url ? (
-              <img 
-                src={settings.logo_url} 
-                alt="Store Logo" 
-                style={{ width: settings.logo_width || 32, height: 'auto' }}
-                className="max-h-8 object-contain"
-              />
-            ) : (
-              <Store className="size-6" />
-            )}
-            <span className="text-lg font-semibold hidden md:block">
-              {loading ? <Skeleton className="h-5 w-32" /> : settings?.store_name || 'TH-MED International'}
-            </span>
-          </div>
-        </header>
-        <main className="flex-1 p-4 md:p-6">
-          <Outlet />
-        </main>
+        <React.Fragment> {/* Wrapped header and main in a Fragment */}
+          <header className="flex h-14 items-center border-b bg-background px-4 lg:px-6">
+            <div className="flex items-center gap-2">
+              <SidebarTrigger className="md:hidden" asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Toggle Sidebar</span>
+                </Button>
+              </SidebarTrigger>
+              <h1 className="text-xl font-semibold">Dashboard</h1>
+            </div>
+            <div className="ml-auto flex items-center gap-2">
+              {loading ? (
+                <Skeleton className="h-8 w-8 rounded-md" />
+              ) : settings?.logo_url ? (
+                <img 
+                  src={settings.logo_url} 
+                  alt="Store Logo" 
+                  style={{ width: settings.logo_width || 32, height: 'auto' }}
+                  className="max-h-8 object-contain"
+                />
+              ) : (
+                <Store className="size-6" />
+              )}
+              <span className="text-lg font-semibold hidden md:block">
+                {loading ? <Skeleton className="h-5 w-32" /> : settings?.store_name || 'TH-MED International'}
+              </span>
+            </div>
+          </header>
+          <main className="flex-1 p-4 md:p-6">
+            <Outlet />
+          </main>
+        </React.Fragment>
       </SidebarInset>
     </SidebarProvider>
   );
