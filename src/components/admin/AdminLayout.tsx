@@ -37,6 +37,7 @@ const AdminLayout = () => {
 
   return (
     <SidebarProvider>
+
       <Sidebar>
         <React.Fragment> {/* Wrap Sidebar's children in a Fragment */}
           <SidebarHeader>
