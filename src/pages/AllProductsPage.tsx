@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/pagination";
 import { Link } from 'react-router-dom';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import FloatingShopButton from '@/components/FloatingShopButton'; // Import FloatingShopButton
+import ShopCategoriesPanel from '@/components/ShopCategoriesPanel'; // Import ShopCategoriesPanel
 
 const PRODUCTS_PER_PAGE = 12; // Display 12 products per page
 
@@ -45,6 +47,7 @@ const fetchAllProductsCount = async (): Promise<number> => {
 
 const AllProductsPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [isPanelOpen, setIsPanelOpen] = useState(false); // State for the side panel
 
   const { data: products, isLoading: isLoadingProducts, isError: isProductsError, error: productsError } = useQuery<Product[]>({
     queryKey: ["allProducts", currentPage],
@@ -145,6 +148,9 @@ const AllProductsPage: React.FC = () => {
           </PaginationContent>
         </Pagination>
       )}
+
+      <FloatingShopButton onClick={() => setIsPanelOpen(true)} />
+      <ShopCategoriesPanel isOpen={isPanelOpen} onClose={() => setIsPanelOpen(false)} />
     </div>
   );
 };
