@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Slider } from '@/components/ui/slider';
 import { getCroppedImage } from '@/utils/cropImage';
 import { toast } from 'sonner';
+import { Label } from '@/components/ui/label'; // Added this import
 
 interface ImageCropperDialogProps {
   imageSrc: string;
