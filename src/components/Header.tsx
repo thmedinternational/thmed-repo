@@ -157,18 +157,13 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Right section: Services, Sign In, Cart */}
+        {/* Right section: Services, Cart */}
         <div className="flex items-center space-x-2">
           {/* Search icon for mobile */}
           <Button variant="ghost" size="icon" className="md:hidden">
             <Search className="h-5 w-5" />
             <span className="sr-only">Search</span>
           </Button>
-          {/* Sign In icon for mobile, text for desktop */}
-          <Link to="/login" className="hidden md:flex items-center space-x-1 text-foreground/60 hover:text-foreground">
-            <User className="h-5 w-5" />
-            <span>Sign In</span>
-          </Link>
           <Link to="/cart" className="relative">
             <Button variant="ghost" size="icon">
               <ShoppingCart className="h-5 w-5" />
