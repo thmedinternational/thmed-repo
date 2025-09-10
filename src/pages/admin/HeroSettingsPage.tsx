@@ -153,6 +153,7 @@ const HeroSettingsPage = () => {
     ...mutationOptions,
     mutationFn: async (updatedValues: HeroSlideFormValues) => {
       if (!editingSlide) throw new Error("No slide selected for update.");
+      if (!session) throw new Error("Not authenticated");
       let imageUrl = editingSlide.image_url;
 
       if (updatedValues.image && updatedValues.image.length > 0) {

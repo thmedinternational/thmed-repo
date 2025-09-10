@@ -15,20 +15,22 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import { HeroSlide } from "@/pages/admin/HeroSettingsPage";
-import { Switch } from "@/components/ui/switch"; // Import Switch
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"; // Import Select
-import { Slider } from "@/components/ui/slider"; // Import Slider
+import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { ImageCropperDialog } from "./ImageCropperDialog"; // Import the new cropper dialog
+import { toast } from "sonner";
 
 const heroSlideFormSchema = z.object({
   title: z.string().min(2, {
     message: "Title must be at least 2 characters.",
   }),
   description: z.string().optional(),
-  image: z.custom<FileList>().optional(),
+  image: z.custom<FileList>().optional(), // This will hold the original file or the cropped file
   slide_order: z.coerce.number().int().optional(),
   show_text: z.boolean().default(true),
   text_position: z.enum(["left", "center", "right"]).default("left"),
-  overlay_opacity: z.number().min(0).max(1).default(0.5), // New field for overlay opacity
+  overlay_opacity: z.number().min(0).max(1).default(0.5),
 });
 
 export type HeroSlideFormValues = z.infer<typeof heroSlideFormSchema>;
@@ -48,25 +50,56 @@ export function HeroSlideForm({ onSubmit, slide, isSubmitting }: HeroSlideFormPr
       slide_order: slide?.slide_order ?? 0,
       show_text: slide?.show_text ?? true,
       text_position: slide?.text_position ?? "left",
-      overlay_opacity: slide?.overlay_opacity ?? 0.5, // Set default from slide or 0.5
+      overlay_opacity: slide?.overlay_opacity ?? 0.5,
     },
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(slide?.image_url ?? null);
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+  const [isCropperOpen, setIsCropperOpen] = useState(false);
+
   const watchedImage = form.watch("image");
 
   useEffect(() => {
     if (watchedImage && watchedImage.length > 0) {
       const newPreview = URL.createObjectURL(watchedImage[0]);
       setImagePreview(newPreview);
-
-      return () => {
-        URL.revokeObjectURL(newPreview);
-      };
-    } else {
-      setImagePreview(slide?.image_url ?? null);
+      // No need to revoke here, as it will be revoked when the component unmounts or a new image is selected
+    } else if (!slide) {
+      setImagePreview(null); // Clear preview if no image and not editing
     }
   }, [watchedImage, slide]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      const fileUrl = URL.createObjectURL(file);
+      setImageToCrop(fileUrl);
+      setIsCropperOpen(true);
+      // Store the original file in a temporary state or ref if needed,
+      // but for now, we'll just pass the URL to the cropper.
+    }
+  };
+
+  const handleCropComplete = (croppedFile: File) => {
+    // Create a new FileList containing only the cropped file
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(croppedFile);
+    form.setValue("image", dataTransfer.files, { shouldValidate: true });
+    setImagePreview(URL.createObjectURL(croppedFile)); // Update preview with cropped image
+    setIsCropperOpen(false);
+    setImageToCrop(null); // Clear image to crop
+    toast.success("Image cropped successfully!");
+  };
+
+  const handleCropperClose = () => {
+    setIsCropperOpen(false);
+    setImageToCrop(null);
+    // If the user cancels cropping, we might want to clear the selected file
+    // or revert to the previous image. For now, it just closes.
+    // If it's a new slide, the image input will effectively be cleared.
+    // If it's an edit, the original image_url will remain.
+  };
 
   return (
     <Form {...form}>
@@ -97,27 +130,20 @@ export function HeroSlideForm({ onSubmit, slide, isSubmitting }: HeroSlideFormPr
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="image"
-          render={({ field: { onChange, value, ...restField } }) => (
-            <FormItem>
-              <FormLabel>Slide Image</FormLabel>
-              <FormControl>
-                <Input 
-                  type="file" 
-                  accept="image/*"
-                  onChange={(e) => onChange(e.target.files)}
-                  {...restField} 
-                />
-              </FormControl>
-              <FormDescription>
-                Upload an image for the slide. Recommended aspect ratio 16:7. Images with different aspect ratios will be cropped to fit.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <FormItem>
+          <FormLabel>Slide Image</FormLabel>
+          <FormControl>
+            <Input 
+              type="file" 
+              accept="image/*"
+              onChange={handleFileChange} // Use custom handler
+            />
+          </FormControl>
+          <FormDescription>
+            Upload an image for the slide. Recommended aspect ratio 16:7. Images with different aspect ratios will be cropped to fit.
+          </FormDescription>
+          <FormMessage />
+        </FormItem>
 
         {imagePreview && (
           <div className="space-y-2">
@@ -216,6 +242,16 @@ export function HeroSlideForm({ onSubmit, slide, isSubmitting }: HeroSlideFormPr
           {isSubmitting ? "Saving..." : "Save Slide"}
         </Button>
       </form>
+
+      {imageToCrop && (
+        <ImageCropperDialog
+          imageSrc={imageToCrop}
+          isOpen={isCropperOpen}
+          onClose={handleCropperClose}
+          onCropComplete={handleCropComplete}
+          aspectRatio={16 / 7}
+        />
+      )}
     </Form>
   );
 }
