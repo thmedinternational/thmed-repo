@@ -15,7 +15,7 @@ const SubHeader: React.FC = () => {
         </div>
         <nav className="flex items-center space-x-4">
           <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">Store locator</a>
-          <Link to="#" className="hover:underline">Digital leaflets</Link>
+          <Link to="/about" className="hover:underline">Pharmacy start-up kit</Link>
           <Link to="/contact" className="hover:underline">Need help?</Link>
         </nav>
       </div>
