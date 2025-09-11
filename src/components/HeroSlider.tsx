@@ -106,7 +106,7 @@ export function HeroSlider() {
                       <h2 className="text-3xl md:text-5xl font-poppins font-extrabold tracking-tight">{item.title}</h2>
                       <p className="text-md md:text-lg font-montserrat font-light line-clamp-2">{item.description}</p>
                       <Link to="/products">
-                        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg rounded-full">
+                        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-base md:text-lg rounded-full">
                           Buy now
                         </Button>
                       </Link>
