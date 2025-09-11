@@ -4,7 +4,7 @@ import { MessageSquare } from "lucide-react";
 
 const WhatsAppFloatingButton: React.FC = () => {
   const openWhatsApp = () => {
-    const phoneNumber = "27768170495"; // Updated WhatsApp number
+    const phoneNumber = "263775224209"; // Updated WhatsApp number
     const message = "Hello! I'm interested in TH-MED International products.";
     window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
   };
