@@ -19,41 +19,27 @@ type Category = {
   name: string;
 };
 
-const CATEGORIES_PER_PAGE = 2;
+// Removed CATEGORIES_PER_PAGE constant as we will fetch all categories
 
-const fetchCategories = async (page: number): Promise<{ categories: Category[], count: number }> => {
-  const from = (page - 1) * CATEGORIES_PER_PAGE;
-  const to = from + CATEGORIES_PER_PAGE - 1;
-
-  const { data, error, count } = await supabase
+const fetchAllCategories = async (): Promise<Category[]> => {
+  const { data, error } = await supabase
     .from("categories")
-    .select("id, name", { count: "exact" })
-    .order("name", { ascending: true })
-    .range(from, to);
+    .select("id, name")
+    .order("name", { ascending: true });
 
   if (error) {
     throw new Error(error.message);
   }
-  return { categories: data as Category[], count: count || 0 };
+  return data as Category[];
 };
 
 const Index = () => {
-  const [currentCategoryPage, setCurrentCategoryPage] = useState(1);
+  // Removed currentCategoryPage state as we will fetch all categories
 
-  const { data: categoryData, isLoading: isLoadingCategories, isError: isCategoriesError, error: categoriesError } = useQuery<{ categories: Category[], count: number }>({
-    queryKey: ["categories", currentCategoryPage],
-    queryFn: () => fetchCategories(currentCategoryPage),
+  const { data: categories, isLoading: isLoadingCategories, isError: isCategoriesError, error: categoriesError } = useQuery<Category[]>({
+    queryKey: ["allCategoriesForIndex"], // Changed query key to avoid conflict with CategoryCarousel
+    queryFn: fetchAllCategories,
   });
-
-  const categories = categoryData?.categories || [];
-  const totalCategories = categoryData?.count || 0;
-  const totalCategoryPages = Math.ceil(totalCategories / CATEGORIES_PER_PAGE);
-
-  const handleCategoryPageChange = (page: number) => {
-    if (page > 0 && page <= totalCategoryPages) {
-      setCurrentCategoryPage(page);
-    }
-  };
 
   if (isCategoriesError) {
     return <div className="text-center text-destructive">Error loading categories: {categoriesError?.message}</div>;
@@ -75,7 +61,8 @@ const Index = () => {
         
         {isLoadingCategories ? (
           <div className="space-y-12">
-            {Array.from({ length: CATEGORIES_PER_PAGE }).map((_, i) => (
+            {/* Skeleton for categories */}
+            {Array.from({ length: 2 }).map((_, i) => ( // Assuming a few categories for skeleton
               <div key={i} className="space-y-4">
                 <Skeleton className="h-8 w-48 mb-4" />
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -95,41 +82,20 @@ const Index = () => {
               </div>
             ))}
           </div>
-        ) : categories.length === 0 ? (
+        ) : categories?.length === 0 ? (
           <div className="text-center text-muted-foreground text-lg py-8">
             No categories found. Please add some categories and products in the admin dashboard.
           </div>
         ) : (
           <div className="space-y-16">
-            {categories.map((category) => (
+            {categories?.map((category) => (
               <CategoryProductSection
                 key={category.id}
                 categoryId={category.id}
                 categoryName={category.name}
               />
             ))}
-            {totalCategoryPages > 1 && (
-              <Pagination className="mt-8">
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious onClick={() => handleCategoryPageChange(currentCategoryPage - 1)} disabled={currentCategoryPage === 1} />
-                  </PaginationItem>
-                  {Array.from({ length: totalCategoryPages }).map((_, index) => (
-                    <PaginationItem key={index}>
-                      <PaginationLink
-                        onClick={() => handleCategoryPageChange(index + 1)}
-                        isActive={currentCategoryPage === index + 1}
-                      >
-                        {index + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
-                  <PaginationItem>
-                    <PaginationNext onClick={() => handleCategoryPageChange(currentCategoryPage + 1)} disabled={currentCategoryPage === totalCategoryPages} />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            )}
+            {/* Removed category-level pagination */}
           </div>
         )}
       </div>
