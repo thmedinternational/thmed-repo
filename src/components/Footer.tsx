@@ -80,11 +80,11 @@ const Footer = () => {
       <div className="bg-muted text-muted-foreground py-12">
         <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
           {/* Store Info */}
-          <div className="space-y-4">
-            <Link to="/" className="flex items-center space-x-2 mb-4">
+          <div className="space-y-2"> {/* Reduced space-y from 4 to 2 */}
+            <Link to="/" className="flex items-center space-x-2 mb-2"> {/* Reduced mb-4 to mb-2 */}
               <StoreLogoAndNameMuted />
             </Link>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground max-w-xs"> {/* Added max-w-xs */}
               Your trusted partner for high-quality medical and health products.
             </p>
           </div>
@@ -92,7 +92,7 @@ const Footer = () => {
           {/* Quick Links */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-magenta">Quick Links</h3>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-1 text-sm"> {/* Reduced space-y from 2 to 1 */}
               <li><Link to="/" className="text-muted-foreground hover:text-primary">Home</Link></li>
               <li><Link to="/about" className="text-muted-foreground hover:text-primary">About</Link></li>
               <li><Link to="/contact" className="text-muted-foreground hover:text-primary">Talk to Us</Link></li>
@@ -102,7 +102,7 @@ const Footer = () => {
           {/* Services */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-magenta">Services</h3>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-1 text-sm"> {/* Reduced space-y from 2 to 1 */}
               <li><span className="text-muted-foreground">Medical Equipment Sales</span></li>
               <li><span className="text-muted-foreground">Health Product Distribution</span></li>
               <li><span className="text-muted-foreground">Customer Support</span></li>
@@ -112,8 +112,8 @@ const Footer = () => {
           {/* Get In Touch */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-magenta">Get In Touch</h3>
-            <ul className="space-y-2 text-sm">
-              <li className="flex items-start">
+            <ul className="space-y-2 text-sm"> {/* Kept space-y-2 for slightly more separation here */}
+              <li className="flex items-start"> {/* Ensured items-start for multi-line text */}
                 <MapPin size={16} className="mr-2 mt-1 shrink-0" />
                 <span className="text-muted-foreground">cs07-cs08 Sunshine bazaar complex simon mazorodze Harare</span>
               </li>
