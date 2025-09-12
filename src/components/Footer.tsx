@@ -21,9 +21,15 @@ const Footer = () => {
           />
         )
       )}
-      <span className="font-bold text-white"> {/* Changed text-background to text-white */}
-        {loading ? <Skeleton className="h-5 w-24 bg-gray-500" /> : settings?.store_name || 'TH-MED International'}
-      </span>
+      {loading ? (
+        <Skeleton className="h-5 w-24 bg-gray-500" />
+      ) : (
+        settings?.show_store_name && ( // Conditionally render store name
+          <span className="font-bold text-white">
+            {settings?.store_name || 'TH-MED International'}
+          </span>
+        )
+      )}
     </div>
   );
 

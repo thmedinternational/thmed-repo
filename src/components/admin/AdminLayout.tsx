@@ -170,9 +170,15 @@ const AdminLayout = () => {
             ) : (
               <Store className="size-6" />
             )}
-            <span className="text-lg font-semibold hidden md:block"> {/* Store name next to logo on larger screens */}
-              {loading ? <Skeleton className="h-5 w-32" /> : settings?.store_name || 'TH-MED International'}
-            </span>
+            {loading ? (
+              <Skeleton className="h-5 w-32" />
+            ) : (
+              settings?.show_store_name && ( // Conditionally display store name
+                <span className="text-lg font-semibold hidden md:block">
+                  {settings?.store_name || 'TH-MED International'}
+                </span>
+              )
+            )}
           </div>
         </header>
         <main className="flex-1 p-4 md:p-6">

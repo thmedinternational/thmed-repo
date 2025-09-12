@@ -56,9 +56,15 @@ const Header = () => {
           />
         )
       )}
-      <span className="font-bold text-xl">
-        {loading ? <Skeleton className="h-5 w-24" /> : settings?.store_name || 'TH-MED International'}
-      </span>
+      {loading ? (
+        <Skeleton className="h-5 w-24" />
+      ) : (
+        settings?.show_store_name && ( // Conditionally render store name
+          <span className="font-bold text-xl">
+            {settings?.store_name || 'TH-MED International'}
+          </span>
+        )
+      )}
     </div>
   );
 

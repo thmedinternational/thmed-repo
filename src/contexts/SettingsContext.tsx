@@ -9,6 +9,7 @@ export type StoreSettings = {
   logo_width: number | null;
   banking_details: string | null;
   currency: string | null;
+  show_store_name: boolean | null; // New field
 };
 
 interface SettingsContextType {
@@ -18,7 +19,7 @@ interface SettingsContextType {
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
-export const SettingsProvider = ({ children }: { ReactNode }) => {
+export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   const { session } = useAuth();
   const [settings, setSettings] = useState<StoreSettings | null>(null);
   const [loading, setLoading] = useState(true);
@@ -33,7 +34,7 @@ export const SettingsProvider = ({ children }: { ReactNode }) => {
         // If a user is logged in, fetch their specific settings
         const { data: userData, error: userError } = await supabase
           .from('settings')
-          .select('store_name, company_name, logo_url, logo_width, banking_details, currency')
+          .select('store_name, company_name, logo_url, logo_width, banking_details, currency, show_store_name')
           .eq('user_id', session.user.id)
           .single();
         data = userData;
@@ -43,7 +44,7 @@ export const SettingsProvider = ({ children }: { ReactNode }) => {
         // This assumes there's one primary set of store settings for the public site
         const { data: publicData, error: publicError } = await supabase
           .from('settings')
-          .select('store_name, company_name, logo_url, logo_width, banking_details, currency')
+          .select('store_name, company_name, logo_url, logo_width, banking_details, currency, show_store_name')
           .limit(1)
           .single();
         data = publicData;
@@ -63,7 +64,7 @@ export const SettingsProvider = ({ children }: { ReactNode }) => {
 
   const value = { settings, loading };
 
-  return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
+  return <SettingsContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useSettings = () => {
