@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSettings } from '@/contexts/SettingsContext';
-import { Facebook, Phone, Mail, MapPin, MessageCircle, Instagram } from 'lucide-react'; // Added Instagram
+import { Facebook, Phone, Mail, MapPin, MessageCircle, Instagram } from 'lucide-react';
 import { Skeleton } from './ui/skeleton';
 
 const Footer = () => {
@@ -24,7 +24,7 @@ const Footer = () => {
       {loading ? (
         <Skeleton className="h-5 w-24 bg-gray-500" />
       ) : (
-        settings?.show_store_name && ( // Conditionally render store name
+        settings?.show_store_name && (
           <span className="font-bold text-white">
             {settings?.store_name || 'TH-MED International'}
           </span>
@@ -50,7 +50,7 @@ const Footer = () => {
       {loading ? (
         <Skeleton className="h-5 w-24 bg-gray-500" />
       ) : (
-        settings?.show_store_name && ( // Conditionally render store name
+        settings?.show_store_name && (
           <span className="font-bold text-foreground">
             {settings?.store_name || 'TH-MED International'}
           </span>
@@ -63,7 +63,7 @@ const Footer = () => {
     <footer className="mt-auto">
       {/* Top Bar */}
       <div className="bg-foreground text-background py-3">
-        <div className="container mx-auto flex items-center justify-end space-x-4"> {/* Adjusted to justify-end */}
+        <div className="container mx-auto flex items-center justify-end space-x-4">
           <a href="https://www.instagram.com/thmedinternational" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-white hover:text-primary">
             <Instagram size={20} />
           </a>
@@ -81,7 +81,7 @@ const Footer = () => {
         <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
           {/* Store Info */}
           <div className="space-y-4">
-            <Link to="/" className="flex items-center space-x-2 mb-4"> {/* Moved logo here */}
+            <Link to="/" className="flex items-center space-x-2 mb-4">
               <StoreLogoAndNameMuted />
             </Link>
             <p className="text-sm text-muted-foreground">
