@@ -7,9 +7,9 @@ import { Skeleton } from './ui/skeleton';
 const Footer = () => {
   const { settings, loading } = useSettings();
 
+  // This component is no longer used in the footer, but kept for reference if needed elsewhere.
   const StoreLogoAndName = () => (
     <div className="flex items-center space-x-2">
-      {/* Removed logo image */}
       {loading ? (
         <Skeleton className="h-5 w-24 bg-gray-500" />
       ) : (
@@ -22,17 +22,14 @@ const Footer = () => {
     </div>
   );
 
-  const StoreLogoAndNameMuted = () => (
+  const StoreNameTitle = () => (
     <div className="flex items-center space-x-2">
-      {/* Removed logo image */}
       {loading ? (
-        <Skeleton className="h-5 w-24 bg-gray-500" />
+        <Skeleton className="h-6 w-48 bg-gray-500" />
       ) : (
-        settings?.show_store_name && (
-          <span className="font-bold text-foreground">
-            {settings?.store_name || 'TH-MED International'}
-          </span>
-        )
+        <span className="font-bold text-xl text-foreground"> {/* Applied text-xl and text-foreground for title styling */}
+          TH-MED International
+        </span>
       )}
     </div>
   );
@@ -60,7 +57,7 @@ const Footer = () => {
           {/* Store Info */}
           <div className="space-y-0">
             <Link to="/" className="flex items-center space-x-2 mb-0 py-0">
-              <StoreLogoAndNameMuted />
+              <StoreNameTitle /> {/* Using the new StoreNameTitle component */}
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs mt-0">
               Your trusted partner for high-quality medical and health products.
