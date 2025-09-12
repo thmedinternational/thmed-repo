@@ -9,18 +9,7 @@ const Footer = () => {
 
   const StoreLogoAndName = () => (
     <div className="flex items-center space-x-2">
-      {loading ? (
-        <Skeleton className="h-8 w-8 rounded-md bg-gray-500" />
-      ) : (
-        settings?.logo_url && (
-          <img 
-            src={settings.logo_url} 
-            alt="Store Logo" 
-            style={{ width: settings.logo_width || 120, height: 'auto' }}
-            className="object-contain"
-          />
-        )
-      )}
+      {/* Removed logo image */}
       {loading ? (
         <Skeleton className="h-5 w-24 bg-gray-500" />
       ) : (
@@ -35,18 +24,7 @@ const Footer = () => {
 
   const StoreLogoAndNameMuted = () => (
     <div className="flex items-center space-x-2">
-      {loading ? (
-        <Skeleton className="h-8 w-8 rounded-md bg-gray-500" />
-      ) : (
-        settings?.logo_url && (
-          <img 
-            src={settings.logo_url} 
-            alt="Store Logo" 
-            style={{ width: settings.logo_width || 120, height: 'auto' }}
-            className="object-contain"
-          />
-        )
-      )}
+      {/* Removed logo image */}
       {loading ? (
         <Skeleton className="h-5 w-24 bg-gray-500" />
       ) : (
@@ -80,11 +58,11 @@ const Footer = () => {
       <div className="bg-muted text-muted-foreground py-12">
         <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
           {/* Store Info */}
-          <div className="space-y-0"> {/* Changed to space-y-0 */}
-            <Link to="/" className="flex items-center space-x-2 mb-0 py-0"> {/* Added mb-0 py-0 */}
+          <div className="space-y-0">
+            <Link to="/" className="flex items-center space-x-2 mb-0 py-0">
               <StoreLogoAndNameMuted />
             </Link>
-            <p className="text-sm text-muted-foreground max-w-xs mt-0"> {/* Added mt-0 */}
+            <p className="text-sm text-muted-foreground max-w-xs mt-0">
               Your trusted partner for high-quality medical and health products.
             </p>
           </div>
@@ -92,7 +70,7 @@ const Footer = () => {
           {/* Quick Links */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-magenta">Quick Links</h3>
-            <ul className="space-y-0.5 text-sm"> {/* Changed to space-y-0.5 */}
+            <ul className="space-y-0.5 text-sm">
               <li><Link to="/" className="text-muted-foreground hover:text-primary">Home</Link></li>
               <li><Link to="/about" className="text-muted-foreground hover:text-primary">About</Link></li>
               <li><Link to="/contact" className="text-muted-foreground hover:text-primary">Talk to Us</Link></li>
@@ -102,7 +80,7 @@ const Footer = () => {
           {/* Services */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-magenta">Services</h3>
-            <ul className="space-y-0.5 text-sm"> {/* Changed to space-y-0.5 */}
+            <ul className="space-y-0.5 text-sm">
               <li><span className="text-muted-foreground">Medical Equipment Sales</span></li>
               <li><span className="text-muted-foreground">Health Product Distribution</span></li>
               <li><span className="text-muted-foreground">Customer Support</span></li>
@@ -112,7 +90,7 @@ const Footer = () => {
           {/* Get In Touch */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-magenta">Get In Touch</h3>
-            <ul className="space-y-0.5 text-sm"> {/* Changed to space-y-0.5 */}
+            <ul className="space-y-0.5 text-sm">
               <li className="flex items-start">
                 <MapPin size={16} className="mr-2 mt-1 shrink-0" />
                 <span className="text-muted-foreground">cs07-cs08 Sunshine bazaar complex simon mazorodze Harare</span>
