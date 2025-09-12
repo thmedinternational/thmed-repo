@@ -52,7 +52,7 @@ const Header = () => {
             src={settings.logo_url} 
             alt="Store Logo" 
             style={{ width: settings.logo_width || 120, height: 'auto' }}
-            className="max-h-8 object-contain"
+            className="object-contain"
           />
         )
       )}
