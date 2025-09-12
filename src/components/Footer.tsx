@@ -27,7 +27,7 @@ const Footer = () => {
       {loading ? (
         <Skeleton className="h-6 w-48 bg-gray-500" />
       ) : (
-        <span className="font-bold text-xl text-foreground"> {/* Applied text-xl and text-foreground for title styling */}
+        <span className="font-bold text-xl text-primary"> {/* Changed text-foreground to text-primary */}
           TH-MED International
         </span>
       )}
@@ -57,7 +57,7 @@ const Footer = () => {
           {/* Store Info */}
           <div className="space-y-0">
             <Link to="/" className="flex items-center space-x-2 mb-0 py-0">
-              <StoreNameTitle /> {/* Using the new StoreNameTitle component */}
+              <StoreNameTitle />
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs mt-0">
               Your trusted partner for high-quality medical and health products.
