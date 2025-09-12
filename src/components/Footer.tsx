@@ -33,25 +33,46 @@ const Footer = () => {
     </div>
   );
 
+  const StoreLogoAndNameMuted = () => (
+    <div className="flex items-center space-x-2">
+      {loading ? (
+        <Skeleton className="h-8 w-8 rounded-md bg-gray-500" />
+      ) : (
+        settings?.logo_url && (
+          <img 
+            src={settings.logo_url} 
+            alt="Store Logo" 
+            style={{ width: settings.logo_width || 120, height: 'auto' }}
+            className="object-contain"
+          />
+        )
+      )}
+      {loading ? (
+        <Skeleton className="h-5 w-24 bg-gray-500" />
+      ) : (
+        settings?.show_store_name && ( // Conditionally render store name
+          <span className="font-bold text-foreground">
+            {settings?.store_name || 'TH-MED International'}
+          </span>
+        )
+      )}
+    </div>
+  );
+
   return (
     <footer className="mt-auto">
       {/* Top Bar */}
       <div className="bg-foreground text-background py-3">
-        <div className="container mx-auto flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2">
-            <StoreLogoAndName />
-          </Link>
-          <div className="flex items-center space-x-4">
-            <a href="https://www.instagram.com/thmedinternational" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-white hover:text-primary"> {/* Changed text-background to text-white */}
-              <Instagram size={20} />
-            </a>
-            <a href="https://www.facebook.com/thmedinternational" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-white hover:text-primary"> {/* Changed text-background to text-white */}
-              <Facebook size={20} />
-            </a>
-            <a href="https://wa.me/27768170495" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-white hover:text-primary"> {/* Changed text-background to text-white */}
-              <MessageCircle size={20} />
-            </a>
-          </div>
+        <div className="container mx-auto flex items-center justify-end space-x-4"> {/* Adjusted to justify-end */}
+          <a href="https://www.instagram.com/thmedinternational" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-white hover:text-primary">
+            <Instagram size={20} />
+          </a>
+          <a href="https://www.facebook.com/thmedinternational" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-white hover:text-primary">
+            <Facebook size={20} />
+          </a>
+          <a href="https://wa.me/27768170495" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-white hover:text-primary">
+            <MessageCircle size={20} />
+          </a>
         </div>
       </div>
 
@@ -60,7 +81,9 @@ const Footer = () => {
         <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
           {/* Store Info */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-magenta">Store Info</h3>
+            <Link to="/" className="flex items-center space-x-2 mb-4"> {/* Moved logo here */}
+              <StoreLogoAndNameMuted />
+            </Link>
             <p className="text-sm text-muted-foreground">
               Your trusted partner for high-quality medical and health products.
             </p>
