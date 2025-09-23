@@ -29,7 +29,7 @@ const About = () => {
           </div>
           <div className="flex justify-center">
             <img
-              src="/images/Whisk_f24fcd5bd4.jpg" // Placeholder image, consider replacing with a relevant medical image
+              src="/images/Whisk_2a66204d75c9ba39cc8493dd60e9816ddr.jpeg" // Updated image path
               alt="Medical professionals reviewing equipment"
               className="rounded-lg object-cover w-full max-w-md h-auto"
             />
