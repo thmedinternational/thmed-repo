@@ -13,6 +13,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import BrandLogos from "@/components/BrandLogos"; // Import the new BrandLogos component
 
 type Category = {
   id: string;
@@ -148,6 +149,7 @@ const Index = () => {
           </div>
         )}
       </div>
+      <BrandLogos /> {/* Add the BrandLogos component here */}
     </div>
   );
 };
