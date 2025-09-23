@@ -12,7 +12,7 @@ import { useState } from "react"; // Import useState
 
 const ShoppingCartPage = () => {
   const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
-  const whatsAppNumber = "27768170495";
+  const whatsAppNumber = "263775224209"; // Updated WhatsApp number
   const { settings } = useSettings();
   const currencyCode = settings?.currency || "USD";
 

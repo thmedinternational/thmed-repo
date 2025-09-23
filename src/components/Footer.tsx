@@ -45,7 +45,7 @@ const Footer = () => {
           <a href="https://www.facebook.com/thmedinternational" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-white hover:text-primary">
             <Facebook size={20} />
           </a>
-          <a href="https://wa.me/27768170495" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-white hover:text-primary">
+          <a href="https://wa.me/263775224209" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-white hover:text-primary">
             <MessageCircle size={20} />
           </a>
         </div>
