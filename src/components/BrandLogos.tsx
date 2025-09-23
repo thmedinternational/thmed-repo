@@ -26,7 +26,7 @@ const BrandLogos: React.FC = () => {
   );
 
   return (
-    <section className="py-12 bg-muted/40">
+    <section className="py-12 bg-white"> {/* Changed bg-muted/40 to bg-white */}
       <div className="container mx-auto text-center">
         <h2 className="text-3xl font-poppins font-bold tracking-tight text-magenta mb-8">
           Our Trusted Brands
