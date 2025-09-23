@@ -27,8 +27,9 @@ import ProtectedRoute from "./components/admin/ProtectedRoute";
 import ShoppingCartPage from "./pages/ShoppingCartPage";
 import ProductDetail from "./pages/ProductDetail";
 import CategoryProductsPage from "./pages/CategoryProductsPage";
-import AllProductsPage from "./pages/AllProductsPage"; // Import the new AllProductsPage
+import AllProductsPage from "./pages/AllProductsPage";
 import { CartProvider } from "./contexts/CartContext";
+import PharmacyStartupKitPage from "./pages/PharmacyStartupKitPage"; // Import the new page
 
 const queryClient = new QueryClient();
 
@@ -47,10 +48,11 @@ const App = () => (
                   <Route path="/" element={<Index />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
-                  <Route path="/products" element={<AllProductsPage />} /> {/* Link to AllProductsPage */}
+                  <Route path="/products" element={<AllProductsPage />} />
                   <Route path="/products/:id" element={<ProductDetail />} />
                   <Route path="/categories/:categoryId" element={<CategoryProductsPage />} />
                   <Route path="/cart" element={<ShoppingCartPage />} />
+                  <Route path="/pharmacy-startup-kit" element={<PharmacyStartupKitPage />} /> {/* New route */}
                 </Route>
 
                 {/* Auth Route */}
