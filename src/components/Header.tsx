@@ -40,7 +40,7 @@ const Header = () => {
     `transition-colors hover:text-primary/80 ${isActive ? 'text-primary font-semibold' : 'text-foreground/60'}`;
 
   const mobileNavLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `block py-2 text-lg ${isActive ? 'text-primary font-semibold' : 'text-muted-foreground'}`;
+    `block py-2 text-[9px] ${isActive ? 'text-primary font-semibold' : 'text-muted-foreground'}`; // Changed text-lg to text-[9px]
 
   const StoreLogoAndName = () => (
     <div className="flex items-center space-x-2">
