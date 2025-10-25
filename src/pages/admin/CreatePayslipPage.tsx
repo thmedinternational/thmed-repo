@@ -104,9 +104,9 @@ const CreatePayslipPage = () => {
   const watchedEarnings = form.watch("earnings");
   const watchedDeductions = form.watch("deductions");
 
-  const totalEarnings = (watchedEarnings || []).reduce((sum, e) => sum + (e.amount || 0), 0);
-  const grossSalary = watchedBasicSalary + totalEarnings;
-  const totalDeductions = (watchedDeductions || []).reduce((sum, d) => sum + (d.amount || 0), 0);
+  const totalEarnings = (watchedEarnings || []).reduce((sum, e) => sum + Number(e.amount || 0), 0);
+  const grossSalary = Number(watchedBasicSalary || 0) + totalEarnings;
+  const totalDeductions = (watchedDeductions || []).reduce((sum, d) => sum + Number(d.amount || 0), 0);
   const netSalary = grossSalary - totalDeductions;
 
   function onSubmit(values: PayslipFormValues) {
@@ -172,7 +172,7 @@ const CreatePayslipPage = () => {
                   {earningsFields.map((field, index) => (
                     <div key={field.id} className="flex items-end gap-2">
                       <FormField control={form.control} name={`earnings.${index}.name`} render={({ field }) => (<FormItem className="flex-grow"><FormControl><Select onValueChange={field.onChange} defaultValue={field.value}><SelectTrigger><SelectValue placeholder="Select an earning type" /></SelectTrigger><SelectContent>{EARNING_TYPES.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}</SelectContent></Select></FormControl><FormMessage /></FormItem>)} />
-                      <FormField control={form.control} name={`earnings.${index}.amount`} render={({ field }) => (<FormItem><FormControl><Input type="number" step="0.01" placeholder="Amount" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                      <FormField control={form.control} name={`earnings.${index}.amount`} render={({ field }) => (<FormItem><FormControl><Input type="number" step="0.01" placeholder="e.g., 20.00" {...field} /></FormControl><FormMessage /></FormItem>)} />
                       <Button type="button" variant="ghost" size="icon" onClick={() => removeEarning(index)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                     </div>
                   ))}
