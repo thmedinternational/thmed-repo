@@ -17,7 +17,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, PlusCircle, Trash2, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSettings } from "@/contexts/SettingsContext";
 import { formatCurrency } from "@/lib/currency";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -26,6 +26,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Employee } from "./EmployeesPage";
+import { useEffect } from "react";
+import { Payslip } from "./PayslipsPage";
 
 const EARNING_TYPES = [
   "Transport Allowance",
@@ -77,8 +79,17 @@ const fetchEmployees = async () => {
   return data as Employee[];
 };
 
+const fetchPayslipById = async (id: string) => {
+  const { data, error } = await supabase.from('payslips').select('*').eq('id', id).single();
+  if (error) throw new Error(error.message);
+  return data as Payslip;
+};
+
 const CreatePayslipPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const editPayslipId = searchParams.get('edit');
+  
   const { settings } = useSettings();
   const currencyCode = settings?.currency || "USD";
   const queryClient = useQueryClient();
@@ -89,24 +100,33 @@ const CreatePayslipPage = () => {
     queryFn: fetchEmployees,
   });
 
+  const { data: payslipToEdit } = useQuery({
+    queryKey: ['payslip', editPayslipId],
+    queryFn: () => fetchPayslipById(editPayslipId!),
+    enabled: !!editPayslipId,
+  });
+
   const form = useForm<PayslipFormValues>({
     resolver: zodResolver(payslipFormSchema),
     defaultValues: {
-      employee_name: "",
-      job_title: "",
-      grade: "",
-      department: "",
-      cost_centre: "",
-      id_number: "",
-      date_of_birth: undefined,
-      date_of_employment: undefined,
-      basic_salary: 0,
       earnings: [],
       deductions: [{ name: "PAYE", amount: 0 }],
-      bank_name: "",
-      bank_account_number: "",
     },
   });
+
+  useEffect(() => {
+    if (payslipToEdit) {
+      form.reset({
+        ...payslipToEdit,
+        date_of_birth: payslipToEdit.date_of_birth ? new Date(payslipToEdit.date_of_birth) : undefined,
+        date_of_employment: payslipToEdit.date_of_employment ? new Date(payslipToEdit.date_of_employment) : undefined,
+        pay_period_start: new Date(payslipToEdit.pay_period_start),
+        pay_period_end: new Date(payslipToEdit.pay_period_end),
+        earnings: (payslipToEdit.earnings as any[]) || [],
+        deductions: (payslipToEdit.deductions as any[]) || [],
+      });
+    }
+  }, [payslipToEdit, form]);
 
   const { fields: earningsFields, append: appendEarning, remove: removeEarning } = useFieldArray({
     control: form.control,
@@ -131,7 +151,7 @@ const CreatePayslipPage = () => {
     const employee = employees?.find(e => e.id === employeeId);
     if (employee) {
       form.reset({
-        ...form.getValues(), // keep existing values like dates if they are set
+        ...form.getValues(),
         employee_name: employee.employee_name,
         job_title: employee.job_title || "",
         grade: employee.grade || "",
@@ -147,24 +167,31 @@ const CreatePayslipPage = () => {
     }
   };
 
-  const createPayslipMutation = useMutation({
+  const mutation = useMutation({
     mutationFn: async (values: PayslipFormValues & { total_earnings: number; gross_salary: number; total_deductions: number; net_salary: number }) => {
       if (!session) throw new Error("User not authenticated");
 
-      const { error } = await supabase.from("payslips").insert([{
+      const payload = {
         ...values,
         user_id: session.user.id,
         pay_period_start: format(values.pay_period_start, "yyyy-MM-dd"),
         pay_period_end: format(values.pay_period_end, "yyyy-MM-dd"),
         date_of_birth: values.date_of_birth ? format(values.date_of_birth, "yyyy-MM-dd") : null,
         date_of_employment: values.date_of_employment ? format(values.date_of_employment, "yyyy-MM-dd") : null,
-      }]);
+      };
 
-      if (error) throw error;
+      if (editPayslipId) {
+        const { error } = await supabase.from("payslips").update(payload).eq("id", editPayslipId);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("payslips").insert([payload]);
+        if (error) throw error;
+      }
     },
     onSuccess: () => {
-      toast.success("Payslip saved successfully!");
+      toast.success(`Payslip ${editPayslipId ? 'updated' : 'saved'} successfully!`);
       queryClient.invalidateQueries({ queryKey: ["payslips"] });
+      queryClient.invalidateQueries({ queryKey: ['payslip', editPayslipId] });
       navigate("/admin/payslips");
     },
     onError: (error: Error) => {
@@ -173,7 +200,7 @@ const CreatePayslipPage = () => {
   });
 
   function onSubmit(values: PayslipFormValues) {
-    createPayslipMutation.mutate({
+    mutation.mutate({
       ...values,
       total_earnings: totalEarnings,
       gross_salary: grossSalary,
@@ -189,16 +216,15 @@ const CreatePayslipPage = () => {
       </Button>
       <Card>
         <CardHeader>
-          <CardTitle>Generate Payslip</CardTitle>
-          <CardDescription>Fill in the details to create a new payslip for an employee.</CardDescription>
+          <CardTitle>{editPayslipId ? "Edit Payslip" : "Generate Payslip"}</CardTitle>
+          <CardDescription>{editPayslipId ? "Update the details for this payslip." : "Fill in the details to create a new payslip."}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              {/* Employee Selection */}
               <FormItem>
                 <FormLabel>Select Employee</FormLabel>
-                <Select onValueChange={handleEmployeeSelect} disabled={isLoadingEmployees}>
+                <Select onValueChange={handleEmployeeSelect} disabled={isLoadingEmployees || !!editPayslipId}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select an employee to auto-fill details..." />
@@ -214,7 +240,6 @@ const CreatePayslipPage = () => {
                 </Select>
               </FormItem>
 
-              {/* Employee Details */}
               <div className="space-y-4">
                 <h3 className="text-lg font-medium border-b pb-2">Employee Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -224,7 +249,6 @@ const CreatePayslipPage = () => {
                 </div>
               </div>
 
-              {/* Employment Details */}
               <div className="space-y-4">
                 <h3 className="text-lg font-medium border-b pb-2">Employment Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -236,7 +260,6 @@ const CreatePayslipPage = () => {
                 </div>
               </div>
 
-              {/* Payment Details */}
               <div className="space-y-4">
                 <h3 className="text-lg font-medium border-b pb-2">Payment Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -246,7 +269,6 @@ const CreatePayslipPage = () => {
                 <FormField control={form.control} name="basic_salary" render={({ field }) => (<FormItem><FormLabel>Basic Salary</FormLabel><FormControl><Input type="number" step="0.01" placeholder="2000.00" {...field} /></FormControl><FormMessage /></FormItem>)} />
               </div>
 
-              {/* Earnings */}
               <div>
                 <FormLabel>Earnings</FormLabel>
                 <div className="space-y-4 mt-2">
@@ -261,7 +283,6 @@ const CreatePayslipPage = () => {
                 </div>
               </div>
 
-              {/* Deductions */}
               <div>
                 <FormLabel>Deductions</FormLabel>
                 <div className="space-y-4 mt-2">
@@ -276,7 +297,6 @@ const CreatePayslipPage = () => {
                 </div>
               </div>
 
-              {/* Bank Information */}
               <div className="space-y-4">
                 <h3 className="text-lg font-medium border-b pb-2">Bank Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -285,7 +305,6 @@ const CreatePayslipPage = () => {
                 </div>
               </div>
 
-              {/* Summary */}
               <div className="space-y-2 pt-4 border-t">
                 <div className="flex justify-between"><span>Basic Salary:</span><span>{formatCurrency(watchedBasicSalary, currencyCode)}</span></div>
                 <div className="flex justify-between"><span>Total Earnings:</span><span>{formatCurrency(totalEarnings, currencyCode)}</span></div>
@@ -294,9 +313,9 @@ const CreatePayslipPage = () => {
                 <div className="flex justify-between text-xl font-bold border-t pt-2 mt-2"><span>Net Salary:</span><span>{formatCurrency(netSalary, currencyCode)}</span></div>
               </div>
 
-              <Button type="submit" className="w-full" disabled={createPayslipMutation.isPending}>
-                {createPayslipMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Generate Payslip
+              <Button type="submit" className="w-full" disabled={mutation.isPending}>
+                {mutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {editPayslipId ? "Update Payslip" : "Generate Payslip"}
               </Button>
             </form>
           </Form>

@@ -30,6 +30,7 @@ export type Payslip = {
   pay_period_end: string;
   gross_salary: number;
   net_salary: number;
+  [key: string]: any; // Allow other properties for full payslip data
 };
 
 const fetchPayslips = async () => {
@@ -92,7 +93,7 @@ const PayslipsPage = () => {
                     <TableCell className="text-right">{formatCurrency(payslip.gross_salary, currencyCode)}</TableCell>
                     <TableCell className="text-right">{formatCurrency(payslip.net_salary, currencyCode)}</TableCell>
                     <TableCell className="text-right">
-                      <Button variant="outline" size="sm">View</Button>
+                      <Button variant="outline" size="sm" onClick={() => navigate(`/admin/payslips/${payslip.id}`)}>View</Button>
                     </TableCell>
                   </TableRow>
                 ))

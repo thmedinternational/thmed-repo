@@ -32,7 +32,8 @@ import { CartProvider } from "./contexts/CartContext";
 import PharmacyStartupKitPage from "./pages/PharmacyStartupKitPage";
 import PayslipsPage from "./pages/admin/PayslipsPage";
 import CreatePayslipPage from "./pages/admin/CreatePayslipPage";
-import EmployeesPage from "./pages/admin/EmployeesPage"; // Import the new page
+import EmployeesPage from "./pages/admin/EmployeesPage";
+import ViewPayslipPage from "./pages/admin/ViewPayslipPage"; // Import the new page
 
 const queryClient = new QueryClient();
 
@@ -68,7 +69,7 @@ const App = () => (
                     <Route path="products" element={<ProductsPage />} />
                     <Route path="purchases" element={<PurchasesPage />} />
                     <Route path="customers" element={<CustomersPage />} />
-                    <Route path="employees" element={<EmployeesPage />} /> {/* New route */}
+                    <Route path="employees" element={<EmployeesPage />} />
                     <Route path="orders" element={<OrdersPage />} />
                     <Route path="quotations" element={<QuotationsPage />} />
                     <Route path="receipts" element={<ReceiptsPage />} />
@@ -76,6 +77,7 @@ const App = () => (
                     <Route path="analytics" element={<AnalyticsPage />} />
                     <Route path="payslips" element={<PayslipsPage />} />
                     <Route path="payslips/generate" element={<CreatePayslipPage />} />
+                    <Route path="payslips/:id" element={<ViewPayslipPage />} /> {/* New route */}
                   </Route>
                 </Route>
 
