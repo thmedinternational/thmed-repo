@@ -88,13 +88,21 @@ const ViewPayslipPage = () => {
         </div>
       </div>
       <Card>
-        <CardContent ref={payslipRef} className="p-8 text-sm">
+        <CardContent ref={payslipRef} className="p-8 text-sm bg-white text-black">
           <header className="flex justify-between items-start mb-8">
             <div>
               <h1 className="text-3xl font-bold text-gray-800">Payslip</h1>
               <p className="text-gray-500">For period: {format(new Date(payslip.pay_period_start), "dd MMM yyyy")} - {format(new Date(payslip.pay_period_end), "dd MMM yyyy")}</p>
             </div>
             <div className="text-right">
+              {settings?.logo_url && (
+                <img 
+                  src={settings.logo_url} 
+                  alt="Company Logo" 
+                  className="mb-2 ml-auto"
+                  style={{ width: settings.logo_width || 120, height: 'auto' }}
+                />
+              )}
               <h2 className="text-xl font-semibold">{settings?.company_name || settings?.store_name}</h2>
             </div>
           </header>
