@@ -15,13 +15,16 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const PayslipsPage = () => {
+  const navigate = useNavigate();
+
   return (
     <>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Payslips</h1>
-        <Button>
+        <Button onClick={() => navigate("/admin/payslips/generate")}>
           <PlusCircle className="mr-2 h-4 w-4" />
           Generate Payslip
         </Button>

@@ -31,6 +31,7 @@ import AllProductsPage from "./pages/AllProductsPage";
 import { CartProvider } from "./contexts/CartContext";
 import PharmacyStartupKitPage from "./pages/PharmacyStartupKitPage";
 import PayslipsPage from "./pages/admin/PayslipsPage"; // Import the new page
+import CreatePayslipPage from "./pages/admin/CreatePayslipPage"; // Import the new create payslip page
 
 const queryClient = new QueryClient();
 
@@ -71,7 +72,8 @@ const App = () => (
                     <Route path="receipts" element={<ReceiptsPage />} />
                     <Route path="profit-loss" element={<ProfitLossPage />} />
                     <Route path="analytics" element={<AnalyticsPage />} />
-                    <Route path="payslips" element={<PayslipsPage />} /> {/* New route */}
+                    <Route path="payslips" element={<PayslipsPage />} />
+                    <Route path="payslips/generate" element={<CreatePayslipPage />} /> {/* New route */}
                     <Route path="hero-settings" element={<HeroSettingsPage />} />
                     <Route path="settings" element={<SettingsPage />} />
                   </Route>
