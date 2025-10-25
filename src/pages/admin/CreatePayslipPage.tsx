@@ -20,6 +20,26 @@ import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { useSettings } from "@/contexts/SettingsContext";
 import { formatCurrency } from "@/lib/currency";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const EARNING_TYPES = [
+  "Transport Allowance",
+  "Telephone Allowance",
+  "Overtime",
+  "Medical Allowance",
+  "Meal Allowance",
+  "Housing Allowance",
+  "Grocery Allowance",
+  "Fuel Allowance",
+  "Commission",
+  "Bonus",
+  "Backpay",
+];
+
+const earningSchema = z.object({
+  name: z.string().min(1, "Earning name is required."),
+  amount: z.coerce.number().min(0, "Amount must be non-negative."),
+});
 
 const deductionSchema = z.object({
   name: z.string().min(1, "Deduction name is required."),
@@ -38,6 +58,7 @@ const payslipFormSchema = z.object({
   pay_period_start: z.date({ required_error: "Start date is required." }),
   pay_period_end: z.date({ required_error: "End date is required." }),
   basic_salary: z.coerce.number().positive("Basic salary must be a positive number."),
+  earnings: z.array(earningSchema).optional(),
   deductions: z.array(deductionSchema).optional(),
   bank_name: z.string().optional(),
   bank_account_number: z.string().optional(),
@@ -62,30 +83,40 @@ const CreatePayslipPage = () => {
       date_of_birth: undefined,
       date_of_employment: undefined,
       basic_salary: 0,
+      earnings: [],
       deductions: [{ name: "PAYE", amount: 0 }],
       bank_name: "",
       bank_account_number: "",
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields: earningsFields, append: appendEarning, remove: removeEarning } = useFieldArray({
+    control: form.control,
+    name: "earnings",
+  });
+
+  const { fields: deductionsFields, append: appendDeduction, remove: removeDeduction } = useFieldArray({
     control: form.control,
     name: "deductions",
   });
 
   const watchedBasicSalary = form.watch("basic_salary");
+  const watchedEarnings = form.watch("earnings");
   const watchedDeductions = form.watch("deductions");
 
+  const totalEarnings = (watchedEarnings || []).reduce((sum, e) => sum + (e.amount || 0), 0);
+  const grossSalary = watchedBasicSalary + totalEarnings;
   const totalDeductions = (watchedDeductions || []).reduce((sum, d) => sum + (d.amount || 0), 0);
-  const netSalary = watchedBasicSalary - totalDeductions;
+  const netSalary = grossSalary - totalDeductions;
 
   function onSubmit(values: PayslipFormValues) {
     console.log("Payslip Generated:", {
       ...values,
+      total_earnings: totalEarnings,
+      gross_salary: grossSalary,
       total_deductions: totalDeductions,
       net_salary: netSalary,
     });
-    // For now, we'll just log it and navigate back.
     navigate("/admin/payslips");
   }
 
@@ -134,18 +165,33 @@ const CreatePayslipPage = () => {
                 <FormField control={form.control} name="basic_salary" render={({ field }) => (<FormItem><FormLabel>Basic Salary</FormLabel><FormControl><Input type="number" step="0.01" placeholder="2000.00" {...field} /></FormControl><FormMessage /></FormItem>)} />
               </div>
 
+              {/* Earnings */}
+              <div>
+                <FormLabel>Earnings</FormLabel>
+                <div className="space-y-4 mt-2">
+                  {earningsFields.map((field, index) => (
+                    <div key={field.id} className="flex items-end gap-2">
+                      <FormField control={form.control} name={`earnings.${index}.name`} render={({ field }) => (<FormItem className="flex-grow"><FormControl><Select onValueChange={field.onChange} defaultValue={field.value}><SelectTrigger><SelectValue placeholder="Select an earning type" /></SelectTrigger><SelectContent>{EARNING_TYPES.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}</SelectContent></Select></FormControl><FormMessage /></FormItem>)} />
+                      <FormField control={form.control} name={`earnings.${index}.amount`} render={({ field }) => (<FormItem><FormControl><Input type="number" step="0.01" placeholder="Amount" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                      <Button type="button" variant="ghost" size="icon" onClick={() => removeEarning(index)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                    </div>
+                  ))}
+                  <Button type="button" variant="outline" size="sm" onClick={() => appendEarning({ name: "", amount: 0 })}><PlusCircle className="mr-2 h-4 w-4" />Add Earning</Button>
+                </div>
+              </div>
+
               {/* Deductions */}
               <div>
                 <FormLabel>Deductions</FormLabel>
                 <div className="space-y-4 mt-2">
-                  {fields.map((field, index) => (
+                  {deductionsFields.map((field, index) => (
                     <div key={field.id} className="flex items-end gap-2">
                       <FormField control={form.control} name={`deductions.${index}.name`} render={({ field }) => (<FormItem className="flex-grow"><FormControl><Input placeholder="Deduction Name" {...field} /></FormControl><FormMessage /></FormItem>)} />
                       <FormField control={form.control} name={`deductions.${index}.amount`} render={({ field }) => (<FormItem><FormControl><Input type="number" step="0.01" placeholder="Amount" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                      <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                      <Button type="button" variant="ghost" size="icon" onClick={() => removeDeduction(index)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                     </div>
                   ))}
-                  <Button type="button" variant="outline" size="sm" onClick={() => append({ name: "", amount: 0 })}><PlusCircle className="mr-2 h-4 w-4" />Add Deduction</Button>
+                  <Button type="button" variant="outline" size="sm" onClick={() => appendDeduction({ name: "", amount: 0 })}><PlusCircle className="mr-2 h-4 w-4" />Add Deduction</Button>
                 </div>
               </div>
 
@@ -159,9 +205,12 @@ const CreatePayslipPage = () => {
               </div>
 
               {/* Summary */}
-              <div className="space-y-4 pt-4 border-t">
-                <div className="flex justify-between font-medium"><span>Total Deductions:</span><span>{formatCurrency(totalDeductions, currencyCode)}</span></div>
-                <div className="flex justify-between text-xl font-bold"><span>Net Salary:</span><span>{formatCurrency(netSalary, currencyCode)}</span></div>
+              <div className="space-y-2 pt-4 border-t">
+                <div className="flex justify-between"><span>Basic Salary:</span><span>{formatCurrency(watchedBasicSalary, currencyCode)}</span></div>
+                <div className="flex justify-between"><span>Total Earnings:</span><span>{formatCurrency(totalEarnings, currencyCode)}</span></div>
+                <div className="flex justify-between font-medium"><span>Gross Salary:</span><span>{formatCurrency(grossSalary, currencyCode)}</span></div>
+                <div className="flex justify-between font-medium text-destructive"><span>Total Deductions:</span><span>- {formatCurrency(totalDeductions, currencyCode)}</span></div>
+                <div className="flex justify-between text-xl font-bold border-t pt-2 mt-2"><span>Net Salary:</span><span>{formatCurrency(netSalary, currencyCode)}</span></div>
               </div>
 
               <Button type="submit" className="w-full">Generate Payslip</Button>
