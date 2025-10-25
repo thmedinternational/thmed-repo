@@ -12,15 +12,15 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag, FileText, Settings, GalleryHorizontal, LogOut } from "lucide-react";
+import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag, FileText, Settings, GalleryHorizontal, LogOut, FileSpreadsheet } from "lucide-react";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Skeleton } from "../ui/skeleton";
-import { supabase } from "@/integrations/supabase/client"; // Import supabase client
-import { toast } from "sonner"; // Import toast for notifications
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const AdminLayout = () => {
   const location = useLocation();
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
   const { settings, loading } = useSettings();
   const isActive = (path: string) => location.pathname === path || (path !== "/admin" && location.pathname.startsWith(path));
 
@@ -30,7 +30,7 @@ const AdminLayout = () => {
       toast.error("Failed to log out: " + error.message);
     } else {
       toast.info("You have been logged out.");
-      navigate("/login"); // Redirect to login page after logout
+      navigate("/login");
     }
   };
 
@@ -108,6 +108,14 @@ const AdminLayout = () => {
                 <Link to="/admin/profit-loss">
                   <TrendingUp />
                   <span>Profit & Loss</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={isActive("/admin/payslips")}>
+                <Link to="/admin/payslips">
+                  <FileSpreadsheet />
+                  <span>Payslips</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

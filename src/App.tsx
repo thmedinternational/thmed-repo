@@ -29,7 +29,8 @@ import ProductDetail from "./pages/ProductDetail";
 import CategoryProductsPage from "./pages/CategoryProductsPage";
 import AllProductsPage from "./pages/AllProductsPage";
 import { CartProvider } from "./contexts/CartContext";
-import PharmacyStartupKitPage from "./pages/PharmacyStartupKitPage"; // Import the new page
+import PharmacyStartupKitPage from "./pages/PharmacyStartupKitPage";
+import PayslipsPage from "./pages/admin/PayslipsPage"; // Import the new page
 
 const queryClient = new QueryClient();
 
@@ -52,7 +53,7 @@ const App = () => (
                   <Route path="/products/:id" element={<ProductDetail />} />
                   <Route path="/categories/:categoryId" element={<CategoryProductsPage />} />
                   <Route path="/cart" element={<ShoppingCartPage />} />
-                  <Route path="/pharmacy-startup-kit" element={<PharmacyStartupKitPage />} /> {/* New route */}
+                  <Route path="/pharmacy-startup-kit" element={<PharmacyStartupKitPage />} />
                 </Route>
 
                 {/* Auth Route */}
@@ -70,6 +71,7 @@ const App = () => (
                     <Route path="receipts" element={<ReceiptsPage />} />
                     <Route path="profit-loss" element={<ProfitLossPage />} />
                     <Route path="analytics" element={<AnalyticsPage />} />
+                    <Route path="payslips" element={<PayslipsPage />} /> {/* New route */}
                     <Route path="hero-settings" element={<HeroSettingsPage />} />
                     <Route path="settings" element={<SettingsPage />} />
                   </Route>
