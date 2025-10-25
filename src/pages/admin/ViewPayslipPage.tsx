@@ -103,7 +103,6 @@ const ViewPayslipPage = () => {
                   style={{ width: settings.logo_width || 120, height: 'auto' }}
                 />
               )}
-              <h2 className="text-xl font-semibold">{settings?.company_name || settings?.store_name}</h2>
             </div>
           </header>
 
