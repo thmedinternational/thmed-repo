@@ -21,10 +21,11 @@ import { useNavigate } from "react-router-dom";
 import { useSettings } from "@/contexts/SettingsContext";
 import { formatCurrency } from "@/lib/currency";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { Employee } from "./EmployeesPage";
 
 const EARNING_TYPES = [
   "Transport Allowance",
@@ -70,12 +71,23 @@ const payslipFormSchema = z.object({
 
 type PayslipFormValues = z.infer<typeof payslipFormSchema>;
 
+const fetchEmployees = async () => {
+  const { data, error } = await supabase.from("employees").select("*").order("employee_name");
+  if (error) throw new Error(error.message);
+  return data as Employee[];
+};
+
 const CreatePayslipPage = () => {
   const navigate = useNavigate();
   const { settings } = useSettings();
   const currencyCode = settings?.currency || "USD";
   const queryClient = useQueryClient();
   const { session } = useAuth();
+
+  const { data: employees, isLoading: isLoadingEmployees } = useQuery<Employee[]>({
+    queryKey: ["employees"],
+    queryFn: fetchEmployees,
+  });
 
   const form = useForm<PayslipFormValues>({
     resolver: zodResolver(payslipFormSchema),
@@ -114,6 +126,26 @@ const CreatePayslipPage = () => {
   const grossSalary = Number(watchedBasicSalary || 0) + totalEarnings;
   const totalDeductions = (watchedDeductions || []).reduce((sum, d) => sum + Number(d.amount || 0), 0);
   const netSalary = grossSalary - totalDeductions;
+
+  const handleEmployeeSelect = (employeeId: string) => {
+    const employee = employees?.find(e => e.id === employeeId);
+    if (employee) {
+      form.reset({
+        ...form.getValues(), // keep existing values like dates if they are set
+        employee_name: employee.employee_name,
+        job_title: employee.job_title || "",
+        grade: employee.grade || "",
+        department: employee.department || "",
+        cost_centre: employee.cost_centre || "",
+        id_number: employee.id_number || "",
+        date_of_birth: employee.date_of_birth ? new Date(employee.date_of_birth) : undefined,
+        date_of_employment: employee.date_of_employment ? new Date(employee.date_of_employment) : undefined,
+        basic_salary: employee.basic_salary,
+        bank_name: employee.bank_name || "",
+        bank_account_number: employee.bank_account_number || "",
+      });
+    }
+  };
 
   const createPayslipMutation = useMutation({
     mutationFn: async (values: PayslipFormValues & { total_earnings: number; gross_salary: number; total_deductions: number; net_salary: number }) => {
@@ -163,6 +195,25 @@ const CreatePayslipPage = () => {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              {/* Employee Selection */}
+              <FormItem>
+                <FormLabel>Select Employee</FormLabel>
+                <Select onValueChange={handleEmployeeSelect} disabled={isLoadingEmployees}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select an employee to auto-fill details..." />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {employees?.map((emp) => (
+                      <SelectItem key={emp.id} value={emp.id}>
+                        {emp.employee_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormItem>
+
               {/* Employee Details */}
               <div className="space-y-4">
                 <h3 className="text-lg font-medium border-b pb-2">Employee Details</h3>

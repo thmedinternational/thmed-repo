@@ -30,8 +30,9 @@ import CategoryProductsPage from "./pages/CategoryProductsPage";
 import AllProductsPage from "./pages/AllProductsPage";
 import { CartProvider } from "./contexts/CartContext";
 import PharmacyStartupKitPage from "./pages/PharmacyStartupKitPage";
-import PayslipsPage from "./pages/admin/PayslipsPage"; // Import the new page
-import CreatePayslipPage from "./pages/admin/CreatePayslipPage"; // Import the new create payslip page
+import PayslipsPage from "./pages/admin/PayslipsPage";
+import CreatePayslipPage from "./pages/admin/CreatePayslipPage";
+import EmployeesPage from "./pages/admin/EmployeesPage"; // Import the new page
 
 const queryClient = new QueryClient();
 
@@ -67,15 +68,14 @@ const App = () => (
                     <Route path="products" element={<ProductsPage />} />
                     <Route path="purchases" element={<PurchasesPage />} />
                     <Route path="customers" element={<CustomersPage />} />
+                    <Route path="employees" element={<EmployeesPage />} /> {/* New route */}
                     <Route path="orders" element={<OrdersPage />} />
                     <Route path="quotations" element={<QuotationsPage />} />
                     <Route path="receipts" element={<ReceiptsPage />} />
                     <Route path="profit-loss" element={<ProfitLossPage />} />
                     <Route path="analytics" element={<AnalyticsPage />} />
                     <Route path="payslips" element={<PayslipsPage />} />
-                    <Route path="payslips/generate" element={<CreatePayslipPage />} /> {/* New route */}
-                    <Route path="hero-settings" element={<HeroSettingsPage />} />
-                    <Route path="settings" element={<SettingsPage />} />
+                    <Route path="payslips/generate" element={<CreatePayslipPage />} />
                   </Route>
                 </Route>
 

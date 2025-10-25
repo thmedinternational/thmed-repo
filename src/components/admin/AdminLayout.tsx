@@ -80,6 +80,14 @@ const AdminLayout = () => {
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={isActive("/admin/employees")}>
+                <Link to="/admin/employees">
+                  <Users />
+                  <span>Employees</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={isActive("/admin/orders")}>
                 <Link to="/admin/orders">
                   <ShoppingCart />
