@@ -14,13 +14,17 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, PlusCircle, Trash2 } from "lucide-react";
+import { CalendarIcon, PlusCircle, Trash2, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { useSettings } from "@/contexts/SettingsContext";
 import { formatCurrency } from "@/lib/currency";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 const EARNING_TYPES = [
   "Transport Allowance",
@@ -70,6 +74,8 @@ const CreatePayslipPage = () => {
   const navigate = useNavigate();
   const { settings } = useSettings();
   const currencyCode = settings?.currency || "USD";
+  const queryClient = useQueryClient();
+  const { session } = useAuth();
 
   const form = useForm<PayslipFormValues>({
     resolver: zodResolver(payslipFormSchema),
@@ -109,15 +115,39 @@ const CreatePayslipPage = () => {
   const totalDeductions = (watchedDeductions || []).reduce((sum, d) => sum + Number(d.amount || 0), 0);
   const netSalary = grossSalary - totalDeductions;
 
+  const createPayslipMutation = useMutation({
+    mutationFn: async (values: PayslipFormValues & { total_earnings: number; gross_salary: number; total_deductions: number; net_salary: number }) => {
+      if (!session) throw new Error("User not authenticated");
+
+      const { error } = await supabase.from("payslips").insert([{
+        ...values,
+        user_id: session.user.id,
+        pay_period_start: format(values.pay_period_start, "yyyy-MM-dd"),
+        pay_period_end: format(values.pay_period_end, "yyyy-MM-dd"),
+        date_of_birth: values.date_of_birth ? format(values.date_of_birth, "yyyy-MM-dd") : null,
+        date_of_employment: values.date_of_employment ? format(values.date_of_employment, "yyyy-MM-dd") : null,
+      }]);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Payslip saved successfully!");
+      queryClient.invalidateQueries({ queryKey: ["payslips"] });
+      navigate("/admin/payslips");
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to save payslip: ${error.message}`);
+    },
+  });
+
   function onSubmit(values: PayslipFormValues) {
-    console.log("Payslip Generated:", {
+    createPayslipMutation.mutate({
       ...values,
       total_earnings: totalEarnings,
       gross_salary: grossSalary,
       total_deductions: totalDeductions,
       net_salary: netSalary,
     });
-    navigate("/admin/payslips");
   }
 
   return (
@@ -213,7 +243,10 @@ const CreatePayslipPage = () => {
                 <div className="flex justify-between text-xl font-bold border-t pt-2 mt-2"><span>Net Salary:</span><span>{formatCurrency(netSalary, currencyCode)}</span></div>
               </div>
 
-              <Button type="submit" className="w-full">Generate Payslip</Button>
+              <Button type="submit" className="w-full" disabled={createPayslipMutation.isPending}>
+                {createPayslipMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Generate Payslip
+              </Button>
             </form>
           </Form>
         </CardContent>
