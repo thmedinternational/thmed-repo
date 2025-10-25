@@ -20,7 +20,6 @@ import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { useSettings } from "@/contexts/SettingsContext";
 import { formatCurrency } from "@/lib/currency";
-import { useEffect } from "react";
 
 const deductionSchema = z.object({
   name: z.string().min(1, "Deduction name is required."),
@@ -29,10 +28,19 @@ const deductionSchema = z.object({
 
 const payslipFormSchema = z.object({
   employee_name: z.string().min(2, "Employee name is required."),
+  job_title: z.string().optional(),
+  grade: z.string().optional(),
+  department: z.string().optional(),
+  cost_centre: z.string().optional(),
+  id_number: z.string().optional(),
+  date_of_birth: z.date().optional(),
+  date_of_employment: z.date().optional(),
   pay_period_start: z.date({ required_error: "Start date is required." }),
   pay_period_end: z.date({ required_error: "End date is required." }),
-  gross_salary: z.coerce.number().positive("Gross salary must be a positive number."),
+  basic_salary: z.coerce.number().positive("Basic salary must be a positive number."),
   deductions: z.array(deductionSchema).optional(),
+  bank_name: z.string().optional(),
+  bank_account_number: z.string().optional(),
 });
 
 type PayslipFormValues = z.infer<typeof payslipFormSchema>;
@@ -46,8 +54,17 @@ const CreatePayslipPage = () => {
     resolver: zodResolver(payslipFormSchema),
     defaultValues: {
       employee_name: "",
-      gross_salary: 0,
+      job_title: "",
+      grade: "",
+      department: "",
+      cost_centre: "",
+      id_number: "",
+      date_of_birth: undefined,
+      date_of_employment: undefined,
+      basic_salary: 0,
       deductions: [{ name: "PAYE", amount: 0 }],
+      bank_name: "",
+      bank_account_number: "",
     },
   });
 
@@ -56,11 +73,11 @@ const CreatePayslipPage = () => {
     name: "deductions",
   });
 
-  const watchedGrossSalary = form.watch("gross_salary");
+  const watchedBasicSalary = form.watch("basic_salary");
   const watchedDeductions = form.watch("deductions");
 
   const totalDeductions = (watchedDeductions || []).reduce((sum, d) => sum + (d.amount || 0), 0);
-  const netSalary = watchedGrossSalary - totalDeductions;
+  const netSalary = watchedBasicSalary - totalDeductions;
 
   function onSubmit(values: PayslipFormValues) {
     console.log("Payslip Generated:", {
@@ -68,7 +85,6 @@ const CreatePayslipPage = () => {
       total_deductions: totalDeductions,
       net_salary: netSalary,
     });
-    // Here you would typically mutate data to save the payslip
     // For now, we'll just log it and navigate back.
     navigate("/admin/payslips");
   }
@@ -86,143 +102,69 @@ const CreatePayslipPage = () => {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="employee_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Employee Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="John Doe" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
-                  control={form.control}
-                  name="pay_period_start"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Pay Period Start</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button variant="outline" className={cn("font-normal", !field.value && "text-muted-foreground")}>
-                              {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="pay_period_end"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Pay Period End</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button variant="outline" className={cn("font-normal", !field.value && "text-muted-foreground")}>
-                              {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              {/* Employee Details */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium border-b pb-2">Employee Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField control={form.control} name="employee_name" render={({ field }) => (<FormItem><FormLabel>Employee Name</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                  <FormField control={form.control} name="id_number" render={({ field }) => (<FormItem><FormLabel>ID Number</FormLabel><FormControl><Input placeholder="e.g., 63-1234567-A-00" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                  <FormField control={form.control} name="date_of_birth" render={({ field }) => (<FormItem className="flex flex-col"><FormLabel>Date of Birth</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant="outline" className={cn("font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} /></PopoverContent></Popover><FormMessage /></FormItem>)} />
+                </div>
               </div>
 
-              <FormField
-                control={form.control}
-                name="gross_salary"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Gross Salary</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" placeholder="2000.00" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {/* Employment Details */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium border-b pb-2">Employment Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField control={form.control} name="job_title" render={({ field }) => (<FormItem><FormLabel>Job Title</FormLabel><FormControl><Input placeholder="e.g., Sales Manager" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                  <FormField control={form.control} name="grade" render={({ field }) => (<FormItem><FormLabel>Grade</FormLabel><FormControl><Input placeholder="e.g., C2" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                  <FormField control={form.control} name="department" render={({ field }) => (<FormItem><FormLabel>Department</FormLabel><FormControl><Input placeholder="e.g., Sales" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                  <FormField control={form.control} name="cost_centre" render={({ field }) => (<FormItem><FormLabel>Cost Centre</FormLabel><FormControl><Input placeholder="e.g., C012" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                  <FormField control={form.control} name="date_of_employment" render={({ field }) => (<FormItem className="flex flex-col"><FormLabel>Date of Employment</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant="outline" className={cn("font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} /></PopoverContent></Popover><FormMessage /></FormItem>)} />
+                </div>
+              </div>
 
+              {/* Payment Details */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium border-b pb-2">Payment Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField control={form.control} name="pay_period_start" render={({ field }) => (<FormItem className="flex flex-col"><FormLabel>Pay Period Start</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant="outline" className={cn("font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)} />
+                  <FormField control={form.control} name="pay_period_end" render={({ field }) => (<FormItem className="flex flex-col"><FormLabel>Pay Period End</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant="outline" className={cn("font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : <span>Pick a date</span>}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)} />
+                </div>
+                <FormField control={form.control} name="basic_salary" render={({ field }) => (<FormItem><FormLabel>Basic Salary</FormLabel><FormControl><Input type="number" step="0.01" placeholder="2000.00" {...field} /></FormControl><FormMessage /></FormItem>)} />
+              </div>
+
+              {/* Deductions */}
               <div>
                 <FormLabel>Deductions</FormLabel>
                 <div className="space-y-4 mt-2">
                   {fields.map((field, index) => (
                     <div key={field.id} className="flex items-end gap-2">
-                      <FormField
-                        control={form.control}
-                        name={`deductions.${index}.name`}
-                        render={({ field }) => (
-                          <FormItem className="flex-grow">
-                            <FormControl>
-                              <Input placeholder="Deduction Name" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`deductions.${index}.amount`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input type="number" step="0.01" placeholder="Amount" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
+                      <FormField control={form.control} name={`deductions.${index}.name`} render={({ field }) => (<FormItem className="flex-grow"><FormControl><Input placeholder="Deduction Name" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                      <FormField control={form.control} name={`deductions.${index}.amount`} render={({ field }) => (<FormItem><FormControl><Input type="number" step="0.01" placeholder="Amount" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                      <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                     </div>
                   ))}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => append({ name: "", amount: 0 })}
-                  >
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Add Deduction
-                  </Button>
+                  <Button type="button" variant="outline" size="sm" onClick={() => append({ name: "", amount: 0 })}><PlusCircle className="mr-2 h-4 w-4" />Add Deduction</Button>
                 </div>
               </div>
 
+              {/* Bank Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium border-b pb-2">Bank Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField control={form.control} name="bank_name" render={({ field }) => (<FormItem><FormLabel>Bank Name</FormLabel><FormControl><Input placeholder="e.g., CBZ Bank" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                  <FormField control={form.control} name="bank_account_number" render={({ field }) => (<FormItem><FormLabel>Bank Account Number</FormLabel><FormControl><Input placeholder="e.g., 01234567890123" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                </div>
+              </div>
+
+              {/* Summary */}
               <div className="space-y-4 pt-4 border-t">
-                <div className="flex justify-between font-medium">
-                  <span>Total Deductions:</span>
-                  <span>{formatCurrency(totalDeductions, currencyCode)}</span>
-                </div>
-                <div className="flex justify-between text-xl font-bold">
-                  <span>Net Salary:</span>
-                  <span>{formatCurrency(netSalary, currencyCode)}</span>
-                </div>
+                <div className="flex justify-between font-medium"><span>Total Deductions:</span><span>{formatCurrency(totalDeductions, currencyCode)}</span></div>
+                <div className="flex justify-between text-xl font-bold"><span>Net Salary:</span><span>{formatCurrency(netSalary, currencyCode)}</span></div>
               </div>
 
-              <Button type="submit" className="w-full">
-                Generate Payslip
-              </Button>
+              <Button type="submit" className="w-full">Generate Payslip</Button>
             </form>
           </Form>
         </CardContent>
