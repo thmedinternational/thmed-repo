@@ -4,10 +4,12 @@ import Footer from "./Footer";
 import WhatsAppFloatingButton from "./WhatsAppFloatingButton";
 import TopBar from "./TopBar"; // Import TopBar
 import SubHeader from "./SubHeader"; // Import SubHeader
+import Snowfall from "./Snowfall"; // Import Snowfall
 
 const Layout = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <Snowfall /> {/* Add Snowfall component here */}
       <TopBar /> {/* Add TopBar here */}
       <Header />
       <SubHeader /> {/* Add SubHeader here */}
