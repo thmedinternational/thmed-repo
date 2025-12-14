@@ -82,7 +82,11 @@ const fetchProducts = async (
     query = query.ilike("name", `%${searchTerm}%`);
   }
 
-  query = query.order(sortColumn, { ascending: sortDirection === 'asc' });
+  if (sortColumn === 'category') {
+    query = query.order('name', { foreignTable: 'categories', ascending: sortDirection === 'asc' });
+  } else {
+    query = query.order(sortColumn, { ascending: sortDirection === 'asc' });
+  }
 
   const { data, error, count } = await query.range(from, to);
 
@@ -314,7 +318,12 @@ const ProductsPage = () => {
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>
-                <TableHead>Category</TableHead>
+                <TableHead>
+                  <Button variant="ghost" onClick={() => handleSort('category')}>
+                    Category
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </TableHead>
                 <TableHead>
                   <Button variant="ghost" onClick={() => handleSort('stock')}>
                     Stock

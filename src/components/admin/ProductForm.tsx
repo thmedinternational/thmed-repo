@@ -18,6 +18,8 @@ import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { ImageCropperDialog } from "./ImageCropperDialog";
+import { toast } from "sonner";
 
 // Define Category type
 type Category = {
@@ -72,21 +74,52 @@ export function ProductForm({ onSubmit, product, isSubmitting }: ProductFormProp
     },
   });
 
-  const [imagePreviews, setImagePreviews] = useState<string[]>(product?.image_urls ?? []);
-  const watchedImages = form.watch("images");
+  const [imagePreview, setImagePreview] = useState<string | null>(product?.image_urls?.[0] ?? null);
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+  const [isCropperOpen, setIsCropperOpen] = useState(false);
+
+  const watchedImage = form.watch("images");
 
   useEffect(() => {
-    if (watchedImages && watchedImages.length > 0) {
-      const newPreviews = Array.from(watchedImages).map(file => URL.createObjectURL(file));
-      setImagePreviews(newPreviews);
-
-      return () => {
-        newPreviews.forEach(url => URL.revokeObjectURL(url));
-      };
-    } else {
-      setImagePreviews(product?.image_urls ?? []);
+    if (watchedImage && watchedImage.length > 0) {
+      const newPreview = URL.createObjectURL(watchedImage[0]);
+      setImagePreview(newPreview);
+      // No need to revoke here, as it will be revoked when the component unmounts or a new image is selected
+    } else if (!product) {
+      setImagePreview(null); // Clear preview if no image and not editing
     }
-  }, [watchedImages, product]);
+  }, [watchedImage, product]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      const fileUrl = URL.createObjectURL(file);
+      setImageToCrop(fileUrl);
+      setIsCropperOpen(true);
+      // Store the original file in a temporary state or ref if needed,
+      // but for now, we'll just pass the URL to the cropper.
+    }
+  };
+
+  const handleCropComplete = (croppedFile: File) => {
+    // Create a new FileList containing only the cropped file
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(croppedFile);
+    form.setValue("image", dataTransfer.files, { shouldValidate: true });
+    setImagePreview(URL.createObjectURL(croppedFile)); // Update preview with cropped image
+    setIsCropperOpen(false);
+    setImageToCrop(null); // Clear image to crop
+    toast.success("Image cropped successfully!");
+  };
+
+  const handleCropperClose = () => {
+    setIsCropperOpen(false);
+    setImageToCrop(null);
+    // If the user cancels cropping, we might want to clear the selected file
+    // or revert to the previous image. For now, it just closes.
+    // If it's a new slide, the image input will effectively be cleared.
+    // If it's an edit, the original image_url will remain.
+  };
 
   return (
     <Form {...form}>
@@ -182,36 +215,26 @@ export function ProductForm({ onSubmit, product, isSubmitting }: ProductFormProp
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="images"
-          render={({ field: { onChange, value, ...restField } }) => (
-            <FormItem>
-              <FormLabel>Product Images</FormLabel>
-              <FormControl>
-                <Input 
-                  type="file" 
-                  multiple 
-                  accept="image/*"
-                  onChange={(e) => onChange(e.target.files)}
-                  {...restField} 
-                />
-              </FormControl>
-              <FormDescription>
-                Upload one or more images for the product.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <FormItem>
+          <FormLabel>Product Image</FormLabel>
+          <FormControl>
+            <Input 
+              type="file" 
+              accept="image/*"
+              onChange={handleFileChange} // Use custom handler
+            />
+          </FormControl>
+          <FormDescription>
+            Upload an image for the product.
+          </FormDescription>
+          <FormMessage />
+        </FormItem>
 
-        {imagePreviews.length > 0 && (
+        {imagePreview && (
           <div className="space-y-2">
-            <FormLabel>Image Previews</FormLabel>
+            <FormLabel>Image Preview</FormLabel>
             <div className="flex flex-wrap gap-2">
-              {imagePreviews.map((src, index) => (
-                <img key={index} src={src} alt={`Preview ${index + 1}`} className="h-20 w-20 rounded-md object-cover" />
-              ))}
+              <img src={imagePreview} alt="Preview" className="h-20 w-20 rounded-md object-cover" />
             </div>
           </div>
         )}
@@ -220,6 +243,16 @@ export function ProductForm({ onSubmit, product, isSubmitting }: ProductFormProp
           {isSubmitting ? "Saving..." : "Save Product"}
         </Button>
       </form>
+
+      {imageToCrop && (
+        <ImageCropperDialog
+          imageSrc={imageToCrop}
+          isOpen={isCropperOpen}
+          onClose={handleCropperClose}
+          onCropComplete={handleCropComplete}
+          aspectRatio={1} // Square aspect ratio for product images
+        />
+      )}
     </Form>
   );
 }
