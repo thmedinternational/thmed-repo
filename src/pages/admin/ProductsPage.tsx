@@ -48,6 +48,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSearchParams } from "react-router-dom";
 
 export type Product = {
   id: string;
@@ -69,7 +70,8 @@ const fetchProducts = async (
   limit: number,
   searchTerm: string,
   sortColumn: string,
-  sortDirection: 'asc' | 'desc'
+  sortDirection: 'asc' | 'desc',
+  categoryId: string | null
 ) => {
   const from = (page - 1) * limit;
   const to = from + limit - 1;
@@ -77,6 +79,10 @@ const fetchProducts = async (
   let query = supabase
     .from("products")
     .select("*, categories(name)", { count: "exact" });
+
+  if (categoryId) {
+    query = query.eq("category_id", categoryId);
+  }
 
   if (searchTerm) {
     query = query.ilike("name", `%${searchTerm}%`);
@@ -101,6 +107,8 @@ const ProductsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortColumn, setSortColumn] = useState("created_at");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [searchParams] = useSearchParams();
+  const categoryId = searchParams.get("category");
 
   const queryClient = useQueryClient();
   const { settings } = useSettings();
@@ -108,8 +116,8 @@ const ProductsPage = () => {
   const currencyCode = settings?.currency || "USD";
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["products", currentPage, searchTerm, sortColumn, sortDirection],
-    queryFn: () => fetchProducts(currentPage, PRODUCTS_PER_PAGE, searchTerm, sortColumn, sortDirection),
+    queryKey: ["products", currentPage, searchTerm, sortColumn, sortDirection, categoryId],
+    queryFn: () => fetchProducts(currentPage, PRODUCTS_PER_PAGE, searchTerm, sortColumn, sortDirection, categoryId),
   });
 
   const products = data?.data || [];
@@ -283,6 +291,7 @@ const ProductsPage = () => {
               onSubmit={editingProduct ? handleUpdateProduct : handleAddProduct}
               product={editingProduct || undefined}
               isSubmitting={addProductMutation.isPending || updateProductMutation.isPending}
+              defaultCategoryId={categoryId || undefined}
             />
           </DialogContent>
         </Dialog>
@@ -290,7 +299,7 @@ const ProductsPage = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Product List</CardTitle>
+          <CardTitle>Product List {categoryId ? "(Filtered)" : ""}</CardTitle>
           <CardDescription>
             A list of all products in your store.
           </CardDescription>

@@ -10,19 +10,44 @@ import {
   SidebarFooter,
   SidebarTrigger,
   SidebarInset,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag, FileText, Settings, GalleryHorizontal, LogOut, FileSpreadsheet } from "lucide-react";
+import { Home, Package, Users, ShoppingCart, BarChart, Store, Receipt, TrendingUp, ShoppingBag, FileText, Settings, GalleryHorizontal, LogOut, FileSpreadsheet, ChevronRight } from "lucide-react";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Skeleton } from "../ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useQuery } from "@tanstack/react-query";
+
+// Define Category type
+type Category = {
+  id: string;
+  name: string;
+};
+
+// Fetch categories from Supabase
+const fetchCategories = async (): Promise<Category[]> => {
+  const { data, error } = await supabase.from("categories").select("id, name").order("name");
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+};
 
 const AdminLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { settings, loading } = useSettings();
   const isActive = (path: string) => location.pathname === path || (path !== "/admin" && location.pathname.startsWith(path));
+
+  const { data: categories } = useQuery<Category[]>({
+    queryKey: ["categories_sidebar"],
+    queryFn: fetchCategories,
+  });
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -33,6 +58,8 @@ const AdminLayout = () => {
       navigate("/login");
     }
   };
+
+  const isProductsActive = location.pathname.startsWith("/admin/products");
 
   return (
     <SidebarProvider>
@@ -55,14 +82,39 @@ const AdminLayout = () => {
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={isActive("/admin/products")}>
-                <Link to="/admin/products">
-                  <Package />
-                  <span>Products</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+            
+            <Collapsible asChild defaultOpen={isProductsActive} className="group/collapsible">
+              <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton tooltip="Products" isActive={isProductsActive}>
+                    <Package />
+                    <span>Products</span>
+                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <SidebarMenuSub>
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild isActive={location.pathname === "/admin/products" && !location.search}>
+                        <Link to="/admin/products">
+                          <span>All Products</span>
+                        </Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                    {categories?.map((category) => (
+                      <SidebarMenuSubItem key={category.id}>
+                        <SidebarMenuSubButton asChild isActive={location.search.includes(`category=${category.id}`)}>
+                          <Link to={`/admin/products?category=${category.id}`}>
+                            <span>{category.name}</span>
+                          </Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    ))}
+                  </SidebarMenuSub>
+                </CollapsibleContent>
+              </SidebarMenuItem>
+            </Collapsible>
+
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={isActive("/admin/purchases")}>
                 <Link to="/admin/purchases">

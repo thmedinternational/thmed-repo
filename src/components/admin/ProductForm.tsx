@@ -54,9 +54,10 @@ interface ProductFormProps {
   onSubmit: (values: ProductFormValues) => void;
   product?: Product;
   isSubmitting?: boolean;
+  defaultCategoryId?: string;
 }
 
-export function ProductForm({ onSubmit, product, isSubmitting }: ProductFormProps) {
+export function ProductForm({ onSubmit, product, isSubmitting, defaultCategoryId }: ProductFormProps) {
   const { data: categories, isLoading: isLoadingCategories } = useQuery<Category[]>({
     queryKey: ["categories"],
     queryFn: fetchCategories,
@@ -70,7 +71,7 @@ export function ProductForm({ onSubmit, product, isSubmitting }: ProductFormProp
       price: product?.price ?? 0,
       cost: product?.cost ?? 0,
       stock: product?.stock ?? 0,
-      category_id: product?.category_id ?? "", // Set default category_id
+      category_id: product?.category_id ?? defaultCategoryId ?? "", // Set default category_id
     },
   });
 
