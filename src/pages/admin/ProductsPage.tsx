@@ -49,6 +49,7 @@ import {
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchParams } from "react-router-dom";
+import { ProductImporter } from "@/components/admin/ProductImporter";
 
 export type Product = {
   id: string;
@@ -271,30 +272,33 @@ const ProductsPage = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
         <h1 className="text-3xl font-bold">Products</h1>
-        <Dialog open={isDialogOpen} onOpenChange={handleDialogChange}>
-          <DialogTrigger asChild>
-            <Button onClick={() => setEditingProduct(null)}>
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Add Product
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] overflow-y-auto max-h-[90vh]">
-            <DialogHeader>
-              <DialogTitle>{editingProduct ? "Edit Product" : "Add New Product"}</DialogTitle>
-              <DialogDescription>
-                {editingProduct ? "Update the details for this product." : "Fill in the details below to add a new product to your store."}
-              </DialogDescription>
-            </DialogHeader>
-            <ProductForm
-              onSubmit={editingProduct ? handleUpdateProduct : handleAddProduct}
-              product={editingProduct || undefined}
-              isSubmitting={addProductMutation.isPending || updateProductMutation.isPending}
-              defaultCategoryId={categoryId || undefined}
-            />
-          </DialogContent>
-        </Dialog>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <ProductImporter />
+          <Dialog open={isDialogOpen} onOpenChange={handleDialogChange}>
+            <DialogTrigger asChild>
+              <Button onClick={() => setEditingProduct(null)} className="w-full sm:w-auto">
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Add Product
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px] overflow-y-auto max-h-[90vh]">
+              <DialogHeader>
+                <DialogTitle>{editingProduct ? "Edit Product" : "Add New Product"}</DialogTitle>
+                <DialogDescription>
+                  {editingProduct ? "Update the details for this product." : "Fill in the details below to add a new product to your store."}
+                </DialogDescription>
+              </DialogHeader>
+              <ProductForm
+                onSubmit={editingProduct ? handleUpdateProduct : handleAddProduct}
+                product={editingProduct || undefined}
+                isSubmitting={addProductMutation.isPending || updateProductMutation.isPending}
+                defaultCategoryId={categoryId || undefined}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <Card>
