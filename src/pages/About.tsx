@@ -6,7 +6,6 @@ import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
 
 const About = () => {
   const { settings } = useSettings();
-  const whatsAppNumber = "263775224209"; // Your WhatsApp number
   const emailAddress = "info@thmed.store"; // Your email address
 
   return (
@@ -136,8 +135,15 @@ const About = () => {
           {/* Contact Us */}
           <div className="space-y-4">
             <h2 className="text-3xl font-poppins font-bold">Contact Us</h2>
-            <ul className="space-y-1 font-montserrat font-light text-muted-foreground">
-              <li className="flex items-center"><MessageCircle className="mr-2 h-5 w-5" /> WhatsApp: <a href={`https://wa.me/${whatsAppNumber}`} target="_blank" rel="noopener noreferrer" className="ml-1 text-primary hover:underline">{whatsAppNumber}</a></li>
+            <ul className="space-y-2 font-montserrat font-light text-muted-foreground">
+              <li className="flex items-start"><MessageCircle className="mr-2 h-5 w-5 mt-1" /> 
+                <div className="flex flex-col">
+                    <span className="font-semibold text-foreground">WhatsApp / Call:</span>
+                    <a href="https://wa.me/263775224209" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">+263 775 224 209</a>
+                    <a href="https://wa.me/263772229928" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">+263 772 229 928</a>
+                    <a href="https://wa.me/263719224209" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">+263 719 224 209</a>
+                </div>
+              </li>
               <li className="flex items-center"><Mail className="mr-2 h-5 w-5" /> Email: <a href={`mailto:${emailAddress}`} className="ml-1 text-primary hover:underline">{emailAddress}</a></li>
               <li className="flex items-center"><Globe className="mr-2 h-5 w-5" /> Socials: <a href="https://www.facebook.com/thmedinternational" target="_blank" rel="noopener noreferrer" className="ml-1 text-primary hover:underline">Facebook</a> | <a href="https://www.instagram.com/thmedinternational" target="_blank" rel="noopener noreferrer" className="ml-1 text-primary hover:underline">Instagram</a> | <a href="#" target="_blank" rel="noopener noreferrer" className="ml-1 text-primary hover:underline">TikTok</a></li>
               <li className="flex items-start"><MapPin className="mr-2 h-5 w-5 mt-1" /> Location: <span className="ml-1">Shop number H15 Sunshine bazaar complex simon mazorodze Harare</span></li>

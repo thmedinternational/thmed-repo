@@ -92,9 +92,13 @@ const Footer = () => {
                 <MapPin size={16} className="mr-2 mt-1 shrink-0" />
                 <span className="text-muted-foreground">Shop number H15 Sunshine bazaar complex simon mazorodze Harare</span>
               </li>
-              <li className="flex items-center">
-                <Phone size={16} className="mr-2 shrink-0" />
-                <span className="text-muted-foreground">+263 775 224 209</span>
+              <li className="flex items-start">
+                <Phone size={16} className="mr-2 mt-1 shrink-0" />
+                <div className="flex flex-col">
+                  <span className="text-muted-foreground">+263 775 224 209</span>
+                  <span className="text-muted-foreground">+263 772 229 928</span>
+                  <span className="text-muted-foreground">+263 719 224 209</span>
+                </div>
               </li>
               <li className="flex items-center">
                 <Mail size={16} className="mr-2 shrink-0" />
