@@ -5,7 +5,7 @@ import { useGeolocation } from '@/hooks/useGeolocation';
 import { haversineDistance } from '@/utils/geolocation'; // Import the new utility
 
 const SubHeader: React.FC = () => {
-  const googleMapsAddress = "cs07-cs08 Sunshine bazaar complex simon mazorodze Harare";
+  const googleMapsAddress = "Shop number H15 Sunshine bazaar complex simon mazorodze Harare";
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(googleMapsAddress)}`;
 
   // Store location coordinates (approximate for Harare CBD)

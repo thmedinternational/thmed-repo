@@ -140,7 +140,7 @@ const About = () => {
               <li className="flex items-center"><MessageCircle className="mr-2 h-5 w-5" /> WhatsApp: <a href={`https://wa.me/${whatsAppNumber}`} target="_blank" rel="noopener noreferrer" className="ml-1 text-primary hover:underline">{whatsAppNumber}</a></li>
               <li className="flex items-center"><Mail className="mr-2 h-5 w-5" /> Email: <a href={`mailto:${emailAddress}`} className="ml-1 text-primary hover:underline">{emailAddress}</a></li>
               <li className="flex items-center"><Globe className="mr-2 h-5 w-5" /> Socials: <a href="https://www.facebook.com/thmedinternational" target="_blank" rel="noopener noreferrer" className="ml-1 text-primary hover:underline">Facebook</a> | <a href="https://www.instagram.com/thmedinternational" target="_blank" rel="noopener noreferrer" className="ml-1 text-primary hover:underline">Instagram</a> | <a href="#" target="_blank" rel="noopener noreferrer" className="ml-1 text-primary hover:underline">TikTok</a></li>
-              <li className="flex items-start"><MapPin className="mr-2 h-5 w-5 mt-1" /> Location: <span className="ml-1">cs07-cs08 Sunshine bazaar complex simon mazorodze Harare</span></li>
+              <li className="flex items-start"><MapPin className="mr-2 h-5 w-5 mt-1" /> Location: <span className="ml-1">Shop number H15 Sunshine bazaar complex simon mazorodze Harare</span></li>
             </ul>
           </div>
         </div>

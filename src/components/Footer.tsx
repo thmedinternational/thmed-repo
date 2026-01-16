@@ -90,7 +90,7 @@ const Footer = () => {
             <ul className="space-y-0.5 text-sm">
               <li className="flex items-start">
                 <MapPin size={16} className="mr-2 mt-1 shrink-0" />
-                <span className="text-muted-foreground">cs07-cs08 Sunshine bazaar complex simon mazorodze Harare</span>
+                <span className="text-muted-foreground">Shop number H15 Sunshine bazaar complex simon mazorodze Harare</span>
               </li>
               <li className="flex items-center">
                 <Phone size={16} className="mr-2 shrink-0" />
