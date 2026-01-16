@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Upload, Loader2, FileSpreadsheet, AlertCircle } from "lucide-react";
+import { Upload, Loader2, FileSpreadsheet, AlertCircle, Download } from "lucide-react";
 import { toast } from "sonner";
 import readXlsxFile, { Row } from "read-excel-file";
 import { supabase } from "@/integrations/supabase/client";
@@ -61,7 +61,6 @@ export function ProductImporter() {
       const rows: Row[] = await readXlsxFile(file);
 
       // Remove header row (assuming first row is headers: Catalogue, Product Name, Quantity, Price, Picture)
-      // You might want to add validation here to check header names
       const dataRows = rows.slice(1); 
 
       if (dataRows.length === 0) {
@@ -101,7 +100,7 @@ export function ProductImporter() {
             category_id: categoryId,
             stock: quantity,
             price: price,
-            cost: 0, // Default cost, as it's not in the 5 columns
+            cost: 0, // Default cost
             image_urls: pictureUrl ? [pictureUrl] : null
           });
 
@@ -132,6 +131,24 @@ export function ProductImporter() {
     }
   };
 
+  const downloadTemplate = () => {
+    // Create a simple CSV content
+    const headers = ["Catalogue", "Product Name", "Quantity", "Price", "Picture URL"];
+    const exampleRow = ["Medical Supplies", "Surgical Mask", "500", "15.00", "https://example.com/mask.jpg"];
+    
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + headers.join(",") + "\n" 
+      + exampleRow.join(",");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "th_med_product_template.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -142,9 +159,9 @@ export function ProductImporter() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Import Products from Excel</DialogTitle>
+          <DialogTitle>Import Products</DialogTitle>
           <DialogDescription>
-            Upload an .xlsx file to bulk add products.
+            Upload an Excel (.xlsx) file to bulk add products.
           </DialogDescription>
         </DialogHeader>
 
@@ -153,45 +170,52 @@ export function ProductImporter() {
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Required Format</AlertTitle>
             <AlertDescription>
-              Ensure your columns are in this exact order:
-              <ol className="list-decimal list-inside mt-2 text-sm font-medium">
-                <li>Catalogue (Category)</li>
+              <p className="mb-2">Ensure your columns are in this exact order:</p>
+              <ol className="list-decimal list-inside text-sm font-medium space-y-1">
+                <li>Catalogue (Category Name)</li>
                 <li>Product Name</li>
-                <li>Quantity</li>
+                <li>Quantity (Stock)</li>
                 <li>Price</li>
-                <li>Picture (Image URL link)</li>
+                <li>Picture (Image URL)</li>
               </ol>
             </AlertDescription>
           </Alert>
 
-          <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg border-muted-foreground/25 bg-muted/5">
-            {isImporting ? (
-              <div className="flex flex-col items-center gap-2">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                <p className="text-sm text-muted-foreground">Importing products...</p>
-              </div>
-            ) : (
-              <>
-                <Button 
-                  variant="secondary" 
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-full"
-                >
-                  <Upload className="mr-2 h-4 w-4" />
-                  Select Excel File
-                </Button>
-                <input
-                  type="file"
-                  accept=".xlsx"
-                  className="hidden"
-                  ref={fileInputRef}
-                  onChange={handleFileUpload}
-                />
-                <p className="text-xs text-muted-foreground mt-2 text-center">
-                  Supports .xlsx files only
-                </p>
-              </>
-            )}
+          <div className="flex flex-col gap-3">
+            <Button variant="outline" onClick={downloadTemplate} className="w-full">
+              <Download className="mr-2 h-4 w-4" />
+              Download Template (CSV)
+            </Button>
+
+            <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg border-muted-foreground/25 bg-muted/5 mt-2">
+              {isImporting ? (
+                <div className="flex flex-col items-center gap-2">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  <p className="text-sm text-muted-foreground">Importing products...</p>
+                </div>
+              ) : (
+                <>
+                  <Button 
+                    variant="secondary" 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-full"
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    Select Excel File
+                  </Button>
+                  <input
+                    type="file"
+                    accept=".xlsx, .xls"
+                    className="hidden"
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                  />
+                  <p className="text-xs text-muted-foreground mt-2 text-center">
+                    Supports .xlsx files
+                  </p>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </DialogContent>
