@@ -249,7 +249,7 @@ const AdminLayout = () => {
             )}
           </div>
         </header>
-        <main className="flex-1 p-4 md:p-6">
+        <main className="flex-1 p-4 md:p-6 w-full max-w-full overflow-x-hidden">
           <Outlet />
         </main>
       </SidebarInset>

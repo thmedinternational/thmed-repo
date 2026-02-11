@@ -153,42 +153,42 @@ const ProductsPage = () => {
           </div>
         </CardHeader>
         <CardContent className="p-0 sm:p-6">
-          <div className="overflow-hidden rounded-md border">
+          <div className="overflow-hidden rounded-md border w-full">
             <Table className="table-fixed w-full">
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[60px]">Image</TableHead>
-                  <TableHead className="w-auto">
+                  <TableHead className="w-[180px] sm:w-[250px]">
                     <Button variant="ghost" onClick={() => handleSort('name')} className="p-0 hover:bg-transparent text-left font-semibold">
                       Name
                       <ArrowUpDown className="ml-2 h-3 w-3" />
                     </Button>
                   </TableHead>
-                  <TableHead className="w-[120px] hidden md:table-cell">
+                  <TableHead className="w-[100px] hidden md:table-cell">
                     <Button variant="ghost" onClick={() => handleSort('category')} className="p-0 hover:bg-transparent text-left font-semibold">
                       Category
                       <ArrowUpDown className="ml-2 h-3 w-3" />
                     </Button>
                   </TableHead>
-                  <TableHead className="w-[80px]">
+                  <TableHead className="w-[70px]">
                     <Button variant="ghost" onClick={() => handleSort('stock')} className="p-0 hover:bg-transparent text-left font-semibold">
                       Stock
                       <ArrowUpDown className="ml-2 h-3 w-3" />
                     </Button>
                   </TableHead>
-                  <TableHead className="w-[100px]">
+                  <TableHead className="w-[90px]">
                     <Button variant="ghost" onClick={() => handleSort('price')} className="p-0 hover:bg-transparent text-left font-semibold">
                       Price
                       <ArrowUpDown className="ml-2 h-3 w-3" />
                     </Button>
                   </TableHead>
-                  <TableHead className="w-[100px] hidden lg:table-cell">
+                  <TableHead className="w-[90px] hidden lg:table-cell">
                     <Button variant="ghost" onClick={() => handleSort('cost')} className="p-0 hover:bg-transparent text-left font-semibold">
                       Cost
                       <ArrowUpDown className="ml-2 h-3 w-3" />
                     </Button>
                   </TableHead>
-                  <TableHead className="w-[120px] hidden xl:table-cell">
+                  <TableHead className="w-[110px] hidden xl:table-cell">
                     <Button variant="ghost" onClick={() => handleSort('created_at')} className="p-0 hover:bg-transparent text-left font-semibold">
                       Created At
                       <ArrowUpDown className="ml-2 h-3 w-3" />
@@ -236,12 +236,12 @@ const ProductsPage = () => {
                         )}
                       </TableCell>
                       <TableCell>
-                        <div className="truncate font-medium" title={product.name}>
+                        <div className="truncate font-medium max-w-[160px] sm:max-w-[240px]" title={product.name}>
                           {product.name}
                         </div>
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                        <div className="truncate" title={product.categories?.name || 'N/A'}>
+                        <div className="truncate max-w-[90px]" title={product.categories?.name || 'N/A'}>
                           {product.categories?.name || 'N/A'}
                         </div>
                       </TableCell>
