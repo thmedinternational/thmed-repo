@@ -156,14 +156,14 @@ const ProductsPage = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[60px]">Image</TableHead>
-                <TableHead className="max-w-[200px]">
+                <TableHead className="w-[50px]">Image</TableHead>
+                <TableHead className="max-w-[180px]">
                   <Button variant="ghost" onClick={() => handleSort('name')} className="p-0 hover:bg-transparent">
                     Name
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>
-                <TableHead className="max-w-[150px] hidden md:table-cell">
+                <TableHead className="max-w-[120px] hidden md:table-cell">
                   <Button variant="ghost" onClick={() => handleSort('category')} className="p-0 hover:bg-transparent">
                     Category
                     <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -193,7 +193,7 @@ const ProductsPage = () => {
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>
-                <TableHead className="w-[50px]">
+                <TableHead className="w-[50px] text-right">
                   <span className="sr-only">Actions</span>
                 </TableHead>
               </TableRow>
@@ -234,7 +234,7 @@ const ProductsPage = () => {
                         </div>
                       )}
                     </TableCell>
-                    <TableCell className="font-medium truncate max-w-[150px] md:max-w-[200px]" title={product.name}>
+                    <TableCell className="font-medium truncate max-w-[180px]" title={product.name}>
                       {product.name}
                     </TableCell>
                     <TableCell className="truncate max-w-[120px] hidden md:table-cell" title={product.categories?.name || 'N/A'}>
@@ -246,7 +246,7 @@ const ProductsPage = () => {
                     <TableCell className="hidden xl:table-cell">
                       {new Date(product.created_at).toLocaleDateString()}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button aria-haspopup="true" size="icon" variant="ghost">
