@@ -156,44 +156,44 @@ const ProductsPage = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[64px]">Image</TableHead>
-                <TableHead>
-                  <Button variant="ghost" onClick={() => handleSort('name')}>
+                <TableHead className="w-[60px]">Image</TableHead>
+                <TableHead className="max-w-[200px]">
+                  <Button variant="ghost" onClick={() => handleSort('name')} className="p-0 hover:bg-transparent">
                     Name
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>
-                <TableHead>
-                  <Button variant="ghost" onClick={() => handleSort('category')}>
+                <TableHead className="max-w-[150px] hidden md:table-cell">
+                  <Button variant="ghost" onClick={() => handleSort('category')} className="p-0 hover:bg-transparent">
                     Category
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>
                 <TableHead>
-                  <Button variant="ghost" onClick={() => handleSort('stock')}>
+                  <Button variant="ghost" onClick={() => handleSort('stock')} className="p-0 hover:bg-transparent">
                     Stock
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>
                 <TableHead>
-                  <Button variant="ghost" onClick={() => handleSort('price')}>
+                  <Button variant="ghost" onClick={() => handleSort('price')} className="p-0 hover:bg-transparent">
                     Price
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>
-                <TableHead>
-                  <Button variant="ghost" onClick={() => handleSort('cost')}>
+                <TableHead className="hidden lg:table-cell">
+                  <Button variant="ghost" onClick={() => handleSort('cost')} className="p-0 hover:bg-transparent">
                     Cost
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>
-                <TableHead>
-                  <Button variant="ghost" onClick={() => handleSort('created_at')}>
+                <TableHead className="hidden xl:table-cell">
+                  <Button variant="ghost" onClick={() => handleSort('created_at')} className="p-0 hover:bg-transparent">
                     Created At
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>
-                <TableHead>
+                <TableHead className="w-[50px]">
                   <span className="sr-only">Actions</span>
                 </TableHead>
               </TableRow>
@@ -204,11 +204,11 @@ const ProductsPage = () => {
                   <TableRow key={i}>
                     <TableCell><Skeleton className="h-10 w-10 rounded-md" /></TableCell>
                     <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                    <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-24" /></TableCell>
                     <TableCell><Skeleton className="h-4 w-16" /></TableCell>
                     <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                    <TableCell className="hidden lg:table-cell"><Skeleton className="h-4 w-20" /></TableCell>
+                    <TableCell className="hidden xl:table-cell"><Skeleton className="h-4 w-24" /></TableCell>
                     <TableCell><Skeleton className="h-8 w-8 rounded-full" /></TableCell>
                   </TableRow>
                 ))
@@ -226,20 +226,24 @@ const ProductsPage = () => {
                         <img
                           src={product.image_urls[0]}
                           alt={product.name}
-                          className="h-10 w-10 rounded-md object-cover"
+                          className="h-10 w-10 rounded-md object-cover min-w-[40px]"
                         />
                       ) : (
-                        <div className="h-10 w-10 rounded-md bg-secondary flex items-center justify-center">
+                        <div className="h-10 w-10 rounded-md bg-secondary flex items-center justify-center min-w-[40px]">
                           <Package className="h-5 w-5 text-muted-foreground" />
                         </div>
                       )}
                     </TableCell>
-                    <TableCell className="font-medium">{product.name}</TableCell>
-                    <TableCell>{product.categories?.name || 'N/A'}</TableCell>
+                    <TableCell className="font-medium truncate max-w-[150px] md:max-w-[200px]" title={product.name}>
+                      {product.name}
+                    </TableCell>
+                    <TableCell className="truncate max-w-[120px] hidden md:table-cell" title={product.categories?.name || 'N/A'}>
+                      {product.categories?.name || 'N/A'}
+                    </TableCell>
                     <TableCell>{product.stock}</TableCell>
                     <TableCell>{formatCurrency(product.price, currencyCode)}</TableCell>
-                    <TableCell>{formatCurrency(product.cost, currencyCode)}</TableCell>
-                    <TableCell>
+                    <TableCell className="hidden lg:table-cell">{formatCurrency(product.cost, currencyCode)}</TableCell>
+                    <TableCell className="hidden xl:table-cell">
                       {new Date(product.created_at).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
