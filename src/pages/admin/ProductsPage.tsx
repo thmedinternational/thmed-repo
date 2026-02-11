@@ -152,126 +152,134 @@ const ProductsPage = () => {
             />
           </div>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[50px]">Image</TableHead>
-                <TableHead className="max-w-[180px]">
-                  <Button variant="ghost" onClick={() => handleSort('name')} className="p-0 hover:bg-transparent">
-                    Name
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </TableHead>
-                <TableHead className="max-w-[120px] hidden md:table-cell">
-                  <Button variant="ghost" onClick={() => handleSort('category')} className="p-0 hover:bg-transparent">
-                    Category
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </TableHead>
-                <TableHead>
-                  <Button variant="ghost" onClick={() => handleSort('stock')} className="p-0 hover:bg-transparent">
-                    Stock
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </TableHead>
-                <TableHead>
-                  <Button variant="ghost" onClick={() => handleSort('price')} className="p-0 hover:bg-transparent">
-                    Price
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </TableHead>
-                <TableHead className="hidden lg:table-cell">
-                  <Button variant="ghost" onClick={() => handleSort('cost')} className="p-0 hover:bg-transparent">
-                    Cost
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </TableHead>
-                <TableHead className="hidden xl:table-cell">
-                  <Button variant="ghost" onClick={() => handleSort('created_at')} className="p-0 hover:bg-transparent">
-                    Created At
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </TableHead>
-                <TableHead className="w-[50px] text-right">
-                  <span className="sr-only">Actions</span>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                Array.from({ length: PRODUCTS_PER_PAGE }).map((_, i) => (
-                  <TableRow key={i}>
-                    <TableCell><Skeleton className="h-10 w-10 rounded-md" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                    <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-24" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-                    <TableCell className="hidden lg:table-cell"><Skeleton className="h-4 w-20" /></TableCell>
-                    <TableCell className="hidden xl:table-cell"><Skeleton className="h-4 w-24" /></TableCell>
-                    <TableCell><Skeleton className="h-8 w-8 rounded-full" /></TableCell>
-                  </TableRow>
-                ))
-              ) : error ? (
-                 <TableRow>
-                  <TableCell colSpan={8} className="h-24 text-center text-red-500">
-                    Error loading products: {error.message}
-                  </TableCell>
-                </TableRow>
-              ) : products.length ? (
-                products.map((product) => (
-                  <TableRow key={product.id}>
-                    <TableCell>
-                      {product.image_urls && product.image_urls.length > 0 ? (
-                        <img
-                          src={product.image_urls[0]}
-                          alt={product.name}
-                          className="h-10 w-10 rounded-md object-cover min-w-[40px]"
-                        />
-                      ) : (
-                        <div className="h-10 w-10 rounded-md bg-secondary flex items-center justify-center min-w-[40px]">
-                          <Package className="h-5 w-5 text-muted-foreground" />
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell className="font-medium truncate max-w-[180px]" title={product.name}>
-                      {product.name}
-                    </TableCell>
-                    <TableCell className="truncate max-w-[120px] hidden md:table-cell" title={product.categories?.name || 'N/A'}>
-                      {product.categories?.name || 'N/A'}
-                    </TableCell>
-                    <TableCell>{product.stock}</TableCell>
-                    <TableCell>{formatCurrency(product.price, currencyCode)}</TableCell>
-                    <TableCell className="hidden lg:table-cell">{formatCurrency(product.cost, currencyCode)}</TableCell>
-                    <TableCell className="hidden xl:table-cell">
-                      {new Date(product.created_at).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup="true" size="icon" variant="ghost">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem onClick={() => navigate(`/admin/products/edit/${product.id}`)}>Edit</DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
+        <CardContent className="p-0 sm:p-6">
+          <div className="overflow-hidden rounded-md border">
+            <Table className="table-fixed w-full">
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={8} className="h-24 text-center">
-                    No products found.
-                  </TableCell>
+                  <TableHead className="w-[60px]">Image</TableHead>
+                  <TableHead className="w-auto">
+                    <Button variant="ghost" onClick={() => handleSort('name')} className="p-0 hover:bg-transparent text-left font-semibold">
+                      Name
+                      <ArrowUpDown className="ml-2 h-3 w-3" />
+                    </Button>
+                  </TableHead>
+                  <TableHead className="w-[120px] hidden md:table-cell">
+                    <Button variant="ghost" onClick={() => handleSort('category')} className="p-0 hover:bg-transparent text-left font-semibold">
+                      Category
+                      <ArrowUpDown className="ml-2 h-3 w-3" />
+                    </Button>
+                  </TableHead>
+                  <TableHead className="w-[80px]">
+                    <Button variant="ghost" onClick={() => handleSort('stock')} className="p-0 hover:bg-transparent text-left font-semibold">
+                      Stock
+                      <ArrowUpDown className="ml-2 h-3 w-3" />
+                    </Button>
+                  </TableHead>
+                  <TableHead className="w-[100px]">
+                    <Button variant="ghost" onClick={() => handleSort('price')} className="p-0 hover:bg-transparent text-left font-semibold">
+                      Price
+                      <ArrowUpDown className="ml-2 h-3 w-3" />
+                    </Button>
+                  </TableHead>
+                  <TableHead className="w-[100px] hidden lg:table-cell">
+                    <Button variant="ghost" onClick={() => handleSort('cost')} className="p-0 hover:bg-transparent text-left font-semibold">
+                      Cost
+                      <ArrowUpDown className="ml-2 h-3 w-3" />
+                    </Button>
+                  </TableHead>
+                  <TableHead className="w-[120px] hidden xl:table-cell">
+                    <Button variant="ghost" onClick={() => handleSort('created_at')} className="p-0 hover:bg-transparent text-left font-semibold">
+                      Created At
+                      <ArrowUpDown className="ml-2 h-3 w-3" />
+                    </Button>
+                  </TableHead>
+                  <TableHead className="w-[50px] text-right">
+                    <span className="sr-only">Actions</span>
+                  </TableHead>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {isLoading ? (
+                  Array.from({ length: PRODUCTS_PER_PAGE }).map((_, i) => (
+                    <TableRow key={i}>
+                      <TableCell><Skeleton className="h-10 w-10 rounded-md" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                      <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-24" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-16" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-20" /></TableCell>
+                      <TableCell className="hidden lg:table-cell"><Skeleton className="h-4 w-20" /></TableCell>
+                      <TableCell className="hidden xl:table-cell"><Skeleton className="h-4 w-24" /></TableCell>
+                      <TableCell><Skeleton className="h-8 w-8 rounded-full" /></TableCell>
+                    </TableRow>
+                  ))
+                ) : error ? (
+                   <TableRow>
+                    <TableCell colSpan={8} className="h-24 text-center text-red-500">
+                      Error loading products: {error.message}
+                    </TableCell>
+                  </TableRow>
+                ) : products.length ? (
+                  products.map((product) => (
+                    <TableRow key={product.id}>
+                      <TableCell>
+                        {product.image_urls && product.image_urls.length > 0 ? (
+                          <img
+                            src={product.image_urls[0]}
+                            alt={product.name}
+                            className="h-10 w-10 rounded-md object-cover min-w-[40px]"
+                          />
+                        ) : (
+                          <div className="h-10 w-10 rounded-md bg-secondary flex items-center justify-center min-w-[40px]">
+                            <Package className="h-5 w-5 text-muted-foreground" />
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="truncate font-medium" title={product.name}>
+                          {product.name}
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        <div className="truncate" title={product.categories?.name || 'N/A'}>
+                          {product.categories?.name || 'N/A'}
+                        </div>
+                      </TableCell>
+                      <TableCell>{product.stock}</TableCell>
+                      <TableCell>{formatCurrency(product.price, currencyCode)}</TableCell>
+                      <TableCell className="hidden lg:table-cell">{formatCurrency(product.cost, currencyCode)}</TableCell>
+                      <TableCell className="hidden xl:table-cell">
+                        <div className="truncate">
+                          {new Date(product.created_at).toLocaleDateString()}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button aria-haspopup="true" size="icon" variant="ghost">
+                              <MoreHorizontal className="h-4 w-4" />
+                              <span className="sr-only">Toggle menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem onClick={() => navigate(`/admin/products/edit/${product.id}`)}>Edit</DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={8} className="h-24 text-center">
+                      No products found.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
           {totalPages > 1 && (
             <Pagination className="mt-8">
               <PaginationContent>
