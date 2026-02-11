@@ -33,7 +33,8 @@ import PharmacyStartupKitPage from "./pages/PharmacyStartupKitPage";
 import PayslipsPage from "./pages/admin/PayslipsPage";
 import CreatePayslipPage from "./pages/admin/CreatePayslipPage";
 import EmployeesPage from "./pages/admin/EmployeesPage";
-import ViewPayslipPage from "./pages/admin/ViewPayslipPage"; // Import the new page
+import ViewPayslipPage from "./pages/admin/ViewPayslipPage";
+import ProductFormPage from "./pages/admin/ProductFormPage"; // Import new page
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,8 @@ const App = () => (
                   <Route path="/admin" element={<AdminLayout />}>
                     <Route index element={<DashboardPage />} />
                     <Route path="products" element={<ProductsPage />} />
+                    <Route path="products/new" element={<ProductFormPage />} /> {/* New Create Route */}
+                    <Route path="products/edit/:id" element={<ProductFormPage />} /> {/* New Edit Route */}
                     <Route path="purchases" element={<PurchasesPage />} />
                     <Route path="customers" element={<CustomersPage />} />
                     <Route path="employees" element={<EmployeesPage />} />
@@ -77,7 +80,7 @@ const App = () => (
                     <Route path="analytics" element={<AnalyticsPage />} />
                     <Route path="payslips" element={<PayslipsPage />} />
                     <Route path="payslips/generate" element={<CreatePayslipPage />} />
-                    <Route path="payslips/:id" element={<ViewPayslipPage />} /> {/* New route */}
+                    <Route path="payslips/:id" element={<ViewPayslipPage />} />
                   </Route>
                 </Route>
 

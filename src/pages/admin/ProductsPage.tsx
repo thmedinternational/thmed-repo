@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,14 +17,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { MoreHorizontal, PlusCircle, Package, ArrowUpDown, Search } from "lucide-react";
 import {
   DropdownMenu,
@@ -33,11 +25,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ProductForm, ProductFormValues } from "@/components/admin/ProductForm";
-import { toast } from "sonner";
 import { formatCurrency } from "@/lib/currency";
 import { useSettings } from "@/contexts/SettingsContext";
-import { useAuth } from "@/contexts/AuthContext";
 import { Input } from "@/components/ui/input";
 import {
   Pagination,
@@ -48,7 +37,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { ProductImporter } from "@/components/admin/ProductImporter";
 
 export type Product = {
@@ -102,18 +91,15 @@ const fetchProducts = async (
 };
 
 const ProductsPage = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortColumn, setSortColumn] = useState("created_at");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [searchParams] = useSearchParams();
   const categoryId = searchParams.get("category");
+  const navigate = useNavigate();
 
-  const queryClient = useQueryClient();
   const { settings } = useSettings();
-  const { session } = useAuth();
   const currencyCode = settings?.currency || "USD";
 
   const { data, isLoading, error } = useQuery({
@@ -134,170 +120,16 @@ const ProductsPage = () => {
     }
   };
 
-  const addProductMutation = useMutation({
-    mutationFn: async (newProduct: ProductFormValues) => {
-      if (!session) throw new Error("User not authenticated.");
-
-      let imageUrls: string[] = [];
-
-      if (newProduct.images && newProduct.images.length > 0) {
-        const uploadPromises = Array.from(newProduct.images).map(async (file) => {
-          const fileName = `public/${session.user.id}/${Date.now()}-${file.name}`;
-          const { error: uploadError } = await supabase.storage
-            .from("product-images")
-            .upload(fileName, file);
-
-          if (uploadError) {
-            throw new Error(`Image upload failed: ${uploadError.message}`);
-          }
-
-          const { data: { publicUrl } } = supabase.storage
-            .from("product-images")
-            .getPublicUrl(fileName);
-          
-          if (!publicUrl) {
-            throw new Error("Could not get public URL for uploaded image.");
-          }
-
-          return publicUrl;
-        });
-
-        imageUrls = await Promise.all(uploadPromises);
-      }
-
-      const { error } = await supabase.from("products").insert([
-        {
-          name: newProduct.name,
-          description: newProduct.description,
-          price: newProduct.price,
-          cost: newProduct.cost,
-          stock: newProduct.stock,
-          image_urls: imageUrls,
-          category_id: newProduct.category_id,
-        },
-      ]);
-
-      if (error) {
-        throw new Error(error.message);
-      }
-    },
-    onSuccess: () => {
-      toast.success("Product added successfully!");
-      queryClient.invalidateQueries({ queryKey: ["products"] });
-      setIsDialogOpen(false);
-    },
-    onError: (error) => {
-      toast.error(`Failed to add product: ${error.message}`);
-    },
-  });
-
-  const updateProductMutation = useMutation({
-    mutationFn: async (updatedValues: ProductFormValues) => {
-      if (!editingProduct) throw new Error("No product selected for update.");
-      if (!session) throw new Error("User not authenticated.");
-
-      let imageUrlsToSave: string[] | null = editingProduct.image_urls;
-
-      if (updatedValues.images && updatedValues.images.length > 0) {
-        // New images provided, upload them
-        const uploadPromises = Array.from(updatedValues.images).map(async (file) => {
-          const fileName = `public/${session.user.id}/${Date.now()}-${file.name}`;
-          const { error: uploadError } = await supabase.storage
-            .from("product-images")
-            .upload(fileName, file);
-
-          if (uploadError) {
-            throw new Error(`Image upload failed: ${uploadError.message}`);
-          }
-
-          const { data: { publicUrl } } = supabase.storage
-            .from("product-images")
-            .getPublicUrl(fileName);
-
-          if (!publicUrl) {
-            throw new Error("Could not get public URL for uploaded image.");
-          }
-          return publicUrl;
-        });
-        imageUrlsToSave = await Promise.all(uploadPromises);
-      }
-
-      const { error } = await supabase
-        .from("products")
-        .update({
-          name: updatedValues.name,
-          description: updatedValues.description,
-          price: updatedValues.price,
-          cost: updatedValues.cost,
-          stock: updatedValues.stock,
-          image_urls: imageUrlsToSave,
-          category_id: updatedValues.category_id,
-        })
-        .eq("id", editingProduct.id);
-
-      if (error) {
-        throw new Error(error.message);
-      }
-    },
-    onSuccess: () => {
-      toast.success("Product updated successfully!");
-      queryClient.invalidateQueries({ queryKey: ["products"] });
-      setIsDialogOpen(false);
-      setEditingProduct(null);
-    },
-    onError: (error) => {
-      toast.error(`Failed to update product: ${error.message}`);
-    },
-  });
-
-  const handleAddProduct = (values: ProductFormValues) => {
-    addProductMutation.mutate(values);
-  };
-
-  const handleUpdateProduct = (values: ProductFormValues) => {
-    updateProductMutation.mutate(values);
-  };
-
-  const handleEditClick = (product: Product) => {
-    setEditingProduct(product);
-    setIsDialogOpen(true);
-  };
-
-  const handleDialogChange = (open: boolean) => {
-    setIsDialogOpen(open);
-    if (!open) {
-      setEditingProduct(null);
-    }
-  };
-
   return (
     <>
       <div className="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
         <h1 className="text-3xl font-bold">Products</h1>
         <div className="flex gap-2 w-full sm:w-auto">
           <ProductImporter />
-          <Dialog open={isDialogOpen} onOpenChange={handleDialogChange}>
-            <DialogTrigger asChild>
-              <Button onClick={() => setEditingProduct(null)} className="w-full sm:w-auto">
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Add Product
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] overflow-y-auto max-h-[90vh]">
-              <DialogHeader>
-                <DialogTitle>{editingProduct ? "Edit Product" : "Add New Product"}</DialogTitle>
-                <DialogDescription>
-                  {editingProduct ? "Update the details for this product." : "Fill in the details below to add a new product to your store."}
-                </DialogDescription>
-              </DialogHeader>
-              <ProductForm
-                onSubmit={editingProduct ? handleUpdateProduct : handleAddProduct}
-                product={editingProduct || undefined}
-                isSubmitting={addProductMutation.isPending || updateProductMutation.isPending}
-                defaultCategoryId={categoryId || undefined}
-              />
-            </DialogContent>
-          </Dialog>
+          <Button onClick={() => navigate("/admin/products/new")} className="w-full sm:w-auto">
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add Product
+          </Button>
         </div>
       </div>
 
@@ -420,7 +252,7 @@ const ProductsPage = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem onClick={() => handleEditClick(product)}>Edit</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => navigate(`/admin/products/edit/${product.id}`)}>Edit</DropdownMenuItem>
                           <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
