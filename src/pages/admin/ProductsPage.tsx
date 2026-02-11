@@ -154,47 +154,39 @@ const ProductsPage = () => {
         </CardHeader>
         <CardContent className="p-0 sm:p-6">
           <div className="overflow-hidden rounded-md border w-full">
-            <Table className="table-fixed w-full">
+            <Table className="table-fixed w-full min-w-full">
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[60px]">Image</TableHead>
-                  <TableHead className="w-[180px] sm:w-[250px]">
-                    <Button variant="ghost" onClick={() => handleSort('name')} className="p-0 hover:bg-transparent text-left font-semibold">
+                  <TableHead className="w-[50px] p-2">Img</TableHead>
+                  <TableHead className="w-auto p-2">
+                    <Button variant="ghost" onClick={() => handleSort('name')} className="p-0 hover:bg-transparent text-left font-semibold h-auto">
                       Name
-                      <ArrowUpDown className="ml-2 h-3 w-3" />
+                      <ArrowUpDown className="ml-1 h-3 w-3" />
                     </Button>
                   </TableHead>
-                  <TableHead className="w-[100px] hidden md:table-cell">
-                    <Button variant="ghost" onClick={() => handleSort('category')} className="p-0 hover:bg-transparent text-left font-semibold">
+                  <TableHead className="w-[100px] hidden lg:table-cell p-2">
+                    <Button variant="ghost" onClick={() => handleSort('category')} className="p-0 hover:bg-transparent text-left font-semibold h-auto">
                       Category
-                      <ArrowUpDown className="ml-2 h-3 w-3" />
+                      <ArrowUpDown className="ml-1 h-3 w-3" />
                     </Button>
                   </TableHead>
-                  <TableHead className="w-[70px]">
-                    <Button variant="ghost" onClick={() => handleSort('stock')} className="p-0 hover:bg-transparent text-left font-semibold">
+                  <TableHead className="w-[60px] p-2 text-center">
+                    <Button variant="ghost" onClick={() => handleSort('stock')} className="p-0 hover:bg-transparent font-semibold h-auto">
                       Stock
-                      <ArrowUpDown className="ml-2 h-3 w-3" />
                     </Button>
                   </TableHead>
-                  <TableHead className="w-[90px]">
-                    <Button variant="ghost" onClick={() => handleSort('price')} className="p-0 hover:bg-transparent text-left font-semibold">
+                  <TableHead className="w-[80px] p-2 text-right">
+                    <Button variant="ghost" onClick={() => handleSort('price')} className="p-0 hover:bg-transparent font-semibold h-auto">
                       Price
-                      <ArrowUpDown className="ml-2 h-3 w-3" />
                     </Button>
                   </TableHead>
-                  <TableHead className="w-[90px] hidden lg:table-cell">
-                    <Button variant="ghost" onClick={() => handleSort('cost')} className="p-0 hover:bg-transparent text-left font-semibold">
-                      Cost
-                      <ArrowUpDown className="ml-2 h-3 w-3" />
-                    </Button>
+                  <TableHead className="w-[80px] hidden xl:table-cell p-2 text-right">
+                    Cost
                   </TableHead>
-                  <TableHead className="w-[110px] hidden xl:table-cell">
-                    <Button variant="ghost" onClick={() => handleSort('created_at')} className="p-0 hover:bg-transparent text-left font-semibold">
-                      Created At
-                      <ArrowUpDown className="ml-2 h-3 w-3" />
-                    </Button>
+                  <TableHead className="w-[100px] hidden 2xl:table-cell p-2">
+                    Created
                   </TableHead>
-                  <TableHead className="w-[50px] text-right">
+                  <TableHead className="w-[40px] p-2 text-right">
                     <span className="sr-only">Actions</span>
                   </TableHead>
                 </TableRow>
@@ -203,14 +195,14 @@ const ProductsPage = () => {
                 {isLoading ? (
                   Array.from({ length: PRODUCTS_PER_PAGE }).map((_, i) => (
                     <TableRow key={i}>
-                      <TableCell><Skeleton className="h-10 w-10 rounded-md" /></TableCell>
-                      <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                      <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-24" /></TableCell>
-                      <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                      <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-                      <TableCell className="hidden lg:table-cell"><Skeleton className="h-4 w-20" /></TableCell>
-                      <TableCell className="hidden xl:table-cell"><Skeleton className="h-4 w-24" /></TableCell>
-                      <TableCell><Skeleton className="h-8 w-8 rounded-full" /></TableCell>
+                      <TableCell className="p-2"><Skeleton className="h-8 w-8 rounded-md" /></TableCell>
+                      <TableCell className="p-2"><Skeleton className="h-4 w-24" /></TableCell>
+                      <TableCell className="hidden lg:table-cell p-2"><Skeleton className="h-4 w-16" /></TableCell>
+                      <TableCell className="p-2"><Skeleton className="h-4 w-8" /></TableCell>
+                      <TableCell className="p-2"><Skeleton className="h-4 w-12" /></TableCell>
+                      <TableCell className="hidden xl:table-cell p-2"><Skeleton className="h-4 w-12" /></TableCell>
+                      <TableCell className="hidden 2xl:table-cell p-2"><Skeleton className="h-4 w-16" /></TableCell>
+                      <TableCell className="p-2"><Skeleton className="h-8 w-8 rounded-full" /></TableCell>
                     </TableRow>
                   ))
                 ) : error ? (
@@ -222,41 +214,41 @@ const ProductsPage = () => {
                 ) : products.length ? (
                   products.map((product) => (
                     <TableRow key={product.id}>
-                      <TableCell>
+                      <TableCell className="p-2">
                         {product.image_urls && product.image_urls.length > 0 ? (
                           <img
                             src={product.image_urls[0]}
                             alt={product.name}
-                            className="h-10 w-10 rounded-md object-cover min-w-[40px]"
+                            className="h-8 w-8 rounded-md object-cover min-w-[32px]"
                           />
                         ) : (
-                          <div className="h-10 w-10 rounded-md bg-secondary flex items-center justify-center min-w-[40px]">
-                            <Package className="h-5 w-5 text-muted-foreground" />
+                          <div className="h-8 w-8 rounded-md bg-secondary flex items-center justify-center min-w-[32px]">
+                            <Package className="h-4 w-4 text-muted-foreground" />
                           </div>
                         )}
                       </TableCell>
-                      <TableCell>
-                        <div className="truncate font-medium max-w-[160px] sm:max-w-[240px]" title={product.name}>
+                      <TableCell className="p-2">
+                        <div className="truncate font-medium text-sm" title={product.name}>
                           {product.name}
                         </div>
                       </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        <div className="truncate max-w-[90px]" title={product.categories?.name || 'N/A'}>
+                      <TableCell className="hidden lg:table-cell p-2">
+                        <div className="truncate text-xs text-muted-foreground" title={product.categories?.name || 'N/A'}>
                           {product.categories?.name || 'N/A'}
                         </div>
                       </TableCell>
-                      <TableCell>{product.stock}</TableCell>
-                      <TableCell>{formatCurrency(product.price, currencyCode)}</TableCell>
-                      <TableCell className="hidden lg:table-cell">{formatCurrency(product.cost, currencyCode)}</TableCell>
-                      <TableCell className="hidden xl:table-cell">
+                      <TableCell className="p-2 text-center text-sm">{product.stock}</TableCell>
+                      <TableCell className="p-2 text-right text-sm">{formatCurrency(product.price, currencyCode)}</TableCell>
+                      <TableCell className="hidden xl:table-cell p-2 text-right text-sm">{formatCurrency(product.cost, currencyCode)}</TableCell>
+                      <TableCell className="hidden 2xl:table-cell p-2 text-xs text-muted-foreground">
                         <div className="truncate">
                           {new Date(product.created_at).toLocaleDateString()}
                         </div>
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="p-2 text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button aria-haspopup="true" size="icon" variant="ghost">
+                            <Button aria-haspopup="true" size="icon" variant="ghost" className="h-8 w-8 p-0">
                               <MoreHorizontal className="h-4 w-4" />
                               <span className="sr-only">Toggle menu</span>
                             </Button>
