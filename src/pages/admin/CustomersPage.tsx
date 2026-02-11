@@ -118,11 +118,11 @@ const CustomersPage = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
         <h1 className="text-3xl font-bold">Customers</h1>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="w-full sm:w-auto">
               <PlusCircle className="mr-2 h-4 w-4" />
               Add Customer
             </Button>
@@ -153,11 +153,11 @@ const CustomersPage = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Phone</TableHead>
-                <TableHead>Added On</TableHead>
-                <TableHead>
+                <TableHead className="max-w-[150px]">Name</TableHead>
+                <TableHead className="max-w-[200px] hidden md:table-cell">Email</TableHead>
+                <TableHead className="hidden lg:table-cell">Phone</TableHead>
+                <TableHead className="hidden xl:table-cell">Added On</TableHead>
+                <TableHead className="text-right w-[50px]">
                   <span className="sr-only">Actions</span>
                 </TableHead>
               </TableRow>
@@ -178,10 +178,14 @@ const CustomersPage = () => {
               ) : customers?.length ? (
                 customers.map((customer) => (
                   <TableRow key={customer.id}>
-                    <TableCell className="font-medium">{customer.full_name || 'N/A'}</TableCell>
-                    <TableCell>{customer.email}</TableCell>
-                    <TableCell>{customer.phone_number || 'N/A'}</TableCell>
-                    <TableCell>
+                    <TableCell className="font-medium truncate max-w-[150px]" title={customer.full_name || 'N/A'}>
+                      {customer.full_name || 'N/A'}
+                    </TableCell>
+                    <TableCell className="truncate max-w-[200px] hidden md:table-cell" title={customer.email || ''}>
+                      {customer.email}
+                    </TableCell>
+                    <TableCell className="hidden lg:table-cell">{customer.phone_number || 'N/A'}</TableCell>
+                    <TableCell className="hidden xl:table-cell">
                       {new Date(customer.created_at).toLocaleDateString()}
                     </TableCell>
                     <TableCell className="text-right">

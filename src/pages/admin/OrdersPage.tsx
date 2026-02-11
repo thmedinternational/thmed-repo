@@ -30,14 +30,14 @@ import { OrderForm, OrderFormValues } from "@/components/admin/OrderForm";
 import { OrderActions } from "@/components/admin/OrderActions";
 import { toast } from "sonner";
 import { formatCurrency } from "@/lib/currency";
-import { useSettings } from "@/contexts/SettingsContext"; // Import useSettings
+import { useSettings } from "@/contexts/SettingsContext"; 
 
 export type Order = {
   id: string;
   created_at: string;
   status: "pending" | "paid" | "shipped" | "cancelled";
   total: number;
-  customers: { full_name: string | null }[] | null; // Changed to array
+  customers: { full_name: string | null }[] | null; 
 };
 
 const fetchOrders = async () => {
@@ -53,8 +53,8 @@ const fetchOrders = async () => {
 const OrdersPage = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const queryClient = useQueryClient();
-  const { settings } = useSettings(); // Use the hook
-  const currencyCode = settings?.currency || "USD"; // Get currency code
+  const { settings } = useSettings(); 
+  const currencyCode = settings?.currency || "USD"; 
 
   const { data: orders, isLoading, error } = useQuery<Order[]>({
     queryKey: ["orders"],
@@ -138,11 +138,11 @@ const OrdersPage = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
         <h1 className="text-3xl font-bold">Orders</h1>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="w-full sm:w-auto">
               <PlusCircle className="mr-2 h-4 w-4" />
               Add Order
             </Button>
@@ -169,11 +169,11 @@ const OrdersPage = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Customer</TableHead>
-                <TableHead>Date</TableHead>
+                <TableHead className="max-w-[150px]">Customer</TableHead>
+                <TableHead className="hidden md:table-cell">Date</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Total</TableHead>
-                <TableHead><span className="sr-only">Actions</span></TableHead>
+                <TableHead className="text-right w-[50px]"><span className="sr-only">Actions</span></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -184,8 +184,12 @@ const OrdersPage = () => {
               ) : orders?.length ? (
                 orders.map((order) => (
                   <TableRow key={order.id}>
-                    <TableCell className="font-medium">{order.customers?.[0]?.full_name || "N/A"}</TableCell>
-                    <TableCell>{new Date(order.created_at).toLocaleDateString()}</TableCell>
+                    <TableCell className="font-medium truncate max-w-[150px]" title={order.customers?.[0]?.full_name || "N/A"}>
+                      {order.customers?.[0]?.full_name || "N/A"}
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      {new Date(order.created_at).toLocaleDateString()}
+                    </TableCell>
                     <TableCell>
                       <Badge variant={getStatusVariant(order.status)} className="capitalize">{order.status}</Badge>
                     </TableCell>

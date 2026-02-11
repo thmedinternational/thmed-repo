@@ -25,12 +25,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { PlusCircle, CheckCircle, DollarSign, TrendingUp, ShoppingBag } from "lucide-react"; // Added DollarSign, TrendingUp, and ShoppingBag icons
+import { PlusCircle, CheckCircle, DollarSign, TrendingUp, ShoppingBag } from "lucide-react"; 
 import { PurchaseForm, PurchaseFormValues } from "@/components/admin/PurchaseForm";
 import { toast } from "sonner";
 import { formatCurrency } from "@/lib/currency";
 import { useSettings } from "@/contexts/SettingsContext";
-import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton for loading states
+import { Skeleton } from "@/components/ui/skeleton";
 
 export type Purchase = {
   id: string;
@@ -50,7 +50,6 @@ const fetchPurchases = async () => {
   return data as Purchase[];
 };
 
-// New function to fetch total sales from paid orders
 const fetchTotalPaidSales = async () => {
   const { data, error } = await supabase
     .from("orders")
@@ -116,7 +115,7 @@ const PurchasesPage = () => {
     onSuccess: () => {
       toast.success("Purchase created successfully!");
       queryClient.invalidateQueries({ queryKey: ["purchases"] });
-      queryClient.invalidateQueries({ queryKey: ["totalPaidSales"] }); // Invalidate sales data too
+      queryClient.invalidateQueries({ queryKey: ["totalPaidSales"] });
       setIsAddDialogOpen(false);
     },
     onError: (err: Error) => toast.error(`Failed to create purchase: ${err.message}`),
@@ -133,18 +132,18 @@ const PurchasesPage = () => {
     onSuccess: () => {
       toast.success("Purchase marked as completed. Stock updated!");
       queryClient.invalidateQueries({ queryKey: ["purchases"] });
-      queryClient.invalidateQueries({ queryKey: ["products"] }); // Invalidate products to show new stock
+      queryClient.invalidateQueries({ queryKey: ["products"] }); 
     },
     onError: (err: Error) => toast.error(`Failed to complete purchase: ${err.message}`),
   });
 
   return (
     <>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
         <h1 className="text-3xl font-bold">Purchases</h1>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button><PlusCircle className="mr-2 h-4 w-4" /> Add Purchase</Button>
+            <Button className="w-full sm:w-auto"><PlusCircle className="mr-2 h-4 w-4" /> Add Purchase</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-3xl">
             <DialogHeader><DialogTitle>Record New Purchase</DialogTitle></DialogHeader>
@@ -207,11 +206,11 @@ const PurchasesPage = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Supplier</TableHead>
-                <TableHead>Date</TableHead>
+                <TableHead className="max-w-[150px]">Supplier</TableHead>
+                <TableHead className="hidden md:table-cell">Date</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Total</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right w-[150px]">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -222,8 +221,12 @@ const PurchasesPage = () => {
               ) : purchases?.length ? (
                 purchases.map((purchase) => (
                   <TableRow key={purchase.id}>
-                    <TableCell className="font-medium">{purchase.supplier || "N/A"}</TableCell>
-                    <TableCell>{new Date(purchase.created_at).toLocaleDateString()}</TableCell>
+                    <TableCell className="font-medium truncate max-w-[150px]" title={purchase.supplier || "N/A"}>
+                      {purchase.supplier || "N/A"}
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      {new Date(purchase.created_at).toLocaleDateString()}
+                    </TableCell>
                     <TableCell>
                       <Badge variant={purchase.status === 'completed' ? 'success' : 'secondary'} className="capitalize">{purchase.status}</Badge>
                     </TableCell>
@@ -237,7 +240,7 @@ const PurchasesPage = () => {
                           disabled={completePurchaseMutation.isPending}
                         >
                           <CheckCircle className="mr-2 h-4 w-4" />
-                          Mark as Completed
+                          <span className="hidden sm:inline ml-1">Mark Completed</span>
                         </Button>
                       )}
                     </TableCell>
