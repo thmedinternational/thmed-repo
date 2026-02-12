@@ -66,7 +66,6 @@ const ProductFormPage = () => {
         name: values.name,
         description: values.description,
         price: values.price,
-        original_price: values.original_price, // Added original_price
         cost: values.cost,
         stock: values.stock,
         category_id: values.category_id,
