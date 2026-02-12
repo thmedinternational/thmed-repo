@@ -45,6 +45,7 @@ export type Product = {
   name: string;
   description: string | null;
   price: number;
+  original_price?: number; // Added original_price
   cost: number;
   stock: number;
   image_urls: string[] | null;

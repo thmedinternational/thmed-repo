@@ -44,6 +44,7 @@ const productFormSchema = z.object({
   }),
   description: z.string().optional(),
   price: z.coerce.number().min(0, { message: "Price must be a positive number." }),
+  original_price: z.coerce.number().min(0, { message: "Original price must be a positive number." }).optional(),
   cost: z.coerce.number().min(0, { message: "Cost must be a positive number." }),
   stock: z.coerce.number().int().min(0, { message: "Stock must be a positive integer." }),
   images: z.custom<FileList>().optional(),
@@ -71,6 +72,7 @@ export function ProductForm({ onSubmit, product, isSubmitting, defaultCategoryId
       name: product?.name ?? "",
       description: product?.description ?? "",
       price: product?.price ?? 0,
+      original_price: product?.original_price ?? 0,
       cost: product?.cost ?? 0,
       stock: product?.stock ?? 0,
       category_id: product?.category_id ?? defaultCategoryId ?? "",
@@ -174,16 +176,30 @@ export function ProductForm({ onSubmit, product, isSubmitting, defaultCategoryId
               <CardTitle>Pricing & Inventory</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
                   name="price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Base Price</FormLabel>
+                      <FormLabel>Selling Price</FormLabel>
                       <FormControl>
                         <Input type="number" placeholder="0.00" {...field} />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="original_price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Original Price (Before Discount)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="0.00" {...field} />
+                      </FormControl>
+                      <FormDescription>Leave 0 if no discount</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
