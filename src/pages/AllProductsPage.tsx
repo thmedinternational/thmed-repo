@@ -10,13 +10,14 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
+  PaginationEllipsis,
 } from "@/components/ui/pagination";
 import { Link } from 'react-router-dom';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import FloatingShopButton from '@/components/FloatingShopButton'; // Import FloatingShopButton
-import ShopCategoriesPanel from '@/components/ShopCategoriesPanel'; // Import ShopCategoriesPanel
+import FloatingShopButton from '@/components/FloatingShopButton';
+import ShopCategoriesPanel from '@/components/ShopCategoriesPanel';
 
-const PRODUCTS_PER_PAGE = 12; // Display 12 products per page
+const PRODUCTS_PER_PAGE = 12;
 
 const fetchAllProducts = async (page: number): Promise<Product[]> => {
   const from = (page - 1) * PRODUCTS_PER_PAGE;
@@ -47,7 +48,7 @@ const fetchAllProductsCount = async (): Promise<number> => {
 
 const AllProductsPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [isPanelOpen, setIsPanelOpen] = useState(false); // State for the side panel
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   const { data: products, isLoading: isLoadingProducts, isError: isProductsError, error: productsError } = useQuery<Product[]>({
     queryKey: ["allProducts", currentPage],
@@ -65,6 +66,111 @@ const AllProductsPage: React.FC = () => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
+  };
+
+  const renderPaginationItems = () => {
+    const items = [];
+    const maxVisible = 5;
+
+    // Previous Button
+    items.push(
+      <PaginationItem key="prev">
+        <PaginationPrevious
+          onClick={() => handlePageChange(currentPage - 1)}
+          className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+        />
+      </PaginationItem>
+    );
+
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink
+              isActive={currentPage === i}
+              onClick={() => handlePageChange(i)}
+              className="cursor-pointer"
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
+    } else {
+      // First page
+      items.push(
+        <PaginationItem key={1}>
+          <PaginationLink
+            isActive={currentPage === 1}
+            onClick={() => handlePageChange(1)}
+            className="cursor-pointer"
+          >
+            1
+          </PaginationLink>
+        </PaginationItem>
+      );
+
+      // Start Ellipsis
+      if (currentPage > 3) {
+        items.push(
+          <PaginationItem key="start-ellipsis">
+            <PaginationEllipsis />
+          </PaginationItem>
+        );
+      }
+
+      // Middle pages
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+
+      for (let i = start; i <= end; i++) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink
+              isActive={currentPage === i}
+              onClick={() => handlePageChange(i)}
+              className="cursor-pointer"
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
+
+      // End Ellipsis
+      if (currentPage < totalPages - 2) {
+        items.push(
+          <PaginationItem key="end-ellipsis">
+            <PaginationEllipsis />
+          </PaginationItem>
+        );
+      }
+
+      // Last page
+      items.push(
+        <PaginationItem key={totalPages}>
+          <PaginationLink
+            isActive={currentPage === totalPages}
+            onClick={() => handlePageChange(totalPages)}
+            className="cursor-pointer"
+          >
+            {totalPages}
+          </PaginationLink>
+        </PaginationItem>
+      );
+    }
+
+    // Next Button
+    items.push(
+      <PaginationItem key="next">
+        <PaginationNext
+          onClick={() => handlePageChange(currentPage + 1)}
+          className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+        />
+      </PaginationItem>
+    );
+
+    return items;
   };
 
   if (isLoadingProducts || isLoadingCount) {
@@ -129,22 +235,7 @@ const AllProductsPage: React.FC = () => {
       {totalPages > 1 && (
         <Pagination className="mt-8">
           <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
-            </PaginationItem>
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <PaginationItem key={index}>
-                <PaginationLink
-                  onClick={() => handlePageChange(index + 1)}
-                  isActive={currentPage === index + 1}
-                >
-                  {index + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
-            </PaginationItem>
+            {renderPaginationItems()}
           </PaginationContent>
         </Pagination>
       )}
